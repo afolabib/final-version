@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Paperclip, Zap, Users, Target, BarChart2, RefreshCw, ArrowUpRight } from 'lucide-react';
+import { Send, Paperclip, Zap, Users, Target, BarChart2, RefreshCw, ArrowUpRight, CheckSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useCompany } from '@/contexts/CompanyContext';
 import { useAuth } from '@/lib/AuthContext';
 import { createGoal } from '@/lib/goalService';
@@ -83,8 +84,9 @@ const QUICK_PROMPTS = [
 ];
 
 export default function FreemiCommandCenter() {
-  const { company, agents, goals, recentActivity, activeCompanyId, ceoAgent } = useCompany();
+  const { company, agents, goals, tasks, recentActivity, activeCompanyId, ceoAgent } = useCompany();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -161,10 +163,10 @@ export default function FreemiCommandCenter() {
 
       {/* ── Stats row ── */}
       <div className="grid grid-cols-4 gap-3 mb-6 flex-shrink-0">
-        <StatCard icon={Users}    label="Agents"  value={activeAgents.length} color="#6C5CE7" onClick={() => {}} />
-        <StatCard icon={Target}   label="Goals"   value={activeGoals.length}  color="#00B894" onClick={() => {}} />
-        <StatCard icon={Zap}      label="Tasks"   value="—"                   color="#0984E3" onClick={() => {}} />
-        <StatCard icon={BarChart2} label="Spend"  value="$0"                  color="#E17055" onClick={() => {}} />
+        <StatCard icon={Users}     label="Agents" value={activeAgents.length}                              color="#6C5CE7" onClick={() => navigate('/dashboard/agents')} />
+        <StatCard icon={Target}    label="Goals"  value={activeGoals.length}                               color="#00B894" onClick={() => navigate('/dashboard/goals')} />
+        <StatCard icon={CheckSquare} label="Tasks" value={tasks.filter(t => t.status !== 'done').length}  color="#0984E3" onClick={() => navigate('/dashboard/tasks')} />
+        <StatCard icon={BarChart2} label="Spend"  value="$0"                                               color="#E17055" onClick={() => navigate('/dashboard/budget')} />
       </div>
 
       {/* ── Two-column: input + feed ── */}

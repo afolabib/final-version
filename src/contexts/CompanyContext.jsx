@@ -5,8 +5,18 @@ import { subscribeToAgents } from '@/lib/agentService';
 import { subscribeGoals } from '@/lib/goalService';
 import { subscribePendingApprovals } from '@/lib/approvalService';
 import { subscribeRecentActivity } from '@/lib/activityService';
+import { subscribeTasks } from '@/lib/taskService';
 
 const CompanyContext = createContext(null);
+
+function getOrCreateGuestId() {
+  let id = localStorage.getItem('freemi_guest_id');
+  if (!id) {
+    id = 'guest-' + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem('freemi_guest_id', id);
+  }
+  return id;
+}
 
 export function CompanyProvider({ children }) {
   const { user } = useAuth();
@@ -17,6 +27,7 @@ export function CompanyProvider({ children }) {
   const [goals, setGoals] = useState([]);
   const [pendingApprovals, setPendingApprovals] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bootstrapping, setBootstrapping] = useState(false);
 
@@ -24,20 +35,14 @@ export function CompanyProvider({ children }) {
   const ceoAgent = agents.find(a => a.role === 'ceo' || a.isCEO) || null;
   const isBootstrapped = !!company?.isBootstrapped;
 
-  // Load user's first company on auth
+  // Load user's first company on auth (or as guest)
   useEffect(() => {
-    if (!user?.uid) {
-      setCompany(null);
-      setActiveCompanyId(null);
-      setAgents([]);
-      setLoading(false);
-      return;
-    }
+    const uid = user?.uid || getOrCreateGuestId();
 
     let cancelled = false;
     setLoading(true);
 
-    getUserCompanies(user.uid).then(companies => {
+    getUserCompanies(uid).then(companies => {
       if (cancelled) return;
       if (companies.length > 0) {
         setActiveCompanyId(companies[0].id);
@@ -87,12 +92,20 @@ export function CompanyProvider({ children }) {
     return unsub;
   }, [activeCompanyId]);
 
+  // Subscribe to tasks
+  useEffect(() => {
+    if (!activeCompanyId) return;
+    const unsub = subscribeTasks(activeCompanyId, setTasks);
+    return unsub;
+  }, [activeCompanyId]);
+
   const switchCompany = useCallback((companyId) => {
     setActiveCompanyId(companyId);
     setAgents([]);
     setGoals([]);
     setPendingApprovals([]);
     setRecentActivity([]);
+    setTasks([]);
   }, []);
 
   const onCompanyCreated = useCallback((companyId) => {
@@ -111,6 +124,7 @@ export function CompanyProvider({ children }) {
       activeCompanyId,
       agents,
       goals,
+      tasks,
       pendingApprovals,
       recentActivity,
       ceoAgent,

@@ -30,10 +30,16 @@ export default function CompanyBootstrap({ onComplete }) {
 
   const setField = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
+  function resolveUid() {
+    if (user?.uid) return user.uid;
+    let id = localStorage.getItem('freemi_guest_id');
+    if (!id) { id = 'guest-' + Math.random().toString(36).slice(2, 10); localStorage.setItem('freemi_guest_id', id); }
+    return id;
+  }
+
   async function handleCreate() {
     if (!form.name.trim() || !mission.trim()) return;
-    const uid = user?.uid;
-    if (!uid) { setError('Please sign in first.'); return; }
+    const uid = resolveUid();
     setSaving(true);
     setError('');
     try {
@@ -52,8 +58,7 @@ export default function CompanyBootstrap({ onComplete }) {
   async function handleImport(e) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const uid = user?.uid;
-    if (!uid) { setError('Please sign in first.'); return; }
+    const uid = resolveUid();
     setImporting(true);
     setError('');
     try {

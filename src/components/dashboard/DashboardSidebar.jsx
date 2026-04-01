@@ -185,7 +185,7 @@ export default function DashboardSidebar({ active, onNav }) {
           </div>
         </div>
         {approvalCount > 0 && (
-          <button onClick={() => onNav('approvals')}
+          <button onClick={() => onNav('inbox')}
             className="relative flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
             style={{ color: '#6C5CE7' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(108,92,231,0.08)'}
