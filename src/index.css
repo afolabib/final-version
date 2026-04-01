@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+/* ── Premium Motion System ── */
+@layer utilities {
+  .btn-press {
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  .btn-press:hover  { transform: scale(1.03); }
+  .btn-press:active { transform: scale(0.97); }
+
+  .card-lift {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(108,92,231,0.10);
+  }
+
+  .icon-lift {
+    transition: transform 150ms ease-out, color 150ms ease-out;
+  }
+  .icon-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .nav-pill {
+    transition: background 180ms ease-out, color 180ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  .nav-pill:hover {
+    transform: translateX(3px);
+  }
+
+  .input-focus-ring {
+    transition: box-shadow 200ms ease-out, border-color 200ms ease-out;
+  }
+  .input-focus-ring:focus-within {
+    box-shadow: 0 0 0 3px rgba(108,92,231,0.12), 0 4px 20px rgba(108,92,231,0.08);
+    border-color: rgba(108,92,231,0.3) !important;
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
+  background-size: 600px 100%;
+  animation: shimmer 2.4s infinite linear;
+}
+
+/* Ambient pulse glow */
+@keyframes ambientPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.55; }
+}
+.ambient-pulse {
+  animation: ambientPulse 4s ease-in-out infinite;
+}
+
+/* Breathe for idle CTAs */
+@keyframes breathe {
+  0%, 100% { box-shadow: 0 4px 16px rgba(108,92,231,0.30), inset 0 1px 0 rgba(255,255,255,0.15); }
+  50%       { box-shadow: 0 8px 28px rgba(108,92,231,0.50), inset 0 1px 0 rgba(255,255,255,0.15); }
+}
+.btn-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* Float for empty states */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.float { animation: float 3s ease-in-out infinite; }
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+
+
+@layer base {
+  :root {
+    --background: 243 45% 95%;
+    --foreground: 222 47% 8%;
+    --primary: 99 84% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 243 45% 90%;
+    --secondary-foreground: 222 47% 8%;
+    --muted: 243 45% 90%;
+    --muted-foreground: 220 14% 50%;
+    --accent: 258 75% 63%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 258 75% 63%;
+    --chart-1: 99 84% 60%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.75rem;
+    --font-body: 'Inter', sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --shadow-card: 0 4px 20px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.03);
+    --shadow-elevated: 0 8px 30px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-glow: 0 4px 20px rgba(108,92,231,0.20);
+  }
+
+  .dark {
+    --background: 228 33% 95%;
+    --foreground: 222 47% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 8%;
+    --primary: 99 84% 63%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 228 33% 90%;
+    --secondary-foreground: 222 47% 8%;
+    --muted: 228 33% 90%;
+    --muted-foreground: 220 14% 46%;
+    --accent: 258 75% 63%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 228 20% 88%;
+    --input: 228 20% 88%;
+    --ring: 258 75% 63%;
+    --sidebar-background: 228 33% 95%;
+    --sidebar-foreground: 222 47% 8%;
+    --sidebar-primary: 258 75% 63%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 228 33% 90%;
+    --sidebar-accent-foreground: 222 47% 8%;
+    --sidebar-border: 228 20% 88%;
+    --sidebar-ring: 258 75% 63%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #EEF0F8; }
+  ::-webkit-scrollbar-thumb { background: #C5C9E0; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #6C5CE7; }
+}
