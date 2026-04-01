@@ -1,230 +1,259 @@
 import { useState, useRef, useEffect } from 'react';
-import { Home, Bot, Inbox, FolderOpen, CheckSquare, Zap, Plug, Wrench, Settings, Plus, HelpCircle, CreditCard, LayoutGrid, LogOut } from 'lucide-react';
+import {
+  Terminal, Users, Target, CheckSquare, Inbox,
+  RefreshCw, Plug, Wrench, FolderOpen,
+  BarChart2, Settings, HelpCircle, LogOut, ChevronDown,
+  Plus, Bell, Building2, Download, Upload, Zap
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '@/lib/AuthContext';
-import { firestore } from '@/lib/firebaseClient';
+import { useCompany } from '@/contexts/CompanyContext';
+import { ROLE_COLORS, AGENT_STATUS } from '@/lib/agentService';
 
-const navItems = [
-  { icon: Home, label: 'Home', id: 'home' },
-  { icon: Bot, label: 'Agents', id: 'agents' },
-  { icon: Inbox, label: 'Inbox', id: 'inbox' },
-  { icon: FolderOpen, label: 'Files', id: 'files', badge: 'Beta' },
-  { icon: CheckSquare, label: 'Tasks', id: 'tasks' },
-];
+// ── Status dot ────────────────────────────────────────────────────────────────
+function StatusDot({ status }) {
+  const map = {
+    [AGENT_STATUS.ACTIVE]:           { color: '#00B894', pulse: true },
+    [AGENT_STATUS.SLEEPING]:         { color: '#FDCB6E', pulse: false },
+    [AGENT_STATUS.PAUSED]:           { color: '#B2BEC3', pulse: false },
+    [AGENT_STATUS.ERROR]:            { color: '#D63031', pulse: true },
+    [AGENT_STATUS.PENDING_APPROVAL]: { color: '#A29BFE', pulse: true },
+    [AGENT_STATUS.TERMINATED]:       { color: '#636E72', pulse: false },
+  };
+  const { color, pulse } = map[status] || { color: '#B2BEC3', pulse: false };
+  return (
+    <span className="relative flex-shrink-0" style={{ width: 8, height: 8 }}>
+      <span className="block rounded-full w-2 h-2" style={{ background: color }} />
+      {pulse && (
+        <span className="absolute inset-0 rounded-full animate-ping opacity-60" style={{ background: color }} />
+      )}
+    </span>
+  );
+}
 
-const configItems = [
-  { icon: Zap, label: 'Automations', id: 'automations', badge: 'Beta' },
-  { icon: Plug, label: 'Integrations', id: 'integrations' },
-  { icon: Wrench, label: 'Skills', id: 'skills' },
-  { icon: Settings, label: 'Settings', id: 'settings' },
-  { icon: CreditCard, label: 'Credits', id: 'credits' },
-  { icon: HelpCircle, label: 'Support', id: 'support' },
-];
-
-
-
-function NavBtn({ item, active, onClick }) {
-  const isActive = active === item.id;
+// ── Nav button ────────────────────────────────────────────────────────────────
+function NavBtn({ icon: Icon, label, id, active, onClick, badge, badgeCount }) {
+  const isActive = active === id;
   return (
     <button
-      onClick={() => onClick(item.id)}
-      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium nav-pill"
+      onClick={() => onClick(id)}
+      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150"
       style={{
-        color: isActive ? '#6C5CE7' : '#6B7280',
-        background: isActive ? 'rgba(108,92,231,0.08)' : 'transparent',
+        color: isActive ? '#6C5CE7' : '#64748B',
+        background: isActive ? 'rgba(108,92,231,0.09)' : 'transparent',
         fontWeight: isActive ? 600 : 500,
-        boxShadow: isActive ? 'inset 0 0 0 1px rgba(108,92,231,0.15)' : 'none',
       }}
-      onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'rgba(108,92,231,0.05)'; e.currentTarget.style.color = '#6C5CE7'; } }}
-      onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6B7280'; } }}
+      onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'rgba(108,92,231,0.05)'; e.currentTarget.style.color = '#6C5CE7'; }}}
+      onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}}
     >
-      <item.icon size={15} strokeWidth={isActive ? 2.2 : 1.8} style={{ color: isActive ? '#6C5CE7' : 'inherit', transition: 'color 180ms' }} />
-      <span>{item.label}</span>
-      {item.badge && (
-        <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(108,92,231,0.08)', color: '#6C5CE7' }}>{item.badge}</span>
+      <Icon size={15} strokeWidth={isActive ? 2.2 : 1.8} style={{ flexShrink: 0 }} />
+      <span className="flex-1 text-left truncate">{label}</span>
+      {badgeCount > 0 && (
+        <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full text-[10px] font-bold flex items-center justify-center text-white px-1"
+          style={{ background: '#6C5CE7' }}>{badgeCount}</span>
+      )}
+      {badge && !badgeCount && (
+        <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+          style={{ background: 'rgba(108,92,231,0.08)', color: '#6C5CE7' }}>{badge}</span>
       )}
     </button>
   );
 }
 
-function UserMenu({ onClose }) {
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const name = user?.full_name || 'User';
+// ── Section label ─────────────────────────────────────────────────────────────
+function SectionLabel({ label }) {
+  return (
+    <div className="px-3 pt-5 pb-1.5">
+      <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#CBD5E1' }}>{label}</span>
+    </div>
+  );
+}
+
+// ── Agent row in sidebar ──────────────────────────────────────────────────────
+function AgentRow({ agent, companyId, onClick }) {
+  const color = ROLE_COLORS[agent.role] || '#6C5CE7';
+  const initial = agent.name?.[0]?.toUpperCase() || '?';
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl transition-all duration-150 group"
+      style={{ color: '#64748B' }}
+      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.04)'; }}
+      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+    >
+      <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+        style={{ background: color, boxShadow: `0 2px 6px ${color}40` }}>
+        {initial}
+      </div>
+      <span className="flex-1 text-left text-xs font-medium truncate">{agent.name}</span>
+      <StatusDot status={agent.status} />
+    </button>
+  );
+}
+
+// ── User menu ─────────────────────────────────────────────────────────────────
+function UserMenu({ onClose, onSettings, onLogout, user }) {
+  const name = user?.full_name || user?.displayName || 'User';
   const email = user?.email || '';
   const initial = name[0]?.toUpperCase() || 'U';
-
   return (
-    <div className="absolute bottom-14 left-2 right-2 rounded-2xl overflow-hidden z-50"
-      style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', border: '1px solid rgba(108,92,231,0.12)', boxShadow: '0 8px 32px rgba(108,92,231,0.12), inset 0 1px 0 rgba(255,255,255,0.6)' }}>
-      {/* User info */}
-      <div className="flex items-center gap-3 px-4 py-4" style={{ borderBottom: '1px solid rgba(91,95,255,0.1)' }}>
-        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.3)' }}>{initial}</div>
+    <div className="absolute bottom-16 left-2 right-2 rounded-2xl overflow-hidden z-50 shadow-xl"
+      style={{ background: 'rgba(255,255,255,0.98)', border: '1px solid rgba(108,92,231,0.12)' }}>
+      <div className="flex items-center gap-3 px-4 py-4" style={{ borderBottom: '1px solid rgba(108,92,231,0.08)' }}>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)' }}>{initial}</div>
         <div className="min-w-0">
           <p className="text-sm font-semibold truncate" style={{ color: '#0A0A1A' }}>{name}</p>
-          <p className="text-xs truncate" style={{ color: '#9CA3AF' }}>{email}</p>
+          <p className="text-xs truncate" style={{ color: '#94A3B8' }}>{email}</p>
         </div>
       </div>
-      {/* Plan row */}
-      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(108,92,231,0.1)' }}>
-        <span className="text-sm" style={{ color: '#6B7280' }}>Starter</span>
-        <button onClick={() => { navigate('/dashboard/credits'); onClose(); }} className="px-6 py-2 rounded-full text-xs font-bold transition-all" style={{ background: 'transparent', color: '#6C5CE7', border: '1.5px solid rgba(108,92,231,0.3)' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.08)'; e.currentTarget.style.borderColor = 'rgba(108,92,231,0.5)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(108,92,231,0.3)'; }}>Upgrade</button>
-      </div>
-      {/* Menu items */}
-      {[
-        { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
-        { label: 'Homepage', icon: Home, path: '/' },
-      ].map(item => (
-        <button key={item.label}
-          onClick={() => { navigate(item.path); onClose(); }}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm transition-colors"
-          style={{ color: '#6B7280', borderBottom: '1px solid rgba(108,92,231,0.1)' }}
+      {[{ icon: Settings, label: 'Settings', action: onSettings }].map(item => (
+        <button key={item.label} onClick={() => { item.action(); onClose(); }}
+          className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors"
+          style={{ color: '#374151', borderBottom: '1px solid rgba(108,92,231,0.06)' }}
           onMouseEnter={e => e.currentTarget.style.background = 'rgba(108,92,231,0.04)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-          <div className="flex items-center gap-2.5">
-            <item.icon size={15} strokeWidth={1.8} />
-            <span>{item.label}</span>
-          </div>
+          <item.icon size={14} strokeWidth={1.8} /><span>{item.label}</span>
         </button>
       ))}
-      {/* Sign out */}
-      <button
-        onClick={() => logout()}
-        className="w-full flex items-center gap-2.5 px-4 py-3 text-sm transition-colors"
+      <button onClick={() => { onLogout(); onClose(); }}
+        className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors"
         style={{ color: '#EF4444' }}
         onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.04)'}
         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-        <LogOut size={15} strokeWidth={1.8} />
-        <span>Sign out</span>
+        <LogOut size={14} strokeWidth={1.8} /><span>Sign out</span>
       </button>
     </div>
   );
 }
 
+// ── Main sidebar ──────────────────────────────────────────────────────────────
 export default function DashboardSidebar({ active, onNav }) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const { company, agents, activeCompanyId, pendingApprovals } = useCompany();
   const [showMenu, setShowMenu] = useState(false);
-  const [agents, setAgents] = useState([]);
   const menuRef = useRef(null);
 
-  const name = user?.full_name || 'User';
+  const name = user?.full_name || user?.displayName || 'User';
   const initial = name[0]?.toUpperCase() || 'U';
+  const approvalCount = pendingApprovals.length;
 
   useEffect(() => {
-    const handler = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false); };
+    const handler = e => { if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false); };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  useEffect(() => {
-    const fetchInstances = async () => {
-      if (!user?.uid) {
-        setAgents([]);
-        return;
-      }
-
-      try {
-        const instancesQuery = query(
-          collection(firestore, 'instances'),
-          where('userId', '==', user.uid),
-          orderBy('createdAt', 'desc'),
-          limit(10)
-        );
-        const snapshot = await getDocs(instancesQuery);
-        const instanceAgents = snapshot.docs.map((doc) => {
-          const data = doc.data() || {};
-          const derivedName = data.agentName || data.answers?.agent_name || data.agentType || data.subdomain || 'Agent';
-
-          return {
-            id: doc.id,
-            name: derivedName,
-            status: data.status || 'provisioning',
-            url: data.url || null,
-          };
-        });
-
-        setAgents(instanceAgents);
-      } catch (error) {
-        console.error('Error fetching sidebar instances:', error);
-        setAgents([]);
-      }
-    };
-
-    fetchInstances();
-  }, [user?.uid]);
+  const visibleAgents = agents.filter(a => a.status !== AGENT_STATUS.TERMINATED).slice(0, 8);
 
   return (
-    <aside className="w-52 flex-shrink-0 flex flex-col h-full m-2 rounded-2xl overflow-visible relative"
-      style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)', border: '1px solid rgba(108,92,231,0.08)', boxShadow: '0 8px 30px rgba(108,92,231,0.08), inset 0 1px 0 rgba(255,255,255,0.5)' }}>
-
+    <aside
+      className="flex-shrink-0 flex flex-col h-full m-2 rounded-2xl overflow-visible relative"
+      style={{
+        width: 260,
+        background: 'rgba(255,255,255,0.94)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(108,92,231,0.08)',
+        boxShadow: '0 8px 30px rgba(108,92,231,0.07), inset 0 1px 0 rgba(255,255,255,0.6)',
+      }}
+    >
       {showMenu && (
         <div ref={menuRef}>
-          <UserMenu onClose={() => setShowMenu(false)} />
+          <UserMenu
+            user={user}
+            onClose={() => setShowMenu(false)}
+            onSettings={() => navigate('/dashboard/settings')}
+            onLogout={logout}
+          />
         </div>
       )}
 
-      {/* Logo */}
-      <div className="flex items-center justify-between px-4 py-4 flex-shrink-0" style={{ borderBottom: '1px solid rgba(108,92,231,0.08)' }}>
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 ambient-pulse"
-            style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.35)' }}>
+      {/* ── Logo + company ── */}
+      <div className="flex items-center justify-between px-4 py-4 flex-shrink-0"
+        style={{ borderBottom: '1px solid rgba(108,92,231,0.07)' }}>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.35)' }}>
             <div className="w-2.5 h-2.5 rounded-full bg-white opacity-90" />
           </div>
-          <span className="font-bold text-sm tracking-tight" style={{ color: '#0A0A1A', fontFamily: 'var(--font-body)' }}>Freemi</span>
+          <div className="min-w-0">
+            <p className="font-bold text-sm truncate" style={{ color: '#0A0A1A', lineHeight: 1.2 }}>FreemiOS</p>
+            {company?.name && (
+              <p className="text-[10px] truncate" style={{ color: '#94A3B8' }}>{company.name}</p>
+            )}
+          </div>
         </div>
-        <button className="text-slate-300 hover:text-slate-400 transition-colors"><LayoutGrid size={13} /></button>
+        {approvalCount > 0 && (
+          <button onClick={() => onNav('approvals')}
+            className="relative flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+            style={{ color: '#6C5CE7' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(108,92,231,0.08)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+            <Bell size={13} />
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold text-white flex items-center justify-center"
+              style={{ background: '#D63031' }}>{approvalCount}</span>
+          </button>
+        )}
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
-        {navItems.map(item => <NavBtn key={item.id} item={item} active={active} onClick={onNav} />)}
+      {/* ── Nav ── */}
+      <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
 
-        <div className="pt-4 pb-1 px-3">
-          <span className="text-[9px] font-bold tracking-widest uppercase" style={{ color: '#CBD5E1' }}>Configure</span>
-        </div>
-        {configItems.map(item => <NavBtn key={item.id} item={item} active={active} onClick={onNav} />)}
+        <SectionLabel label="Work" />
+        <NavBtn icon={Terminal}    label="Command"      id="home"         active={active} onClick={onNav} />
+        <NavBtn icon={Users}       label="Team"         id="agents"       active={active} onClick={onNav} />
+        <NavBtn icon={Target}      label="Goals"        id="goals"        active={active} onClick={onNav} />
+        <NavBtn icon={CheckSquare} label="Tasks"        id="tasks"        active={active} onClick={onNav} />
+        <NavBtn icon={Inbox}       label="Inbox"        id="inbox"        active={active} onClick={onNav}
+          badgeCount={approvalCount} />
 
-        <div className="pt-4 pb-1 px-3 flex items-center justify-between">
-          <span className="text-[9px] font-bold tracking-widest uppercase" style={{ color: '#CBD5E1' }}>Deployed agents</span>
-          <button className="w-5 h-5 rounded-lg flex items-center justify-center hover:bg-blue-50 transition-colors" style={{ color: '#CBD5E1' }}>
-            <Plus size={11} />
-          </button>
-        </div>
+        <SectionLabel label="Configure" />
+        <NavBtn icon={RefreshCw}   label="Routines"     id="routines"     active={active} onClick={onNav} />
+        <NavBtn icon={Plug}        label="Integrations" id="integrations" active={active} onClick={onNav} />
+        <NavBtn icon={Wrench}      label="Skills"       id="skills"       active={active} onClick={onNav} />
+        <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} />
 
-        {agents.map(agent => (
-          <button key={agent.id} onClick={() => navigate('/dashboard/instances')}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm nav-pill"
-            style={{ color: '#6B7280' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.05)'; e.currentTarget.style.color = '#6C5CE7'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6B7280'; }}>
-            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 2px 6px rgba(108,92,231,0.3)' }}>
-              {agent.name?.[0]?.toUpperCase() || 'A'}
+        <SectionLabel label="Account" />
+        <NavBtn icon={BarChart2}   label="Budget"       id="budget"       active={active} onClick={onNav} />
+        <NavBtn icon={Settings}    label="Settings"     id="settings"     active={active} onClick={onNav} />
+        <NavBtn icon={HelpCircle}  label="Support"      id="support"      active={active} onClick={onNav} />
+
+        {/* ── Agent team ── */}
+        {visibleAgents.length > 0 && (
+          <>
+            <div className="px-3 pt-5 pb-1.5 flex items-center justify-between">
+              <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#CBD5E1' }}>Your Team</span>
+              <button onClick={() => onNav('agents')}
+                className="w-5 h-5 rounded-md flex items-center justify-center transition-colors"
+                style={{ color: '#CBD5E1' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.08)'; e.currentTarget.style.color = '#6C5CE7'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#CBD5E1'; }}>
+                <Plus size={11} />
+              </button>
             </div>
-            <span className="font-medium">{agent.name}</span>
-          </button>
-        ))}
-        {agents.length === 0 && (
-          <p className="px-3 py-2 text-xs" style={{ color: '#CBD5E1' }}>No agents yet</p>
+            {visibleAgents.map(agent => (
+              <AgentRow key={agent.id} agent={agent} companyId={activeCompanyId} onClick={() => onNav('agents')} />
+            ))}
+          </>
         )}
       </nav>
 
-      {/* Bottom - user row */}
-      <div className="px-2 py-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(108,92,231,0.08)' }}>
-        <button onClick={() => setShowMenu(s => !s)}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all"
+      {/* ── User row ── */}
+      <div className="px-2 py-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(108,92,231,0.07)' }}>
+        <button
+          onClick={() => setShowMenu(s => !s)}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all"
           style={{ color: '#374151' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.06)'; e.currentTarget.style.color = '#6C5CE7'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#374151'; }}>
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+        >
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.3)' }}>{initial}</div>
+            style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.3)' }}>
+            {initial}
+          </div>
           <span className="text-sm font-semibold truncate flex-1 text-left">{name.split(' ')[0]}</span>
-          <span style={{ color: '#CBD5E1', fontSize: 10 }}>◇</span>
+          <ChevronDown size={12} style={{ color: '#CBD5E1', flexShrink: 0 }} />
         </button>
       </div>
     </aside>

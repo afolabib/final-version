@@ -25,6 +25,11 @@ import DashboardPicker from './pages/dashboard/Picker';
 import DashboardWizard from './pages/dashboard/Wizard';
 import DashboardCustomAgent from './pages/dashboard/CustomAgent';
 import DashboardInstances from './pages/dashboard/Instances';
+import DashboardTeam from './pages/dashboard/Team';
+import DashboardGoals from './pages/dashboard/Goals';
+import DashboardApprovals from './pages/dashboard/Approvals';
+import DashboardBudget from './pages/dashboard/Budget';
+import DashboardRoutines from './pages/dashboard/Routines';
 import AdminDashboardLayout from './components/AdminDashboardLayout';
 import FloatingChatWidget from './components/FloatingChatWidget';
 import AdminDashboard from './pages/admin/Dashboard';
@@ -91,6 +96,11 @@ const AuthenticatedApp = () => {
         <Route path="credits" element={<DashboardCredits />} />
         <Route path="custom-agent" element={<DashboardCustomAgent />} />
         <Route path="instances" element={<DashboardInstances />} />
+        <Route path="team" element={<DashboardTeam />} />
+        <Route path="goals" element={<DashboardGoals />} />
+        <Route path="approvals" element={<DashboardApprovals />} />
+        <Route path="budget" element={<DashboardBudget />} />
+        <Route path="routines" element={<DashboardRoutines />} />
       </Route>
       <Route path="/admin" element={<AdminDashboardLayout />} >
         <Route index element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />

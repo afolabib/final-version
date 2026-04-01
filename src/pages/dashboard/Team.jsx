@@ -1,5 +1,5 @@
 import OrgChartView from '../../components/dashboard/OrgChartView';
 
-export default function DashboardAgents() {
+export default function DashboardTeam() {
   return <OrgChartView />;
 }

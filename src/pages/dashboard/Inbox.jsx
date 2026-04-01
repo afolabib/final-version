@@ -1,2 +1,2 @@
-import InboxView from '../../components/dashboard/InboxView';
-export default function DashboardInbox() { return <InboxView />; }
+import ApprovalsView from '../../components/dashboard/ApprovalsView';
+export default function DashboardInbox() { return <ApprovalsView />; }
