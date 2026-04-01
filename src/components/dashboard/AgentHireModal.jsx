@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, ChevronRight, DollarSign, Shield, Zap } from 'lucide-react';
 import { useCompany } from '@/contexts/CompanyContext';
+import { useAuth } from '@/lib/AuthContext';
 import { createAgent, AGENT_ROLES, ROLE_COLORS } from '@/lib/agentService';
 
 const ROLE_TEMPLATES = [
@@ -20,6 +21,7 @@ const AUTONOMY_LEVELS = [
 
 export default function AgentHireModal({ reportsToId, onClose }) {
   const { activeCompanyId, agents } = useCompany();
+  const { user } = useAuth();
   const [step, setStep] = useState(1); // 1=role, 2=configure
   const [selectedRole, setSelectedRole] = useState(null);
   const [form, setForm] = useState({
@@ -42,17 +44,14 @@ export default function AgentHireModal({ reportsToId, onClose }) {
     setLoading(true);
     try {
       const role = selectedRole.role === AGENT_ROLES.CUSTOM ? form.customRole || 'custom' : selectedRole.role;
-      await createAgent({
-        companyId: activeCompanyId,
+      await createAgent(activeCompanyId, user?.uid || 'user', {
         name,
         role,
-        avatar: selectedRole.emoji,
         reportsTo: reportsToId || null,
-        budgetMonthly: Number(form.budgetMonthly),
+        monthlyBudgetUsd: Number(form.budgetMonthly),
         requiresApproval: form.autonomy === 'approval',
-        autonomyLevel: form.autonomy,
-        instructions: form.instructions,
-      }, 'user');
+        systemPrompt: form.instructions,
+      });
       onClose();
     } catch (e) {
       setError(e.message || 'Failed to hire agent.');

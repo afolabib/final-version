@@ -12,21 +12,22 @@ const TYPE_META = {
   external_action:  { icon: Shield,      label: 'External Action',   color: '#E17055' },
 };
 
-function ApprovalCard({ approval }) {
+function ApprovalCard({ approval, companyId }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(null); // 'approve' | 'reject'
   const meta = TYPE_META[approval.type] || TYPE_META.strategy_change;
   const Icon = meta.icon;
+  const uid = user?.uid || user?.id || 'board';
 
   async function handleApprove() {
     setLoading('approve');
-    try { await approveRequest(approval.id, user?.id || 'board'); }
+    try { await approveRequest(companyId, uid, approval.id); }
     finally { setLoading(null); }
   }
 
   async function handleReject() {
     setLoading('reject');
-    try { await rejectRequest(approval.id, user?.id || 'board', 'Rejected by board.'); }
+    try { await rejectRequest(companyId, uid, approval.id, 'Rejected by board.'); }
     finally { setLoading(null); }
   }
 
@@ -55,11 +56,11 @@ function ApprovalCard({ approval }) {
           </div>
 
           <h3 className="font-semibold text-sm mb-1" style={{ color: '#0A0A1A' }}>
-            {approval.summary || approval.type}
+            {approval.title || approval.type}
           </h3>
 
-          {approval.details && (
-            <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>{approval.details}</p>
+          {approval.description && (
+            <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>{approval.description}</p>
           )}
 
           {/* Metadata chips */}
@@ -110,7 +111,7 @@ function ApprovalCard({ approval }) {
 }
 
 export default function ApprovalsView() {
-  const { pendingApprovals } = useCompany();
+  const { pendingApprovals, activeCompanyId } = useCompany();
 
   return (
     <div className="h-full flex flex-col" style={{ background: 'linear-gradient(180deg,#EEF0F8 0%,#F8FAFF 40%,#FFF 100%)' }}>
@@ -147,7 +148,7 @@ export default function ApprovalsView() {
         ) : (
           <div className="space-y-3">
             {pendingApprovals.map(a => (
-              <ApprovalCard key={a.id} approval={a} />
+              <ApprovalCard key={a.id} approval={a} companyId={activeCompanyId} />
             ))}
           </div>
         )}

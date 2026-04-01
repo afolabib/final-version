@@ -10,17 +10,15 @@ const STATUS_STYLES = {
   cancelled: { color: '#B2BEC3', bg: '#B2BEC308', label: 'Cancelled' },
 };
 
-const TYPE_ICONS = {
-  mission: '🏔️',
-  goal:    '🎯',
-  project: '📋',
-  task:    '✅',
-};
+function goalIcon(goal, depth) {
+  if (depth === 0 && !goal.parentGoalId) return '🎯';
+  if (depth === 1) return '📋';
+  return '✅';
+}
 
 // ─── Create goal inline form ──────────────────────────────────────────────────
-function CreateGoalForm({ parentId, companyId, defaultType, onDone, onCancel }) {
+function CreateGoalForm({ parentId, companyId, onDone, onCancel }) {
   const [title, setTitle] = useState('');
-  const [type, setType] = useState(defaultType || 'goal');
   const [loading, setLoading] = useState(false);
 
   async function handleCreate() {
@@ -36,15 +34,6 @@ function CreateGoalForm({ parentId, companyId, defaultType, onDone, onCancel }) 
 
   return (
     <div className="flex items-center gap-2 mt-2 ml-6">
-      <select
-        value={type}
-        onChange={e => setType(e.target.value)}
-        className="text-xs rounded-lg px-2 py-1.5 outline-none"
-        style={{ background: '#F1F5F9', border: '1px solid rgba(0,0,0,0.08)', color: '#64748B' }}>
-        <option value="goal">Goal</option>
-        <option value="project">Project</option>
-        <option value="task">Task</option>
-      </select>
       <input
         autoFocus
         value={title}
@@ -98,7 +87,7 @@ function GoalNode({ goal, depth = 0, companyId }) {
         </button>
 
         {/* Type icon */}
-        <span className="text-base flex-shrink-0">{TYPE_ICONS[goal.type] || '🎯'}</span>
+        <span className="text-base flex-shrink-0">{goalIcon(goal, depth)}</span>
 
         {/* Title */}
         <span className="flex-1 text-sm font-medium" style={{ color: '#0A0A1A' }}>{goal.title}</span>
@@ -132,7 +121,6 @@ function GoalNode({ goal, depth = 0, companyId }) {
         <CreateGoalForm
           parentId={goal.id}
           companyId={companyId}
-          defaultType={goal.type === 'goal' ? 'project' : 'task'}
           onDone={() => setAdding(false)}
           onCancel={() => setAdding(false)} />
       )}
@@ -213,7 +201,6 @@ export default function GoalTreeView() {
               <CreateGoalForm
                 parentId={null}
                 companyId={activeCompanyId}
-                defaultType="goal"
                 onDone={() => setAddingRoot(false)}
                 onCancel={() => setAddingRoot(false)} />
             </div>
