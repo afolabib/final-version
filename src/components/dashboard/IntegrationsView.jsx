@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Search, Check, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 
 const cats = ['All', 'Communication', 'CRM', 'Payments', 'Productivity', 'Marketing', 'Analytics', 'Storage'];
 
@@ -42,32 +41,8 @@ export default function IntegrationsView() {
   const [connected, setConnected] = useState({});
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadIntegrations();
-  }, []);
-
-  const loadIntegrations = async () => {
-    setLoading(true);
-    try {
-      const res = await base44.integrations.list();
-      const connectedMap = {};
-      res.forEach(i => { if (i.connected) connectedMap[i.name] = true; });
-      setConnected(connectedMap);
-    } catch (e) {
-      console.error('Failed to load integrations:', e);
-    }
-    setLoading(false);
-  };
-
-  const handleConnect = async (name) => {
-    setLoading(true);
-    try {
-      await base44.integrations.connect(name);
-      setConnected(prev => ({ ...prev, [name]: true }));
-    } catch (e) {
-      console.error('Failed to connect:', e);
-    }
-    setLoading(false);
+  const handleConnect = (name) => {
+    setConnected(prev => ({ ...prev, [name]: !prev[name] }));
   };
 
   const filtered = integrations.filter(i => {

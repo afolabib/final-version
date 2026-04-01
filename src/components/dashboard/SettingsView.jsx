@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { User, Bot, Plug, Gift, Shield, Bell, Eye, EyeOff, Check, Settings, ExternalLink, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { useCompany } from '@/contexts/CompanyContext';
+import { fireAgent, AGENT_STATUS } from '@/lib/agentService';
 
 const settingsTabs = [
   { id: 'general', label: 'General', icon: User },
@@ -273,32 +274,15 @@ function SettingsIntegrationsTab() {
 }
 
 function AgentsTab() {
-  const [agents, setAgents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { agents, activeCompanyId } = useCompany();
+  const { user } = useAuth();
+  const loading = false;
 
-  useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const data = await base44.entities.Agent.list();
-        setAgents(data);
-      } catch (error) {
-        console.error('Error fetching agents:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAgents();
-  }, []);
-
-  const handleDeleteAll = async () => {
-    if (confirm('Are you sure you want to delete all agents? This cannot be undone.')) {
-      try {
-        for (const agent of agents) {
-          await base44.entities.Agent.delete(agent.id);
-        }
-        setAgents([]);
-      } catch (error) {
-        console.error('Error deleting agents:', error);
+  const handleTerminateAll = async () => {
+    if (!confirm('Terminate all non-CEO agents? This cannot be undone.')) return;
+    for (const agent of agents) {
+      if (!agent.isCEO) {
+        await fireAgent(activeCompanyId, user?.uid || 'user', agent.id, 'Bulk terminate from Settings');
       }
     }
   };
@@ -362,11 +346,11 @@ function AgentsTab() {
         <div className="flex items-start gap-3">
           <AlertTriangle size={18} style={{ color: '#DC2626', marginTop: '2px' }} />
           <div>
-            <p className="text-sm font-bold" style={{ color: '#DC2626' }}>Delete All Agents</p>
+            <p className="text-sm font-bold" style={{ color: '#DC2626' }}>Terminate All Agents</p>
             <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>Permanently delete all AI agents and their data</p>
           </div>
         </div>
-        <motion.button onClick={handleDeleteAll} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+        <motion.button onClick={handleTerminateAll} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
           className="px-6 py-2 rounded-lg text-sm font-bold transition-all"
           style={{ color: '#DC2626', border: '1px solid rgba(220,38,38,0.3)', background: 'rgba(220,38,38,0.05)' }}
           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(220,38,38,0.15)'; }}

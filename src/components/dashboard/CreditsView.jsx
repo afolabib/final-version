@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Zap, CreditCard } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -33,17 +32,7 @@ export default function CreditsView() {
   const currentPlan = user?.plan || 'Starter';
 
   const handleUpgrade = async (planType) => {
-    try {
-      setUpgrading(true);
-      const res = await base44.functions.invoke('createCheckoutSession', { planType });
-      if (res.data?.url) {
-        window.location.href = res.data.url;
-      }
-    } catch (error) {
-      toast.error('Failed to start upgrade');
-    } finally {
-      setUpgrading(false);
-    }
+    toast.info('Billing coming soon — contact support to upgrade.');
   };
 
   return (
