@@ -32,11 +32,13 @@ export default function CompanyBootstrap({ onComplete }) {
 
   async function handleCreate() {
     if (!form.name.trim() || !mission.trim()) return;
+    const uid = user?.uid;
+    if (!uid) { setError('Please sign in first.'); return; }
     setSaving(true);
     setError('');
     try {
-      const companyId = await createCompany(user.uid, { ...form, mission });
-      await createCEOAgent(companyId, user.uid);
+      const companyId = await createCompany(uid, { ...form, mission });
+      await createCEOAgent(companyId, uid);
       await markBootstrapped(companyId);
       onComplete(companyId);
       setStep('done');
@@ -50,15 +52,16 @@ export default function CompanyBootstrap({ onComplete }) {
   async function handleImport(e) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const uid = user?.uid;
+    if (!uid) { setError('Please sign in first.'); return; }
     setImporting(true);
     setError('');
     try {
       const text = await file.text();
       const data = JSON.parse(text);
-      const { companyId } = await importCompany(user.uid, data);
-      // Create CEO if not in export
+      const { companyId } = await importCompany(uid, data);
       const hasCEO = data.agents?.some(a => a.role === 'ceo');
-      if (!hasCEO) await createCEOAgent(companyId, user.uid);
+      if (!hasCEO) await createCEOAgent(companyId, uid);
       await markBootstrapped(companyId);
       onComplete(companyId);
       setStep('done');

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus, ChevronRight, ChevronDown, Target, Flag, CheckCircle2, Circle, Clock } from 'lucide-react';
 import { useCompany } from '@/contexts/CompanyContext';
+import { useAuth } from '@/lib/AuthContext';
 import { createGoal, buildGoalTree } from '@/lib/goalService';
 
 const STATUS_STYLES = {
@@ -18,6 +19,7 @@ function goalIcon(goal, depth) {
 
 // ─── Create goal inline form ──────────────────────────────────────────────────
 function CreateGoalForm({ parentId, companyId, onDone, onCancel }) {
+  const { user } = useAuth();
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +27,7 @@ function CreateGoalForm({ parentId, companyId, onDone, onCancel }) {
     if (!title.trim()) return;
     setLoading(true);
     try {
-      await createGoal(companyId, 'user', { title: title.trim(), parentGoalId: parentId || null });
+      await createGoal(companyId, user?.uid || 'user', { title: title.trim(), parentGoalId: parentId || null });
       onDone();
     } finally {
       setLoading(false);

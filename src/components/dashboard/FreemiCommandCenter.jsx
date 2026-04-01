@@ -113,13 +113,14 @@ export default function FreemiCommandCenter() {
     setSending(true);
     try {
       // Create a goal from the input — Freemi will break it down into tasks
-      const goalId = await createGoal(activeCompanyId, user.uid, {
+      const uid = user?.uid || 'user';
+      const goalId = await createGoal(activeCompanyId, uid, {
         title: text,
         description: `Goal submitted via FreemiOS Command Center`,
         ownerAgentId: ceoAgent?.id || null,
         priority: 'high',
       });
-      await logActivity(activeCompanyId, user.uid, 'user', 'goal.submitted', goalId, `New goal for Freemi: "${text}"`);
+      await logActivity(activeCompanyId, uid, 'user', 'goal.submitted', goalId, `New goal for Freemi: "${text}"`);
       setInput('');
       setSent(true);
       setTimeout(() => setSent(false), 3000);
