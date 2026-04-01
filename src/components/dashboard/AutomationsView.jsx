@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ChevronDown, LayoutGrid, RefreshCw, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { useCompany } from '@/contexts/CompanyContext';
 import TemplateLibrary from './TemplateLibrary';
 
 const templates = [
@@ -14,29 +14,14 @@ const templates = [
 ];
 
 export default function AutomationsView() {
+  const { agents: companyAgents } = useCompany();
   const [desc, setDesc] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [automations, setAutomations] = useState([]);
-  const [agents, setAgents] = useState([]);
   const [showAgentSelect, setShowAgentSelect] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [automationData, agentData] = await Promise.all([
-          base44.entities.Automation.list(),
-          base44.entities.Agent.list('-updated_date', 50)
-        ]);
-        setAutomations(automationData);
-        setAgents(agentData || []);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
+  const agents = companyAgents.filter(a => a.status !== 'terminated');
 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto items-center pt-10 md:pt-16 pb-8 px-4 md:px-8" style={{ background: '#F4F5FC' }}>

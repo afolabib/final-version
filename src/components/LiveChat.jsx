@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, Loader2, Sparkles, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 
@@ -46,8 +45,16 @@ export default function LiveChat({ onClose }) {
     setLoading(true);
 
     try {
-      const res = await base44.functions.invoke('minimaxChat', { message: userMessage });
-      setMessages(prev => [...prev, { role: 'assistant', content: res.data?.reply || 'Unable to get response' }]);
+      const replies = [
+        "FreemiOS lets you give goals to an AI CEO that breaks them down into tasks and delegates to specialized agents — sales, engineering, support, and more.",
+        "You can hire agents, set budgets, and track everything from one dashboard. Freemi handles the execution.",
+        "Think of it as a fully staffed company, just AI-powered. You stay in command while Freemi runs the day-to-day.",
+        "Head to the dashboard to brief Freemi on your goals — she'll take it from there. 🚀",
+        "FreemiOS is built on a Paperclip-style orchestration model: CEO agent at the top, specialized sub-agents handling each function.",
+      ];
+      const reply = replies[Math.floor(Math.random() * replies.length)];
+      await new Promise(r => setTimeout(r, 700));
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch (error) {
       toast.error('Failed to get response');
       setMessages(prev => prev.slice(0, -1));
