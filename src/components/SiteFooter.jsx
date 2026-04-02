@@ -19,10 +19,10 @@ export default function SiteFooter() {
                   style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 2px 12px rgba(108,92,231,0.3)' }}>
                   <div className="w-3 h-3 rounded-full bg-white/90" />
                 </div>
-                <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
+                <span className="font-bold text-surface text-base tracking-tight">FreemiOS</span>
               </div>
               <p className="text-sm text-gray-400 leading-relaxed max-w-[200px]">
-                AI operators that handle real work, so you don't have to.
+                Your AI company OS. One CEO agent, a full team of specialists.
               </p>
             </div>
 
@@ -92,7 +92,7 @@ export default function SiteFooter() {
           {/* Bottom bar */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8"
             style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-            <div className="text-xs text-gray-400">© 2026 Freemi. All rights reserved.</div>
+            <div className="text-xs text-gray-400">© 2026 FreemiOS. All rights reserved.</div>
             <div className="flex items-center gap-6 text-xs text-gray-400">
               <span>Built for teams that ship.</span>
             </div>

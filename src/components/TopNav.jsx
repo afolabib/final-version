@@ -41,15 +41,15 @@ export default function TopNav() {
             style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 2px 12px rgba(108,92,231,0.35)' }}>
             <div className="w-3 h-3 rounded-full bg-white/90" />
           </div>
-          <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
+          <span className="font-bold text-surface text-base tracking-tight">FreemiOS</span>
         </button>
 
         <nav className="hidden md:flex items-center gap-1">
           {[
-            { label: 'Meet Freemi', href: '/about' },
-            { label: 'Solutions', href: '/solutions' },
+            { label: 'How It Works', id: 'how-it-works' },
+            { label: 'Agents', id: 'agents' },
+            { label: 'Pricing', id: 'pricing' },
             { label: 'Blog', href: '/blog' },
-            { label: 'FAQ', id: 'faq' },
           ].map(item => {
             const isActive = item.href && location.pathname === item.href;
             const isPricingActive = item.id === 'pricing' && location.pathname === '/';
@@ -82,7 +82,7 @@ export default function TopNav() {
             style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 4px 16px rgba(108,92,231,0.3)' }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = '0 6px 24px rgba(108,92,231,0.45)'}
             onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(108,92,231,0.3)'}>
-            Start Free Trial →
+            Launch FreemiOS →
           </button>
         </div>
 

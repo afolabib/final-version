@@ -1,186 +1,171 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from './ScrollReveal';
-import TextReveal from './TextReveal';
-import WorkingFreemi from './WorkingFreemi';
-import MiniFreemi from './MiniFreemi';
-import FreemiEntrance from './FreemiEntrance';
-import LiveWorkstation from './LiveWorkstation';
-import LiveToolsBar from './LiveToolsBar';
+import { useNavigate } from 'react-router-dom';
 
-const roleColors = {
-  sales: '#6C5CE7',
-  support: '#7C3AED',
-  ops: '#059669',
-  cs: '#D97706',
-  exec: '#2563EB',
-};
-
-const roles = [
+const AGENTS = [
   {
-    key: 'sales', label: 'Sales', emoji: '🎯',
-    title: 'Qualifies leads, responds instantly, books meetings',
-    tasks: ['Inbound qualification', 'Follow-up emails', 'Meeting booking'],
-    tools: 'Email + CRM + Calendar',
-    example: '"Can you send pricing details? Happy to jump on a call this week."',
-    tags: ['Lead Qualified', 'Meeting Scheduled', 'CRM Updated Automatically'],
+    id: 'rex', name: 'Rex', role: 'Sales Agent', emoji: '🎯', color: '#E17055', bg: '#E1705512',
+    tagline: 'Fills your pipeline while you sleep',
+    capabilities: ['Researches and qualifies inbound leads','Sends personalised follow-up sequences','Books discovery calls on your calendar','Updates CRM and flags high-intent accounts'],
+    tools: ['HubSpot', 'Apollo', 'Gmail', 'Calendly'],
+    example: 'Close 10 enterprise deals this quarter',
+    log: ['Sent follow-up to Acme Corp (3rd touch)','Booked demo: StartupXYZ → Thursday 2pm','Flagged GlobalCo as high-intent (visited pricing 3×)','Updated CRM: 14 contacts moved to Qualified'],
   },
   {
-    key: 'support', label: 'Support', emoji: '🎧',
-    title: 'Handles customer messages and resolves requests',
-    tasks: ['Ticket routing', 'Knowledge base lookup', 'Escalation routing'],
-    tools: 'Helpdesk + Docs + Slack',
-    example: '"My integration stopped syncing two days ago. Can you check?"',
-    tags: ['Issue Identified', 'Fix Applied', 'Customer Notified'],
+    id: 'dev', name: 'Dev', role: 'Engineering Agent', emoji: '⚙️', color: '#0984E3', bg: '#0984E312',
+    tagline: 'Ships features, fixes bugs, reviews PRs',
+    capabilities: ['Breaks down epics into sprint-sized tasks','Writes and reviews code with full context','Monitors CI/CD and alerts on failures','Creates and triages GitHub issues automatically'],
+    tools: ['GitHub', 'Linear', 'Slack', 'Vercel'],
+    example: 'Ship the new auth system by end of sprint',
+    log: ['Opened PR for auth refactor — 4 files changed','Flagged flaky test in payment suite','Created 6 Linear tasks from spec doc','Deployed staging build — all checks green ✓'],
   },
   {
-    key: 'ops', label: 'Operations', emoji: '⚙️',
-    title: 'Executes tasks, updates systems, keeps workflows moving',
-    tasks: ['Invoice processing', 'Data entry', 'Report generation'],
-    tools: 'Spreadsheets + Email + Accounting',
-    example: '"Process all pending invoices and flag any over $5,000."',
-    tags: ['Invoices Processed', 'Flags Raised', 'Summary Sent'],
+    id: 'echo', name: 'Echo', role: 'Support Agent', emoji: '💬', color: '#00B894', bg: '#00B89412',
+    tagline: 'Resolves tickets before customers get frustrated',
+    capabilities: ['Triages and categorises incoming tickets','Resolves common issues automatically','Escalates complex problems with full context','Tracks response time SLAs in real time'],
+    tools: ['Intercom', 'Zendesk', 'Notion', 'Slack'],
+    example: 'Maintain sub-2h response time on all tickets',
+    log: ['Resolved 12 tickets — billing & account issues','Escalated ticket #4821 to senior support','Average response time today: 1h 23min ✓','Updated FAQ with top 3 recurring questions'],
   },
   {
-    key: 'cs', label: 'Customer Success', emoji: '💚',
-    title: 'Follows up, maintains relationships, prevents churn',
-    tasks: ['Health monitoring', 'Renewal outreach', 'Upsell identification'],
-    tools: 'CRM + Analytics + Email',
-    example: '"Check which accounts are at risk of churning this quarter."',
-    tags: ['Risk Scored', 'Outreach Sent', 'Pipeline Updated'],
-  },
-  {
-    key: 'exec', label: 'Executive Assistant', emoji: '📊',
-    title: 'Manages admin, summaries, and day-to-day execution',
-    tasks: ['Calendar management', 'Meeting prep', 'Email drafting'],
-    tools: 'Calendar + Email + Docs',
-    example: "\"Prep me for tomorrow's board meeting with key metrics.\"",
-    tags: ['Brief Prepared', 'Calendar Updated', 'Talking Points Ready'],
+    id: 'nova', name: 'Nova', role: 'Marketing Agent', emoji: '📣', color: '#A29BFE', bg: '#A29BFE12',
+    tagline: 'Grows your audience while you focus on product',
+    capabilities: ['Drafts and schedules social content','Researches keywords and SEO opportunities','Writes email sequences and newsletters','Tracks campaign performance and reports weekly'],
+    tools: ['Buffer', 'Mailchimp', 'Ahrefs', 'Canva'],
+    example: 'Grow LinkedIn following by 5k this month',
+    log: ['Drafted 5 LinkedIn posts — queued for review','Found 3 high-intent keywords for blog sprint','Sent weekly newsletter to 2,400 subscribers','Engagement up 23% vs last week ↑'],
   },
 ];
 
 export default function UseCasesSection() {
-  const [active, setActive] = useState('sales');
-  const role = roles.find(r => r.key === active);
+  const [active, setActive] = useState('rex');
+  const navigate = useNavigate();
+  const agent = AGENTS.find(a => a.id === active);
 
   return (
-    <section id="use-cases" className="relative py-32 px-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-16">
-          <ScrollReveal>
-            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
-              style={{ color: '#6C5CE7', background: 'rgba(108,92,231,0.06)', border: '1px solid rgba(108,92,231,0.1)' }}>
-              Use Cases
-            </span>
-          </ScrollReveal>
-          <TextReveal delay={0.1}>
-            <h2 className="text-[clamp(2.2rem,5vw,3.8rem)] font-extrabold tracking-[-0.03em] text-surface leading-[1.08]">
-              Deploy an Operator for the Work That Takes Your Time
-            </h2>
-          </TextReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="text-lg text-gray-500 mt-5 max-w-xl mx-auto leading-relaxed">
-              Start with one workflow. Prove the outcome. Expand across your entire business.
-            </p>
-          </ScrollReveal>
-        </div>
+    <section id="agents" className="py-24 px-6" style={{ background: '#fff' }}>
+      <div className="max-w-6xl mx-auto">
 
-        <ScrollReveal delay={0.1}>
-          <FreemiEntrance />
+        <ScrollReveal>
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4"
+              style={{ background: 'rgba(108,92,231,0.07)', color: '#6C5CE7', border: '1px solid rgba(108,92,231,0.15)' }}>
+              Your AI Team
+            </div>
+            <h2 className="text-[clamp(1.9rem,4vw,3rem)] font-extrabold tracking-tight mb-4" style={{ color: '#0A0A1A' }}>
+              One CEO. Many specialists.
+            </h2>
+            <p className="text-base max-w-lg mx-auto" style={{ color: '#64748B' }}>
+              Freemi manages a team of AI agents, each expert in their domain. You set the direction — they get it done.
+            </p>
+          </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.15}>
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
-            {roles.map(r => {
-              const isActive = active === r.key;
-              return (
-                <motion.button key={r.key}
-                onClick={() => setActive(r.key)}
-                whileTap={{ scale: 0.95 }}
-                className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 relative overflow-visible"
+        <ScrollReveal>
+          <div className="flex flex-wrap gap-3 justify-center mb-10">
+            {AGENTS.map(a => (
+              <button key={a.id} onClick={() => setActive(a.id)}
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
                 style={{
-                  background: isActive ? 'linear-gradient(135deg, #6C5CE7, #7C6CF7)' : '#fff',
-                  color: isActive ? '#fff' : '#6B7280',
-                  border: isActive ? 'none' : '1px solid rgba(0,0,0,0.08)',
-                  boxShadow: isActive ? '0 4px 16px rgba(108,92,231,0.3)' : '0 1px 3px rgba(0,0,0,0.04)',
+                  background: active === a.id ? a.bg : 'rgba(0,0,0,0.03)',
+                  color: active === a.id ? a.color : '#64748B',
+                  border: `1.5px solid ${active === a.id ? `${a.color}30` : 'transparent'}`,
+                  boxShadow: active === a.id ? `0 4px 16px ${a.color}20` : 'none',
                 }}>
-                <span className="mr-1.5">{r.emoji}</span>
-                {r.label}
-                </motion.button>
-              );
-            })}
+                <span>{a.emoji}</span>
+                <span>{a.name}</span>
+                <span className="text-xs opacity-60">{a.role}</span>
+              </button>
+            ))}
           </div>
         </ScrollReveal>
 
         <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.98 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="p-8 md:p-10 rounded-3xl bg-white/80 backdrop-blur-sm overflow-hidden relative"
-            style={{ border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 8px 40px rgba(0,0,0,0.04)' }}
-          >
-            {/* Subtle gradient accent */}
-            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl pointer-events-none"
-              style={{ background: `radial-gradient(circle, ${roleColors[active]}08, transparent 70%)` }} />
+          <motion.div key={active} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.22 }}>
+            <div className="grid md:grid-cols-2 gap-6">
 
-            {/* Working Freemi running along bottom */}
-            <WorkingFreemi key={active} roleKey={active} />
-
-            <div className="grid md:grid-cols-2 gap-8 relative">
-              {/* Left — Role info + tools */}
-              <div>
-                <motion.h3
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-xl font-bold text-surface mb-2"
-                >
-                  {role.title}
-                </motion.h3>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="text-sm text-gray-400 mb-5 leading-relaxed italic"
-                >
-                  {role.example}
-                </motion.p>
-
-                <div className="mb-5">
-                  <span className="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">Connected Tools</span>
-                  <div className="mt-2">
-                    <LiveToolsBar roleKey={active} color={roleColors[active]} />
+              {/* Info card */}
+              <div className="rounded-2xl p-7"
+                style={{ background: 'linear-gradient(135deg,#F8FAFF,#fff)', border: '1px solid rgba(108,92,231,0.08)' }}>
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+                    style={{ background: agent.bg, border: `1px solid ${agent.color}20` }}>{agent.emoji}</div>
+                  <div>
+                    <h3 className="text-xl font-bold" style={{ color: '#0A0A1A' }}>{agent.name}</h3>
+                    <p className="text-sm font-medium" style={{ color: agent.color }}>{agent.role}</p>
+                    <p className="text-sm mt-1" style={{ color: '#64748B' }}>{agent.tagline}</p>
                   </div>
                 </div>
-
-                <div>
-                  <span className="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">Capabilities</span>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {role.tasks.map((t, i) => (
-                      <motion.span key={t}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.08 }}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium"
-                        style={{ background: `${roleColors[active]}08`, color: roleColors[active], border: `1px solid ${roleColors[active]}12` }}
-                      >
-                        {t}
-                      </motion.span>
+                <div className="mb-5">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#CBD5E1' }}>Capabilities</p>
+                  <ul className="space-y-2">
+                    {agent.capabilities.map(c => (
+                      <li key={c} className="flex items-start gap-2.5 text-sm" style={{ color: '#374151' }}>
+                        <span className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                          style={{ background: `${agent.color}15` }}>
+                          <span className="text-[8px]" style={{ color: agent.color }}>✓</span>
+                        </span>
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mb-5">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#CBD5E1' }}>Connected Tools</p>
+                  <div className="flex flex-wrap gap-2">
+                    {agent.tools.map(t => (
+                      <span key={t} className="text-xs font-semibold px-2.5 py-1 rounded-lg"
+                        style={{ background: `${agent.color}10`, color: agent.color }}>{t}</span>
                     ))}
                   </div>
                 </div>
+                <div className="rounded-xl px-4 py-3" style={{ background: `${agent.color}08`, border: `1px solid ${agent.color}20` }}>
+                  <p className="text-xs font-bold mb-1" style={{ color: agent.color }}>Example goal</p>
+                  <p className="text-sm italic" style={{ color: '#374151' }}>"{agent.example}"</p>
+                </div>
               </div>
 
-              {/* Right — Live activity feed */}
-              <div className="rounded-2xl p-5 relative"
-                style={{ background: 'rgba(0,0,0,0.015)', border: '1px solid rgba(0,0,0,0.04)' }}>
-                <LiveWorkstation roleKey={active} />
+              {/* Live log */}
+              <div className="rounded-2xl overflow-hidden"
+                style={{ background: '#0A0A1A', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="flex items-center gap-2 px-5 py-3.5"
+                  style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: agent.color }} />
+                  <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    {agent.name}'s Activity Log
+                  </span>
+                </div>
+                <div className="p-5 space-y-3 flex-1">
+                  {agent.log.map((l, i) => (
+                    <motion.div key={i} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.07 }}
+                      className="flex items-start gap-3">
+                      <span className="text-xs mt-0.5 flex-shrink-0" style={{ color: `${agent.color}80` }}>▸</span>
+                      <span className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)', fontFamily: 'ui-monospace,monospace' }}>{l}</span>
+                    </motion.div>
+                  ))}
+                  <div className="flex items-center gap-1.5 pt-1">
+                    <span className="text-xs animate-pulse" style={{ color: agent.color }}>●</span>
+                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.22)', fontFamily: 'ui-monospace,monospace' }}>awaiting next task…</span>
+                  </div>
+                </div>
+                <div className="px-5 pb-5">
+                  <button onClick={() => navigate('/dashboard')}
+                    className="w-full py-2.5 rounded-xl text-sm font-bold transition-all"
+                    style={{ background: `${agent.color}20`, color: agent.color, border: `1px solid ${agent.color}30` }}
+                    onMouseEnter={e => { e.currentTarget.style.background = `${agent.color}30`; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = `${agent.color}20`; }}>
+                    Hire {agent.name} →
+                  </button>
+                </div>
               </div>
+
             </div>
           </motion.div>
         </AnimatePresence>
+
       </div>
     </section>
   );
