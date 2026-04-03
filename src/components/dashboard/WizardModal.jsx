@@ -164,7 +164,7 @@ const agentQuestions = {
 const defaultQuestions = agentQuestions['Sam'];
 
 const channels = [
-  { id: 'web', label: 'Web', emoji: '🌐', desc: 'Chat from dashboard', color: '#6366F1' },
+  { id: 'web', label: 'Web', emoji: '🌐', desc: 'Chat from dashboard', color: '#6B63FF' },
   { id: 'telegram', label: 'Telegram', emoji: '✈️', desc: 'Connect via bot', color: '#0EA5E9' },
   { id: 'whatsapp', label: 'WhatsApp', emoji: '💬', desc: 'Scan QR to pair', color: '#22C55E' },
 ];
@@ -301,7 +301,7 @@ function DeployView({ agent, initialChannel = 'web', onBack, onDeploy }) {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-bold mb-1.5 block" style={{ color: '#374151' }}>Telegram username</label>
-                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: '#F4F5FC', border: '1px solid #E8EAFF' }}>
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)', border: '1px solid #E8EAFF' }}>
                     <span className="text-sm" style={{ color: '#9CA3AF' }}>@</span>
                     <input value={username} onChange={e => setUsername(e.target.value)} placeholder="your_username"
                       className="flex-1 text-sm bg-transparent outline-none" style={{ color: '#374151' }} />
@@ -309,7 +309,7 @@ function DeployView({ agent, initialChannel = 'web', onBack, onDeploy }) {
                 </div>
                 <div>
                   <label className="text-xs font-bold mb-1.5 block" style={{ color: '#374151' }}>Bot token</label>
-                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: '#F4F5FC', border: '1px solid #E8EAFF' }}>
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)', border: '1px solid #E8EAFF' }}>
                     <input value={token} onChange={e => setToken(e.target.value)} type={showToken ? 'text' : 'password'} placeholder="123456789:ABCdef..."
                       className="flex-1 text-sm bg-transparent outline-none font-mono" style={{ color: '#374151' }} />
                     <button onClick={() => setShowToken(s => !s)} style={{ color: '#9CA3AF' }}>
@@ -451,7 +451,7 @@ export default function WizardModal({ agent, onClose }) {
           style={{ borderBottom: '1px solid #E8EAFF', background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)' }}>
           <div className="flex items-center gap-3">
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #4A6CF7, #6366F1)', boxShadow: '0 2px 8px rgba(74,108,247,0.35)' }}>
+              style={{ background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)', boxShadow: '0 2px 8px rgba(74,108,247,0.35)' }}>
               {agentName[0]}
             </div>
             <span className="text-sm font-bold" style={{ color: '#0A0A1A' }}>Configure {agentName}</span>
@@ -474,7 +474,7 @@ export default function WizardModal({ agent, onClose }) {
         {phase === 'questions' && (
           <div className="w-full h-[3px] flex-shrink-0" style={{ background: '#EEF0F8' }}>
             <motion.div className="h-full" animate={{ width: `${progress}%` }} transition={{ duration: 0.4, ease: 'easeOut' }}
-              style={{ background: 'linear-gradient(90deg, #4A6CF7, #6366F1)', boxShadow: '0 0 12px rgba(74,108,247,0.3)' }} />
+              style={{ background: 'linear-gradient(90deg, #4A6CF7, #6B63FF)', boxShadow: '0 0 12px rgba(74,108,247,0.3)' }} />
           </div>
         )}
 
@@ -515,7 +515,7 @@ export default function WizardModal({ agent, onClose }) {
                       placeholder={current.opts?.length ? 'Type a custom answer...' : 'Describe what you want...'}
                       className="w-full px-5 py-3.5 rounded-2xl text-sm outline-none transition-all duration-200 font-medium"
                       style={{
-                        background: '#F4F5FC',
+                        background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)',
                         border: '1px solid #E8EAFF',
                         color: '#374151',
                       }}
@@ -556,7 +556,7 @@ export default function WizardModal({ agent, onClose }) {
                 whileTap={canContinue ? { scale: 0.97 } : {}}
                 className="flex items-center gap-2 px-7 py-3 rounded-2xl text-sm font-bold transition-all duration-200"
                 style={{
-                  background: canContinue ? 'linear-gradient(135deg, #4A6CF7, #6366F1)' : '#EEF0F8',
+                  background: canContinue ? 'linear-gradient(135deg, #4A6CF7, #6B63FF)' : '#EEF0F8',
                   color: canContinue ? '#fff' : '#C5C9E0',
                   cursor: canContinue ? 'pointer' : 'not-allowed',
                   boxShadow: canContinue ? '0 4px 20px rgba(74,108,247,0.3)' : 'none',

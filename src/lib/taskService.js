@@ -2,7 +2,8 @@ import {
   collection, doc, addDoc, updateDoc, onSnapshot,
   serverTimestamp, query, where, orderBy, runTransaction
 } from 'firebase/firestore';
-import { firestore } from './firebaseClient';
+import { firestore, isDemoMode } from './firebaseClient';
+import { localCreateTask, localUpdateTask, localSubscribeTasks } from './localDB';
 import { logActivity } from './activityService';
 
 const COL = 'tasks';
@@ -24,6 +25,7 @@ export const TASK_PRIORITY = {
 };
 
 export async function createTask(companyId, userId, { title, description = '', goalId = null, assignedAgentId = null, priority = 'medium', dueDate = null, requiresApproval = false }) {
+  if (isDemoMode) return localCreateTask(companyId, userId, { title, description, goalId, assignedAgentId, priority, dueDate, requiresApproval });
   const ref = await addDoc(collection(firestore, COL), {
     companyId,
     title,
@@ -48,6 +50,7 @@ export async function createTask(companyId, userId, { title, description = '', g
 }
 
 export async function updateTask(companyId, userId, taskId, updates) {
+  if (isDemoMode) return localUpdateTask(companyId, taskId, updates);
   await updateDoc(doc(firestore, COL, taskId), { ...updates, updatedAt: serverTimestamp() });
   if (updates.status) {
     await logActivity(companyId, userId, 'user', `task.${updates.status}`, taskId, `Task ${updates.status}: "${updates.title || taskId}"`);
@@ -84,6 +87,7 @@ export async function releaseTask(taskId, { status = TASK_STATUS.DONE, outputSum
 }
 
 export function subscribeTasks(companyId, cb) {
+  if (isDemoMode) return localSubscribeTasks(companyId, cb);
   const q = query(
     collection(firestore, COL),
     where('companyId', '==', companyId),

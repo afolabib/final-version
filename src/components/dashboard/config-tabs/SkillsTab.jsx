@@ -52,7 +52,7 @@ export default function SkillsTab() {
 
       <button className="text-xs font-bold transition-colors"
         style={{ color: '#4A6CF7' }}
-        onMouseEnter={e => e.currentTarget.style.color = '#6366F1'}
+        onMouseEnter={e => e.currentTarget.style.color = '#6B63FF'}
         onMouseLeave={e => e.currentTarget.style.color = '#4A6CF7'}>
         Browse skill marketplace →
       </button>

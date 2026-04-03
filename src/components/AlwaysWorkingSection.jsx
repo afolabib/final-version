@@ -1,136 +1,136 @@
-import { motion } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import ActivityPanel from './ActivityPanel';
 import ScrollReveal from './ScrollReveal';
-import { useNavigate } from 'react-router-dom';
+import TextReveal from './TextReveal';
+import CountUp from './CountUp';
+import FreemiCharacter from './FreemiCharacter';
 
-const STEPS = [
-  {
-    n: '01', icon: '💬', color: '#6C5CE7',
-    title: 'Brief Freemi',
-    body: 'Tell your AI CEO what the company needs to achieve — close 10 deals, ship the feature, grow by 20%. That\'s it.',
-  },
-  {
-    n: '02', icon: '🤝', color: '#00B894',
-    title: 'She Builds a Team',
-    body: 'Freemi hires the right agents — Rex for sales, Dev for engineering, Echo for support — and breaks your goal into tasks.',
-  },
-  {
-    n: '03', icon: '🚀', color: '#0984E3',
-    title: 'Company Runs',
-    body: 'Agents work in parallel, 24/7. Tasks get checked out, completed, and reported. You watch from the command center.',
-  },
-];
 
-const STATS = [
-  { value: '24/7', label: 'Continuous operation', color: '#6C5CE7' },
-  { value: '10x',  label: 'Faster than hiring',   color: '#00B894' },
-  { value: '100%', label: 'Traceable actions',     color: '#0984E3' },
-  { value: '<2m',  label: 'Time to first agent',   color: '#E17055' },
-];
-
-const ACTIVITY = [
-  { agent: 'Rex',  color: '#E17055', msg: 'Sent follow-up to 3 leads from yesterday\'s demo', time: '2m ago' },
-  { agent: 'Echo', color: '#00B894', msg: 'Resolved support ticket #4821 — billing question', time: '7m ago' },
-  { agent: 'Dev',  color: '#0984E3', msg: 'Opened PR for auth refactor — awaiting review', time: '14m ago' },
-  { agent: 'Nova', color: '#A29BFE', msg: 'Drafted 3 LinkedIn posts for this week\'s pipeline', time: '22m ago' },
-  { agent: 'Rex',  color: '#E17055', msg: 'Booked discovery call with Acme for Thursday 2pm', time: '38m ago' },
+const stats = [
+  { value: 5, suffix: '', label: 'Specialized agents' },
+  { value: 24, suffix: '/7', label: 'Always executing' },
+  { value: 98, suffix: '%', label: 'Task completion rate' },
 ];
 
 export default function AlwaysWorkingSection() {
-  const navigate = useNavigate();
+  const ref = useRef(null);
+  const isMobile = useIsMobile();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [60, -60]);
 
   return (
-    <section id="how-it-works" className="py-24 px-6" style={{ background: 'linear-gradient(180deg,#EEF0F8 0%,#F8FAFF 100%)' }}>
-      <div className="max-w-6xl mx-auto">
+    <section ref={ref} id="always-working" className="relative py-32 px-6 overflow-hidden">
+      {/* Ambient background glow */}
+      <motion.div style={{ y }} className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl pointer-events-none"
+        >
+        <div className="w-full h-full rounded-full" style={{ background: 'radial-gradient(ellipse, rgba(91,95,255,0.06) 0%, transparent 70%)' }} />
+      </motion.div>
 
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4"
-              style={{ background: 'rgba(108,92,231,0.07)', color: '#6C5CE7', border: '1px solid rgba(108,92,231,0.15)' }}>
-              How FreemiOS Works
-            </div>
-            <h2 className="text-[clamp(1.9rem,4vw,3rem)] font-extrabold tracking-tight mb-4" style={{ color: '#0A0A1A' }}>
-              Set a goal. Get a company.
+      <div className="max-w-5xl mx-auto relative">
+        <div className="text-center mb-20">
+          <ScrollReveal>
+            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
+              style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
+              How It Works
+            </span>
+          </ScrollReveal>
+          <TextReveal delay={0.1}>
+            <h2 className="text-[clamp(2.2rem,5vw,3.8rem)] font-extrabold tracking-[-0.03em] text-surface leading-[1.08]">
+              You set the goals. Freemi builds the team.
             </h2>
-            <p className="text-base max-w-lg mx-auto" style={{ color: '#64748B' }}>
-              FreemiOS turns your objectives into an operating company in minutes — with AI agents that actually do the work.
+          </TextReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="text-lg text-gray-500 mt-5 max-w-xl mx-auto leading-relaxed">
+              Tell Freemi what you want to achieve. It hires the right agents, assigns the work, and makes sure every goal gets met — reporting back every step of the way.
             </p>
-          </div>
-        </ScrollReveal>
-
-        {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-6 mb-20">
-          {STEPS.map((s, i) => (
-            <ScrollReveal key={s.n} delay={i * 0.1}>
-              <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}
-                className="rounded-2xl p-6 relative overflow-hidden"
-                style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(108,92,231,0.08)', boxShadow: '0 4px 24px rgba(108,92,231,0.06)' }}>
-                <div className="absolute top-0 right-0 text-7xl font-black opacity-[0.04] leading-none select-none pointer-events-none pr-3 pt-1"
-                  style={{ color: s.color }}>{s.n}</div>
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4"
-                  style={{ background: `${s.color}12` }}>
-                  {s.icon}
-                </div>
-                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: s.color }}>{s.n}</span>
-                <h3 className="text-lg font-bold mt-1 mb-2" style={{ color: '#0A0A1A' }}>{s.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>{s.body}</p>
-              </motion.div>
-            </ScrollReveal>
-          ))}
+          </ScrollReveal>
         </div>
 
-        {/* Stats */}
-        <ScrollReveal>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
-            {STATS.map(s => (
-              <div key={s.label} className="rounded-2xl p-5 text-center"
-                style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(108,92,231,0.07)' }}>
-                <div className="text-3xl font-black mb-1" style={{ color: s.color }}>{s.value}</div>
-                <div className="text-xs font-medium" style={{ color: '#94A3B8' }}>{s.label}</div>
+        {/* Stats row */}
+        <ScrollReveal delay={0.15}>
+          <div className="grid grid-cols-3 gap-6 mb-16 max-w-lg mx-auto">
+            {stats.map((s, i) => (
+              <div key={i} className="text-center">
+                <div className="text-3xl font-extrabold text-surface tracking-tight">
+                  <CountUp end={s.value} duration={1500} />{s.suffix}
+                </div>
+                <div className="text-xs text-gray-400 font-medium mt-1">{s.label}</div>
               </div>
             ))}
           </div>
         </ScrollReveal>
 
-        {/* Live activity */}
-        <ScrollReveal>
-          <div className="rounded-2xl overflow-hidden"
-            style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(108,92,231,0.08)', boxShadow: '0 8px 40px rgba(108,92,231,0.08)' }}>
-            <div className="flex items-center justify-between px-6 py-4"
-              style={{ borderBottom: '1px solid rgba(108,92,231,0.07)' }}>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-sm font-bold" style={{ color: '#0A0A1A' }}>Live Agent Activity</span>
-              </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{ background: 'rgba(0,184,148,0.1)', color: '#00B894' }}>5 agents running</span>
-            </div>
-            {ACTIVITY.map((a, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-                className="flex items-start gap-4 px-6 py-4"
-                style={{ borderBottom: i < ACTIVITY.length - 1 ? '1px solid rgba(108,92,231,0.05)' : 'none' }}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5"
-                  style={{ background: a.color, boxShadow: `0 2px 8px ${a.color}40` }}>
-                  {a.agent[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm font-semibold mr-1.5" style={{ color: a.color }}>{a.agent}</span>
-                  <span className="text-sm" style={{ color: '#374151' }}>{a.msg}</span>
-                </div>
-                <span className="text-xs flex-shrink-0 mt-0.5" style={{ color: '#CBD5E1' }}>{a.time}</span>
-              </motion.div>
-            ))}
-            <div className="px-6 py-4" style={{ borderTop: '1px solid rgba(108,92,231,0.06)' }}>
-              <button onClick={() => navigate('/dashboard')}
-                className="text-sm font-semibold transition-colors hover:opacity-80" style={{ color: '#6C5CE7' }}>
-                See your live dashboard →
-              </button>
-            </div>
-          </div>
+        <ScrollReveal delay={0.2}>
+          <ActivityPanel />
         </ScrollReveal>
 
+        <div className="grid md:grid-cols-2 gap-5 mt-14">
+          <ScrollReveal delay={0.1} direction="left">
+            <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-sm group hover:shadow-xl transition-all duration-500"
+              style={{ border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
+                style={{ background: 'linear-gradient(135deg, rgba(91,95,255,0.1), rgba(91,95,255,0.08))' }}>
+                <span className="text-xl">📋</span>
+              </div>
+              <h3 className="text-lg font-bold text-surface mb-1.5">🧠 CEO Briefing</h3>
+              <p className="text-xs text-gray-400 font-semibold tracking-wider uppercase mb-5">Freemi coordinates your agent team</p>
+              <div className="space-y-3">
+                {[
+                  { label: 'Strategy', value: 'Goals Broken Into Tasks' },
+                  { label: 'Delegation', value: 'Agents Assigned & Briefed' },
+                  { label: 'Oversight', value: 'Progress Tracked Live' },
+                ].map(item => (
+                  <div key={item.label} className="flex justify-between items-center py-2.5 border-b border-gray-100/80 last:border-0">
+                    <span className="text-xs font-bold" style={{ color: '#5B5FFF' }}>{item.label}</span>
+                    <span className="text-sm text-gray-500">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.25} direction="right">
+            <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-sm group hover:shadow-xl transition-all duration-500"
+              style={{ border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
+                style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,191,36,0.08))' }}>
+                <span className="text-xl">⚡</span>
+              </div>
+              <h3 className="text-lg font-bold text-surface mb-1.5">⚡ Agents in Action</h3>
+              <p className="text-xs text-gray-400 font-semibold tracking-wider uppercase mb-5">Your team running right now</p>
+              <div className="space-y-4">
+                {[
+                  { metric: 'Rex closed 4 leads', desc: 'Qualified, Followed Up, and Booked Meetings' },
+                  { metric: 'Echo resolved 9 tickets', desc: 'Replied, Escalated, and Logged to Helpdesk' },
+                  { metric: 'Nova filed 3 reports', desc: 'Data Pulled, Formatted, and Sent to Slack' },
+                ].map((item, i) => (
+                  <div key={item.metric} className="flex gap-3 group/item">
+                    <div className="w-1 rounded-full flex-shrink-0 transition-all duration-300 group-hover/item:w-1.5"
+                      style={{ background: 'linear-gradient(180deg, #5B5FFF, #A78BFA)', minHeight: '100%' }} />
+                    <div>
+                      <span className="text-sm font-semibold text-surface">{item.metric}</span>
+                      <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+
+        <ScrollReveal delay={0.3}>
+          <div className="text-center mt-12">
+            <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-8 py-3.5 rounded-full text-white font-semibold text-sm transition-all"
+              style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 4px 20px rgba(91,95,255,0.3)' }}
+              onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 32px rgba(91,95,255,0.45)'}
+              onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(91,95,255,0.3)'}>
+              Meet Your CEO Agent →
+            </button>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

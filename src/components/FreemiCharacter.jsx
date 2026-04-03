@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export default function FreemiCharacter({ size = 'lg', color = '#6C5CE7' }) {
+export default function FreemiCharacter({ size = 'lg', color = '#5B5FFF' }) {
   const isLg = size === 'lg';
   const body = isLg ? 120 : 64;
   const eyeSize = isLg ? 28 : 16;

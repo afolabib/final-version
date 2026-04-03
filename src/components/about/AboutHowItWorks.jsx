@@ -9,12 +9,12 @@ const steps = [
 
 export default function AboutHowItWorks() {
   return (
-    <section className="py-12 md:py-20 px-4 md:px-6" style={{ background: 'rgba(108,92,231,0.025)' }}>
+    <section className="py-12 md:py-20 px-4 md:px-6" style={{ background: 'rgba(91,95,255,0.025)' }}>
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           transition={{ duration: 0.5 }} className="text-center mb-10 md:mb-14">
           <span className="inline-block text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase px-3 md:px-4 py-1 md:py-1.5 rounded-full mb-4 md:mb-5"
-            style={{ color: '#6C5CE7', background: 'rgba(108,92,231,0.06)', border: '1px solid rgba(108,92,231,0.1)' }}>
+            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
             How It Works
           </span>
           <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight" style={{ color: '#0A0A1A', letterSpacing: '-0.02em' }}>
@@ -24,7 +24,7 @@ export default function AboutHowItWorks() {
 
         <div className="relative">
           {/* Vertical connector line */}
-          <div className="hidden md:block absolute left-8 top-8 bottom-8 w-px" style={{ background: 'linear-gradient(180deg, #6C5CE7, rgba(108,92,231,0.1))' }} />
+          <div className="hidden md:block absolute left-8 top-8 bottom-8 w-px" style={{ background: 'linear-gradient(180deg, #5B5FFF, rgba(91,95,255,0.1))' }} />
 
           <div className="space-y-3 md:space-y-5">
             {steps.map((item, i) => (
@@ -34,14 +34,14 @@ export default function AboutHowItWorks() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="flex gap-3 md:gap-5 items-start rounded-xl md:rounded-2xl p-4 md:p-6"
-                style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(108,92,231,0.06)', boxShadow: '0 2px 16px rgba(0,0,0,0.02)' }}>
+                style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(91,95,255,0.06)', boxShadow: '0 2px 16px rgba(0,0,0,0.02)' }}>
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center flex-shrink-0 text-base md:text-lg font-extrabold relative z-10"
-                  style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', color: '#fff', boxShadow: '0 4px 16px rgba(108,92,231,0.3)' }}>
+                  style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', color: '#fff', boxShadow: '0 4px 16px rgba(91,95,255,0.3)' }}>
                   {item.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5 md:mb-1">
-                    <span className="text-[9px] md:text-[10px] font-bold tracking-widest uppercase" style={{ color: '#6C5CE7' }}>Step {item.step}</span>
+                    <span className="text-[9px] md:text-[10px] font-bold tracking-widest uppercase" style={{ color: '#5B5FFF' }}>Step {item.step}</span>
                   </div>
                   <h3 className="text-sm md:text-lg font-bold mb-0.5 md:mb-1" style={{ color: '#0A0A1A' }}>{item.title}</h3>
                   <p className="text-xs md:text-sm leading-relaxed" style={{ color: '#64748B' }}>{item.desc}</p>

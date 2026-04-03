@@ -4,7 +4,7 @@ const data = {
   title: 'SaaS',
   headline: 'Scale Your SaaS Without Scaling Your Team',
   subtitle: 'Freemi operators qualify leads, onboard users, prevent churn, and handle tier-1 support — running 24/7 so your team can focus on building product, not managing busywork.',
-  color: '#6C5CE7',
+  color: '#5B5FFF',
   operators: ['Sam', 'Rex', 'Pixel'],
   stats: [
     { value: '47%', label: 'More demos booked' },

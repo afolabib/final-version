@@ -17,7 +17,7 @@ export default function WizardProgressDots({ total, current }) {
             className="h-[7px] rounded-full"
             style={{
               background: isActive
-                ? 'linear-gradient(90deg, #4A6CF7, #6366F1)'
+                ? 'linear-gradient(90deg, #4A6CF7, #6B63FF)'
                 : isDone
                   ? '#4A6CF7'
                   : '#D1D5E8',

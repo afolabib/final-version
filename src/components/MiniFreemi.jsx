@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 
 // Tiny Freemi character with running legs
-export default function MiniFreemi({ color = '#6C5CE7', running = false, size = 28 }) {
+export default function MiniFreemi({ color = '#5B5FFF', running = false, size = 28 }) {
   const eyeSize = size * 0.22;
   const limbW = Math.max(2, size * 0.12);
   const armH = size * 0.32;

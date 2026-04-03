@@ -143,12 +143,12 @@ export default function InstancesView() {
     : {
         label: `${runningCount} healthy`,
         dotClassName: 'bg-green-400',
-        background: 'rgba(108,92,231,0.06)',
-        color: '#6C5CE7',
+        background: 'rgba(91,95,255,0.06)',
+        color: '#5B5FFF',
       };
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: '#F4F5FC' }}>
+    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
       <div className="flex items-center justify-between px-4 md:px-8 py-4 flex-shrink-0"
         style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid #E8EAFF' }}>
         <div className="flex items-center gap-4">
@@ -189,7 +189,7 @@ export default function InstancesView() {
 
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#6C5CE7' }} />
+            <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#5B5FFF' }} />
           </div>
         ) : instances.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-center">
@@ -227,7 +227,7 @@ export default function InstancesView() {
                         {instance.machineId && <span>Machine: {instance.machineId}</span>}
                         {instance.url && (
                           <a href={instance.url} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 font-medium" style={{ color: '#6C5CE7' }}>
+                            className="inline-flex items-center gap-1 font-medium" style={{ color: '#5B5FFF' }}>
                             Open <ExternalLink size={10} />
                           </a>
                         )}

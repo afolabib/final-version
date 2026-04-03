@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, AlertTriangle, StopCircle } from 'lucide-react';
+import { DollarSign, TrendingUp, AlertTriangle, StopCircle, BarChart2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useCompany } from '@/contexts/CompanyContext';
 import { ROLE_COLORS } from '@/lib/agentService';
 import { subscribeAgentSpend } from '@/lib/costService';
@@ -9,27 +10,42 @@ function SpendGauge({ spent, limit, color }) {
   const pct = limit > 0 ? Math.min(100, (spent / limit) * 100) : 0;
   const isWarning = pct >= 80;
   const isHardStop = pct >= 100;
-  const barColor = isHardStop ? '#EF4444' : isWarning ? '#F59E0B' : color;
+  const barGradient = isHardStop
+    ? 'linear-gradient(90deg,#EF4444,#DC2626)'
+    : isWarning
+    ? 'linear-gradient(90deg,#F59E0B,#EF4444)'
+    : `linear-gradient(90deg,${color},${color}bb)`;
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex justify-between text-xs" style={{ color: '#64748B' }}>
-        <span>${spent.toFixed(2)} spent</span>
-        <span style={{ color: isHardStop ? '#EF4444' : isWarning ? '#F59E0B' : '#94A3B8' }}>
-          {pct.toFixed(0)}% of ${limit}
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <span className="text-xs font-semibold" style={{ color: '#64748B' }}>
+          ${spent.toFixed(2)} <span style={{ color: '#CBD5E1' }}>/ ${limit}</span>
+        </span>
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+          style={{
+            background: isHardStop ? 'rgba(239,68,68,0.08)' : isWarning ? 'rgba(245,158,11,0.08)' : `${color}12`,
+            color: isHardStop ? '#EF4444' : isWarning ? '#F59E0B' : color,
+          }}>
+          {pct.toFixed(0)}%
         </span>
       </div>
-      <div className="h-2 rounded-full overflow-hidden" style={{ background: '#E2E8F0' }}>
-        <div className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, background: barColor }} />
+      <div className="h-2 rounded-full overflow-hidden" style={{ background: '#EEF2FF' }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          className="h-full rounded-full"
+          style={{ background: barGradient }}
+        />
       </div>
       {isHardStop && (
-        <p className="text-xs font-semibold flex items-center gap-1" style={{ color: '#EF4444' }}>
-          <StopCircle size={11} /> Hard stop reached — agent paused
+        <p className="text-xs font-semibold flex items-center gap-1.5 mt-1" style={{ color: '#EF4444' }}>
+          <StopCircle size={11} /> Hard stop — agent paused
         </p>
       )}
       {isWarning && !isHardStop && (
-        <p className="text-xs font-medium flex items-center gap-1" style={{ color: '#F59E0B' }}>
+        <p className="text-xs font-medium flex items-center gap-1.5 mt-1" style={{ color: '#F59E0B' }}>
           <AlertTriangle size={11} /> Approaching budget limit
         </p>
       )}
@@ -38,94 +54,153 @@ function SpendGauge({ spent, limit, color }) {
 }
 
 // ─── Agent budget card ────────────────────────────────────────────────────────
-function AgentBudgetCard({ agent, spend }) {
-  const color = ROLE_COLORS[agent.role] || '#6C5CE7';
+function AgentBudgetCard({ agent, spend, index }) {
+  const color = ROLE_COLORS[agent.role] || '#5B5FFF';
   const spent = spend?.totalUsd || 0;
   const limit = agent.budgetMonthly || 50;
 
   return (
-    <div className="rounded-2xl p-5"
-      style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.07)', backdropFilter: 'blur(12px)' }}>
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-          style={{ background: `${color}18` }}>
-          {agent.avatar || '🤖'}
-        </div>
-        <div>
-          <div className="font-semibold text-sm" style={{ color: '#0A0A1A' }}>{agent.name}</div>
-          <div className="text-xs capitalize" style={{ color: '#94A3B8' }}>{agent.role}</div>
-        </div>
-        <div className="ml-auto text-right">
-          <div className="font-bold text-lg" style={{ color }}>
-            ${spent.toFixed(2)}
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+      className="rounded-2xl overflow-hidden card-hover"
+      style={{
+        background: 'rgba(255,255,255,0.95)',
+        border: '1px solid rgba(0,0,0,0.07)',
+        boxShadow: '0 4px 20px rgba(91,95,255,0.04)',
+      }}>
+
+      {/* Color accent bar */}
+      <div className="h-0.5" style={{ background: `linear-gradient(90deg,${color},${color}44)` }} />
+
+      <div className="p-5">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
+            style={{ background: `${color}15`, border: `1.5px solid ${color}20` }}>
+            {agent.avatar || '🤖'}
           </div>
-          <div className="text-xs" style={{ color: '#94A3B8' }}>this month</div>
+          <div className="flex-1 min-w-0">
+            <div className="font-bold text-sm" style={{ color: '#0A0F1E', letterSpacing: '-0.01em' }}>
+              {agent.name}
+            </div>
+            <div className="text-xs capitalize font-medium mt-0.5" style={{ color: '#94A3B8' }}>
+              {agent.role}
+            </div>
+          </div>
+          <div className="text-right flex-shrink-0">
+            <div className="text-xl font-black" style={{ color, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>
+              ${spent.toFixed(2)}
+            </div>
+            <div className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: '#CBD5E1' }}>
+              this month
+            </div>
+          </div>
         </div>
+        <SpendGauge spent={spent} limit={limit} color={color} />
       </div>
-      <SpendGauge spent={spent} limit={limit} color={color} />
-    </div>
+    </motion.div>
   );
 }
 
 // ─── Main view ────────────────────────────────────────────────────────────────
 export default function BudgetView() {
   const { agents, activeCompanyId } = useCompany();
-  const [spendMap, setSpendMap] = useState({}); // agentId → {total, events}
+  const [spendMap, setSpendMap] = useState({});
 
   useEffect(() => {
     if (!activeCompanyId) return;
-    const unsubs = agents.map(agent => {
-      return subscribeAgentSpend(activeCompanyId, agent.id, (data) => {
-        setSpendMap(m => ({ ...m, [agent.id]: data }));
-      });
-    });
+    const unsubs = agents.map(agent =>
+      subscribeAgentSpend(activeCompanyId, agent.id, data =>
+        setSpendMap(m => ({ ...m, [agent.id]: data }))
+      )
+    );
     return () => unsubs.forEach(u => u && u());
   }, [agents, activeCompanyId]);
 
   const totalSpend = Object.values(spendMap).reduce((sum, s) => sum + (s?.totalUsd || 0), 0);
   const totalBudget = agents.reduce((sum, a) => sum + (a.budgetMonthly || 50), 0);
+  const burnPct = totalBudget > 0 ? (totalSpend / totalBudget) * 100 : 0;
+  const burnColor = burnPct >= 90 ? '#EF4444' : burnPct >= 70 ? '#F59E0B' : '#10B981';
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(180deg,#EEF0F8 0%,#F8FAFF 40%,#FFF 100%)' }}>
+    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
 
       {/* Header */}
       <div className="px-8 py-5 flex-shrink-0">
-        <h1 className="text-2xl font-bold mb-4" style={{ color: '#0A0A1A' }}>Budget</h1>
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <h1 className="heading-serif text-3xl font-bold" style={{ color: '#0A0F1E', letterSpacing: '-0.02em' }}>
+              Budget
+            </h1>
+            <p className="text-sm mt-1 font-medium" style={{ color: '#64748B' }}>
+              Month-to-date spend across {agents.length} operator{agents.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+        </div>
 
-        {/* Summary cards */}
-        <div className="grid grid-cols-3 gap-4 mb-2">
+        {/* Summary strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="grid grid-cols-3 gap-3">
           {[
-            { label: 'Total Spent (MTD)',  value: `$${totalSpend.toFixed(2)}`,  icon: DollarSign,   color: '#6C5CE7' },
-            { label: 'Monthly Budget',     value: `$${totalBudget}`,            icon: TrendingUp,   color: '#00B894' },
-            { label: 'Burn Rate',          value: totalBudget > 0 ? `${((totalSpend / totalBudget) * 100).toFixed(0)}%` : '0%',
-              icon: AlertTriangle, color: totalSpend / totalBudget >= 0.8 ? '#F59E0B' : '#94A3B8' },
-          ].map(s => {
+            { label: 'Total Spent',    value: `$${totalSpend.toFixed(2)}`, sub: 'month to date', icon: DollarSign, color: '#5B5FFF' },
+            { label: 'Monthly Budget', value: `$${totalBudget}`,           sub: `${agents.length} operators`, icon: BarChart2, color: '#0EA5E9' },
+            { label: 'Burn Rate',      value: `${burnPct.toFixed(0)}%`,    sub: burnPct >= 80 ? 'high usage' : 'healthy', icon: burnPct >= 80 ? AlertTriangle : TrendingUp, color: burnColor },
+          ].map((s, i) => {
             const Icon = s.icon;
             return (
-              <div key={s.label} className="rounded-2xl p-4"
-                style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(0,0,0,0.06)' }}>
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon size={14} style={{ color: s.color }} />
-                  <span className="text-xs" style={{ color: '#94A3B8' }}>{s.label}</span>
+              <motion.div key={s.label}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 + i * 0.05 }}
+                className="rounded-2xl p-4 stat-card"
+                style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(0,0,0,0.06)', backdropFilter: 'blur(8px)' }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${s.color}12` }}>
+                    <Icon size={13} style={{ color: s.color }} />
+                  </div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: '#94A3B8' }}>
+                    {s.label}
+                  </span>
                 </div>
-                <div className="text-xl font-bold" style={{ color: s.color }}>{s.value}</div>
-              </div>
+                <div className="text-2xl font-black leading-none"
+                  style={{ color: s.color, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>
+                  {s.value}
+                </div>
+                <div className="text-[11px] font-medium mt-1" style={{ color: '#CBD5E1' }}>{s.sub}</div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
 
       {/* Per-agent grid */}
       <div className="flex-1 overflow-y-auto px-8 pb-8">
         {agents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full gap-4">
-            <span className="text-5xl">💸</span>
-            <p className="text-sm" style={{ color: '#94A3B8' }}>No agents to show budget for.</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center h-full gap-4">
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center text-3xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(91,95,255,0.10), rgba(91,95,255,0.05))',
+                border: '1.5px solid rgba(91,95,255,0.12)',
+              }}>
+              💸
+            </div>
+            <p className="text-base font-bold" style={{ color: '#0A0F1E' }}>No agents yet</p>
+            <p className="text-sm font-medium" style={{ color: '#94A3B8' }}>
+              Deploy operators to track their spend here.
+            </p>
+          </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {agents.map(agent => (
-              <AgentBudgetCard key={agent.id} agent={agent} spend={spendMap[agent.id]} />
+            {agents.map((agent, i) => (
+              <AgentBudgetCard key={agent.id} agent={agent} spend={spendMap[agent.id]} index={i} />
             ))}
           </div>
         )}

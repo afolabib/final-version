@@ -2,7 +2,8 @@ import {
   collection, doc, addDoc, updateDoc, onSnapshot,
   serverTimestamp, query, where, orderBy
 } from 'firebase/firestore';
-import { firestore } from './firebaseClient';
+import { firestore, isDemoMode } from './firebaseClient';
+import { localCreateGoal, localUpdateGoal, localSubscribeGoals } from './localDB';
 import { logActivity } from './activityService';
 
 const COL = 'goals';
@@ -22,6 +23,7 @@ export const GOAL_PRIORITY = {
 };
 
 export async function createGoal(companyId, userId, { title, description = '', parentGoalId = null, ownerAgentId = null, priority = 'high', dueDate = null }) {
+  if (isDemoMode) return localCreateGoal(companyId, userId, { title, description, parentGoalId, ownerAgentId, priority, dueDate });
   const ref = await addDoc(collection(firestore, COL), {
     companyId,
     title,
@@ -41,6 +43,7 @@ export async function createGoal(companyId, userId, { title, description = '', p
 }
 
 export async function updateGoal(companyId, userId, goalId, updates) {
+  if (isDemoMode) return localUpdateGoal(companyId, goalId, updates);
   await updateDoc(doc(firestore, COL, goalId), { ...updates, updatedAt: serverTimestamp() });
   if (updates.status === GOAL_STATUS.COMPLETED) {
     await logActivity(companyId, userId, 'user', 'goal.completed', goalId, `Goal completed: "${updates.title || goalId}"`);
@@ -48,6 +51,7 @@ export async function updateGoal(companyId, userId, goalId, updates) {
 }
 
 export function subscribeGoals(companyId, cb) {
+  if (isDemoMode) return localSubscribeGoals(companyId, cb);
   const q = query(
     collection(firestore, COL),
     where('companyId', '==', companyId),

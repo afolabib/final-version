@@ -24,7 +24,7 @@ export default function WizardOptionCard({ label, emoji, isSelected, onClick, in
       {/* Checkbox */}
       <div className="w-5 h-5 rounded-lg flex-shrink-0 flex items-center justify-center transition-all duration-200 relative z-10"
         style={{
-          background: isSelected ? 'linear-gradient(135deg, #4A6CF7, #6366F1)' : '#F4F5FC',
+          background: isSelected ? 'linear-gradient(135deg, #4A6CF7, #6B63FF)' : '#F4F5FC',
           border: isSelected ? 'none' : '1.5px solid #D1D5E8',
           boxShadow: isSelected ? '0 2px 8px rgba(74,108,247,0.35)' : 'none',
         }}>

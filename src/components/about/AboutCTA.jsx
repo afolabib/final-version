@@ -12,8 +12,8 @@ export default function AboutCTA() {
           transition={{ duration: 0.5 }}
           className="relative rounded-2xl md:rounded-3xl px-6 py-10 md:px-16 md:py-14 text-center overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #6C5CE7, #7C3AED)',
-            boxShadow: '0 20px 60px rgba(108,92,231,0.3)',
+            background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)',
+            boxShadow: '0 20px 60px rgba(91,95,255,0.3)',
           }}>
           {/* Subtle pattern */}
           <div className="absolute inset-0 opacity-10 pointer-events-none"
@@ -40,7 +40,7 @@ export default function AboutCTA() {
             <div className="flex items-center justify-center gap-2 md:gap-3 flex-wrap">
               <button onClick={() => navigate('/dashboard')}
                 className="px-6 md:px-10 py-3 md:py-3.5 rounded-full text-sm md:text-base font-bold btn-press"
-                style={{ background: '#fff', color: '#6C5CE7', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
+                style={{ background: '#fff', color: '#5B5FFF', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
                 Get Started Free →
               </button>
               <button onClick={() => navigate('/solutions')}

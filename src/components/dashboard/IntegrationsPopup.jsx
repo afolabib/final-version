@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import { Search, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import BrandLogo from '@/components/BrandLogo';
 
 const integrations = [
-  { name: 'Gmail', icon: '📧' },
-  { name: 'Composio', icon: '⚙️' },
-  { name: 'GitHub', icon: '🐙' },
-  { name: 'Google Calendar', icon: '📅' },
-  { name: 'Notion', icon: '📝' },
-  { name: 'Google Sheets', icon: '📊' },
-  { name: 'Slack', icon: '💬' },
-  { name: 'Stripe', icon: '💳' },
+  { name: 'Gmail',            color: '#EA4335' },
+  { name: 'GitHub',           color: '#181717' },
+  { name: 'Google Calendar',  color: '#4285F4' },
+  { name: 'Notion',           color: '#000000' },
+  { name: 'Slack',            color: '#E01E5A' },
+  { name: 'Stripe',           color: '#635BFF' },
+  { name: 'WhatsApp',         color: '#25D366' },
+  { name: 'Discord',          color: '#5865F2' },
 ];
 
 export default function IntegrationsPopup() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const filtered = integrations.filter(i => i.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -39,13 +43,11 @@ export default function IntegrationsPopup() {
             className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
             style={{ borderBottom: i < filtered.length - 1 ? '1px solid #F8F8FF' : 'none' }}>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base flex-shrink-0"
-                style={{ background: '#F4F5FC', border: '1px solid #E8EAFF' }}>
-                {item.icon}
-              </div>
+              <BrandLogo name={item.name} fallbackColor={item.color} size={32} />
               <span className="text-sm font-semibold" style={{ color: '#374151' }}>{item.name}</span>
             </div>
             <button className="text-xs font-semibold transition-all px-2.5 py-1 rounded-full"
+              onClick={() => { navigate('/dashboard/integrations'); toast.info(`Connect ${item.name} from the Integrations page.`); }}
               style={{ color: '#4A6CF7', background: 'rgba(74,108,247,0.08)' }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(74,108,247,0.16)'}
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(74,108,247,0.08)'}>
@@ -56,12 +58,13 @@ export default function IntegrationsPopup() {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center gap-2 px-4 py-3.5" style={{ borderTop: '1px solid #F0F1FF' }}>
+      <button onClick={() => navigate('/dashboard/integrations')}
+        className="w-full flex items-center gap-2 px-4 py-3.5 transition-colors hover:bg-gray-50" style={{ borderTop: '1px solid #F0F1FF' }}>
         <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(74,108,247,0.1)' }}>
           <Plus size={11} style={{ color: '#4A6CF7' }} />
         </div>
         <span className="text-sm font-semibold" style={{ color: '#4A6CF7' }}>Add more apps</span>
-      </div>
+      </button>
     </div>
   );
 }

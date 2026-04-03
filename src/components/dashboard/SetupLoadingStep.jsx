@@ -21,7 +21,7 @@ const configSteps = [
   { label: 'Agent Soul', icon: Sparkles, color: '#F59E0B' },
   { label: 'AI Model', icon: Brain, color: '#EC4899' },
   { label: 'Workflows', icon: Workflow, color: '#2563EB' },
-  { label: 'Automations', icon: Zap, color: '#8B5CF6' },
+  { label: 'Automations', icon: Zap, color: '#818CF8' },
   { label: 'Tools', icon: Wrench, color: '#6B7280' },
   { label: 'Memory Layer', icon: Database, color: '#EC4899' },
 ];
@@ -340,7 +340,7 @@ export default function SetupLoadingStep({ agent, onboardingDataId, onComplete, 
                       ? 'linear-gradient(90deg, #F87171, #EF4444)'
                       : ready
                         ? 'linear-gradient(90deg, #22C55E, #16A34A)'
-                        : 'linear-gradient(90deg, #4A6CF7, #6366F1)',
+                        : 'linear-gradient(90deg, #4A6CF7, #6B63FF)',
                   }}
                 />
               </div>
@@ -474,7 +474,7 @@ export default function SetupLoadingStep({ agent, onboardingDataId, onComplete, 
                   whileHover={{ scale: 1.02, boxShadow: '0 8px 28px rgba(74,108,247,0.3)' }}
                   whileTap={{ scale: 0.97 }}
                   className="flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-bold text-white transition-all"
-                  style={{ background: 'linear-gradient(135deg, #4A6CF7, #6366F1)', boxShadow: '0 4px 16px rgba(74,108,247,0.25)' }}
+                  style={{ background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)', boxShadow: '0 4px 16px rgba(74,108,247,0.25)' }}
                 >
                   Continue
                   <ArrowRight size={14} strokeWidth={2.5} />

@@ -74,7 +74,7 @@ export default function CustomAPIsTab() {
           <button onClick={() => setShowConnInfo(v => !v)}
             className="flex items-center gap-1.5 text-xs font-bold transition-colors"
             style={{ color: '#4A6CF7' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#6366F1'}
+            onMouseEnter={e => e.currentTarget.style.color = '#6B63FF'}
             onMouseLeave={e => e.currentTarget.style.color = '#4A6CF7'}>
             {showConnInfo ? <EyeOff size={12} /> : <Eye size={12} />}
             {showConnInfo ? 'Hide' : 'Reveal'}

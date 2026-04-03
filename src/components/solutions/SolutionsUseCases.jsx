@@ -7,7 +7,7 @@ const industries = [
     title: 'Startups',
     description: 'Replace 3–5 hires with AI operators that handle sales, support, and ops from day one. Ship faster with a smaller team.',
     operators: ['Sam', 'Echo', 'Rex'],
-    color: '#6C5CE7',
+    color: '#5B5FFF',
   },
   {
     icon: Building2,
@@ -53,7 +53,7 @@ export default function SolutionsUseCases() {
         <div className="text-center mb-10 md:mb-14">
           <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
             className="inline-block text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-4"
-            style={{ color: '#6C5CE7', background: 'rgba(108,92,231,0.06)', border: '1px solid rgba(108,92,231,0.1)' }}>
+            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
             Built for Every Industry
           </motion.span>
           <motion.h2 initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}

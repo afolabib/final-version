@@ -14,7 +14,7 @@ export default function IntegrationsTab() {
       <h2 className="text-2xl font-extrabold tracking-tight mb-1" style={{ color: '#0A0A1A', letterSpacing: '-0.02em' }}>Integrations</h2>
       <p className="text-sm mb-2" style={{ color: '#9CA3AF' }}>Services connected to this agent.</p>
       <button className="text-xs font-bold mb-8 transition-colors" style={{ color: '#4A6CF7' }}
-        onMouseEnter={e => e.currentTarget.style.color = '#6366F1'}
+        onMouseEnter={e => e.currentTarget.style.color = '#6B63FF'}
         onMouseLeave={e => e.currentTarget.style.color = '#4A6CF7'}>
         Manage all integrations →
       </button>

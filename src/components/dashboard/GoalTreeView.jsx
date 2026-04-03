@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { createGoal, buildGoalTree } from '@/lib/goalService';
 
 const STATUS_STYLES = {
-  active:    { color: '#6C5CE7', bg: '#6C5CE708', label: 'Active' },
+  active:    { color: '#5B5FFF', bg: '#5B5FFF08', label: 'Active' },
   blocked:   { color: '#FDCB6E', bg: '#FDCB6E08', label: 'Blocked' },
   completed: { color: '#00B894', bg: '#00B89408', label: 'Done' },
   cancelled: { color: '#B2BEC3', bg: '#B2BEC308', label: 'Cancelled' },
@@ -43,11 +43,11 @@ function CreateGoalForm({ parentId, companyId, onDone, onCancel }) {
         onKeyDown={e => { if (e.key === 'Enter') handleCreate(); if (e.key === 'Escape') onCancel(); }}
         placeholder="What's the goal?"
         className="flex-1 text-sm px-3 py-1.5 rounded-lg outline-none"
-        style={{ background: '#F8FAFF', border: '1.5px solid #6C5CE7', color: '#0A0A1A' }}
+        style={{ background: '#F8FAFF', border: '1.5px solid #5B5FFF', color: '#0A0A1A' }}
       />
       <button onClick={handleCreate} disabled={loading || !title.trim()}
         className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
-        style={{ background: '#6C5CE7', color: '#fff', opacity: loading || !title.trim() ? 0.6 : 1 }}>
+        style={{ background: '#5B5FFF', color: '#fff', opacity: loading || !title.trim() ? 0.6 : 1 }}>
         {loading ? '…' : 'Add'}
       </button>
       <button onClick={onCancel} className="text-xs px-2 py-1.5 rounded-lg hover:bg-slate-100" style={{ color: '#94A3B8' }}>
@@ -61,7 +61,7 @@ function CreateGoalForm({ parentId, companyId, onDone, onCancel }) {
 function ProgressBar({ value = 0 }) {
   return (
     <div className="h-1 rounded-full overflow-hidden" style={{ background: '#E2E8F0', width: 60 }}>
-      <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, value)}%`, background: '#6C5CE7' }} />
+      <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, value)}%`, background: '#5B5FFF' }} />
     </div>
   );
 }
@@ -153,7 +153,7 @@ export default function GoalTreeView() {
   const blocked = goals.filter(g => g.status === 'blocked').length;
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(180deg,#EEF0F8 0%,#F8FAFF 40%,#FFF 100%)' }}>
+    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
 
       {/* Header */}
       <div className="px-8 py-5 flex-shrink-0">
@@ -169,7 +169,7 @@ export default function GoalTreeView() {
           <button
             onClick={() => setAddingRoot(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all"
-            style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)', color: '#fff', boxShadow: '0 4px 14px rgba(108,92,231,0.35)' }}>
+            style={{ background: 'linear-gradient(135deg,#5B5FFF,#6B63FF)', color: '#fff', boxShadow: '0 4px 14px rgba(91,95,255,0.35)' }}>
             <Plus size={16} />
             Add Goal
           </button>
@@ -178,7 +178,7 @@ export default function GoalTreeView() {
         {/* Stats */}
         <div className="flex items-center gap-4">
           {[
-            { label: 'Total',     value: total,     color: '#6C5CE7' },
+            { label: 'Total',     value: total,     color: '#5B5FFF' },
             { label: 'Active',    value: active,    color: '#00B894' },
             { label: 'Completed', value: completed, color: '#00B894' },
             { label: 'Blocked',   value: blocked,   color: '#FDCB6E' },

@@ -1,11 +1,14 @@
 import { useState, useRef } from 'react';
 import { Send, Mic, Paperclip, Monitor, Puzzle, FileText, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import AgentSettingsPanel from './AgentSettingsPanel';
 import IntegrationsPopup from './IntegrationsPopup';
 import SkillsPopup from './SkillsPopup';
 
-export default function ChatInput({ onSend }) {
+export default function ChatInput({ onSend, onOpenComputer }) {
+  const navigate = useNavigate();
   const [input, setInput] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [showIntegrations, setShowIntegrations] = useState(false);
@@ -43,9 +46,9 @@ export default function ChatInput({ onSend }) {
 
   const toolbarItems = [
     { icon: Paperclip, id: 'attach', tip: 'Attach file', onClick: handleFileClick },
-    { icon: Monitor, id: 'screen', tip: "Agent's computer", onClick: () => {} },
+    { icon: Monitor, id: 'screen', tip: "Agent's computer", onClick: () => onOpenComputer?.() },
     { icon: Puzzle, id: 'skills', tip: 'Skills', onClick: () => { closeAll('skills'); setShowSkills(v => !v); } },
-    { icon: FileText, id: 'file', tip: 'Files', onClick: () => {} },
+    { icon: FileText, id: 'file', tip: 'Files', onClick: () => navigate('/dashboard/files') },
   ];
 
   return (
@@ -103,6 +106,7 @@ export default function ChatInput({ onSend }) {
 
           <div className="flex items-center gap-2 relative">
             <button className="p-2.5 rounded-xl transition-all" style={{ color: '#C5C9E0' }}
+              onClick={() => toast.info('Voice input coming soon.')}
               onMouseEnter={e => { e.currentTarget.style.color = '#4A6CF7'; e.currentTarget.style.background = 'rgba(74,108,247,0.06)'; }}
               onMouseLeave={e => { e.currentTarget.style.color = '#C5C9E0'; e.currentTarget.style.background = 'transparent'; }}>
               <Mic size={15} strokeWidth={1.8} />

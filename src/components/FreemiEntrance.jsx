@@ -4,7 +4,7 @@ import FreemiCharacter from './FreemiCharacter';
 import MiniFreemi from './MiniFreemi';
 
 const agents = [
-  { label: 'Sales', color: '#6C5CE7', targetIndex: 0, path: 'runLeft' },
+  { label: 'Sales', color: '#5B5FFF', targetIndex: 0, path: 'runLeft' },
   { label: 'Support', color: '#7C3AED', targetIndex: 1, path: 'climbLeft' },
   { label: 'Operations', color: '#059669', targetIndex: 2, path: 'jumpCenter' },
   { label: 'Customer Success', color: '#D97706', targetIndex: 3, path: 'crawlRight' },
@@ -108,10 +108,10 @@ export default function FreemiEntrance({ onTabClick }) {
                 className="absolute -inset-4 rounded-3xl"
                 animate={{
                   boxShadow: [
-                    '0 0 15px rgba(108,92,231,0.2)',
-                    '0 0 50px rgba(108,92,231,0.5)',
-                    '0 0 30px rgba(108,92,231,0.3)',
-                    '0 0 70px rgba(108,92,231,0.7)',
+                    '0 0 15px rgba(91,95,255,0.2)',
+                    '0 0 50px rgba(91,95,255,0.5)',
+                    '0 0 30px rgba(91,95,255,0.3)',
+                    '0 0 70px rgba(91,95,255,0.7)',
                   ],
                 }}
                 transition={{ duration: 0.7 }}
@@ -136,7 +136,7 @@ export default function FreemiEntrance({ onTabClick }) {
                   style={{
                     width: 3 + Math.random() * 5,
                     height: 3 + Math.random() * 5,
-                    background: ['#6C5CE7', '#7C3AED', '#059669', '#D97706', '#2563EB'][i % 5],
+                    background: ['#5B5FFF', '#7C3AED', '#059669', '#D97706', '#2563EB'][i % 5],
                     top: 45,
                     left: '50%',
                   }}
@@ -159,7 +159,7 @@ export default function FreemiEntrance({ onTabClick }) {
                 width: 70,
                 height: 70,
                 opacity: 0.8,
-                background: 'radial-gradient(circle, rgba(108,92,231,0.5), rgba(124,58,237,0.2), transparent)',
+                background: 'radial-gradient(circle, rgba(91,95,255,0.5), rgba(124,58,237,0.2), transparent)',
               }}
               animate={{ scale: [1, 2.5], opacity: [0.8, 0] }}
               transition={{ duration: 0.4 }}

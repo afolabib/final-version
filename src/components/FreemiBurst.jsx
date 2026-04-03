@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const roles = [
-  { label: 'Sales', color: '#6C5CE7', emoji: '🎯', angle: -60 },
+  { label: 'Sales', color: '#5B5FFF', emoji: '🎯', angle: -60 },
   { label: 'Support', color: '#00B894', emoji: '💬', angle: -30 },
   { label: 'Operations', color: '#E17055', emoji: '⚙️', angle: 0 },
   { label: 'Customer Success', color: '#FDCB6E', emoji: '🤝', angle: 30 },
@@ -47,10 +47,10 @@ function CenterFreemi({ phase }) {
         style={{ width: 80, height: 80, top: -10, left: '50%', marginLeft: -40 }}
         animate={phase === 'burst' ? {
           boxShadow: [
-            '0 0 0px rgba(108,92,231,0)',
-            '0 0 60px rgba(108,92,231,0.6)',
-            '0 0 100px rgba(108,92,231,0.3)',
-            '0 0 40px rgba(108,92,231,0.1)',
+            '0 0 0px rgba(91,95,255,0)',
+            '0 0 60px rgba(91,95,255,0.6)',
+            '0 0 100px rgba(91,95,255,0.3)',
+            '0 0 40px rgba(91,95,255,0.1)',
           ],
           scale: [1, 1.8, 2.2, 1],
           opacity: [0, 1, 0.5, 0],
@@ -60,7 +60,7 @@ function CenterFreemi({ phase }) {
       {/* Body */}
       <motion.div
         className="w-14 h-16 rounded-full relative z-10"
-        style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)' }}
+        style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)' }}
         animate={phase === 'idle' ? { y: [0, -4, 0] } : {}}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
@@ -199,14 +199,14 @@ export default function FreemiBurst() {
             {/* Shockwave ring */}
             <motion.div
               className="absolute rounded-full border-2"
-              style={{ borderColor: 'rgba(108,92,231,0.4)' }}
+              style={{ borderColor: 'rgba(91,95,255,0.4)' }}
               initial={{ width: 20, height: 20, opacity: 1 }}
               animate={{ width: 200, height: 200, opacity: 0 }}
               transition={{ duration: 0.7, ease: 'easeOut' }}
             />
             <motion.div
               className="absolute rounded-full border"
-              style={{ borderColor: 'rgba(108,92,231,0.2)' }}
+              style={{ borderColor: 'rgba(91,95,255,0.2)' }}
               initial={{ width: 20, height: 20, opacity: 1 }}
               animate={{ width: 260, height: 260, opacity: 0 }}
               transition={{ duration: 0.9, ease: 'easeOut', delay: 0.1 }}
@@ -280,7 +280,7 @@ export default function FreemiBurst() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3 }}
             className="text-xs font-bold mt-4 tracking-widest uppercase"
-            style={{ color: '#6C5CE7' }}
+            style={{ color: '#5B5FFF' }}
           >
             One AI. Every Role.
           </motion.p>

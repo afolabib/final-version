@@ -60,7 +60,7 @@ export default function ActivityChat() {
         {/* Chat header */}
         <div className="flex items-center justify-center gap-2 mb-3">
           <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-xs font-bold tracking-widest uppercase" style={{ color: '#6C5CE7', letterSpacing: '0.08em' }}>Freemi</span>
+          <span className="text-xs font-bold tracking-widest uppercase" style={{ color: '#5B5FFF', letterSpacing: '0.08em' }}>Freemi</span>
           <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         </div>
 

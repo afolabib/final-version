@@ -10,7 +10,7 @@ const models = [
 ];
 
 const providerColors = { anthropic: '#D97706', openai: '#5B5FFF' };
-const tierColors = { premium: '#5B5FFF', standard: '#6366F1', fast: '#14B8A6' };
+const tierColors = { premium: '#5B5FFF', standard: '#6B63FF', fast: '#14B8A6' };
 
 export default function AIModelTab() {
   const [selectedModel, setSelectedModel] = useState('claude-sonnet-4.5');

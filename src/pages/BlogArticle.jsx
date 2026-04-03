@@ -16,7 +16,7 @@ export default function BlogArticle() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#F0F4FF' }}>
         <div className="text-center">
           <p className="text-lg font-bold mb-2" style={{ color: '#0F172A' }}>Article not found</p>
-          <Link to="/blog" className="text-sm font-bold" style={{ color: '#6C5CE7' }}>← Back to Blog</Link>
+          <Link to="/blog" className="text-sm font-bold" style={{ color: '#5B5FFF' }}>← Back to Blog</Link>
         </div>
       </div>
     );
@@ -33,7 +33,7 @@ export default function BlogArticle() {
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
               <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm font-semibold mb-8 transition-colors"
                 style={{ color: '#94A3B8' }}
-                onMouseEnter={e => e.currentTarget.style.color = '#6C5CE7'}
+                onMouseEnter={e => e.currentTarget.style.color = '#5B5FFF'}
                 onMouseLeave={e => e.currentTarget.style.color = '#94A3B8'}>
                 <ArrowLeft size={14} /> Back to Blog
               </Link>
@@ -42,7 +42,7 @@ export default function BlogArticle() {
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.05 }}
               className="flex items-center gap-3 mb-5">
               <span className="text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full"
-                style={{ background: 'rgba(108,92,231,0.06)', color: '#6C5CE7', border: '1px solid rgba(108,92,231,0.1)' }}>
+                style={{ background: 'rgba(91,95,255,0.06)', color: '#5B5FFF', border: '1px solid rgba(91,95,255,0.1)' }}>
                 {article.category}
               </span>
               <span className="text-xs flex items-center gap-1" style={{ color: '#94A3B8' }}>
@@ -60,7 +60,7 @@ export default function BlogArticle() {
               className="flex items-center gap-4 mb-8">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
-                  style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.25)' }}>
+                  style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 4px 12px rgba(91,95,255,0.25)' }}>
                   {article.author[0]}
                 </div>
                 <div>
@@ -89,7 +89,7 @@ export default function BlogArticle() {
               onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success('Link copied!'); }}
               className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
               style={{ color: '#94A3B8', background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.04)' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#6C5CE7'; e.currentTarget.style.borderColor = 'rgba(108,92,231,0.2)'; }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#5B5FFF'; e.currentTarget.style.borderColor = 'rgba(91,95,255,0.2)'; }}
               onMouseLeave={e => { e.currentTarget.style.color = '#94A3B8'; e.currentTarget.style.borderColor = 'rgba(0,0,0,0.04)'; }}>
               <Copy size={14} />
             </button>
@@ -117,7 +117,7 @@ export default function BlogArticle() {
                         <img src={a.image} alt={a.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       </div>
                       <div className="p-5">
-                        <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#6C5CE7' }}>{a.category}</span>
+                        <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#5B5FFF' }}>{a.category}</span>
                         <h4 className="text-sm font-bold mt-1 transition-colors" style={{ color: '#0F172A' }}>{a.title}</h4>
                         <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>{a.readTime}</p>
                       </div>

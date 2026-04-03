@@ -6,7 +6,7 @@ import InteractiveGrid from './InteractiveGrid';
 import TopNav from './TopNav';
 import SiteFooter from './SiteFooter';
 
-const BRAND = '#6C5CE7';
+const BRAND = '#5B5FFF';
 
 function HeroSection({ data }) {
   const { title, subtitle, headline, color, operators } = data;

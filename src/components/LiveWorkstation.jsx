@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 
 const roleColors = {
-  sales: '#6C5CE7',
+  sales: '#5B5FFF',
   support: '#7C3AED',
   ops: '#059669',
   cs: '#D97706',
@@ -146,7 +146,7 @@ function FeedItem({ item, color }) {
 }
 
 export default function LiveWorkstation({ roleKey }) {
-  const color = roleColors[roleKey] || '#6C5CE7';
+  const color = roleColors[roleKey] || '#5B5FFF';
   const sequence = liveSequences[roleKey] || liveSequences.sales;
   const [shownItems, setShownItems] = useState([]);
   const scrollRef = useRef(null);

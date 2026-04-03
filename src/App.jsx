@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -15,6 +15,7 @@ import DashboardAgents from './pages/dashboard/Agents';
 import DashboardInbox from './pages/dashboard/Inbox';
 import DashboardFiles from './pages/dashboard/Files';
 import DashboardTasks from './pages/dashboard/Tasks';
+import DashboardProjects from './pages/dashboard/Projects';
 import DashboardAutomations from './pages/dashboard/Automations';
 import DashboardIntegrations from './pages/dashboard/Integrations';
 import DashboardSkills from './pages/dashboard/Skills';
@@ -30,6 +31,7 @@ import DashboardGoals from './pages/dashboard/Goals';
 import DashboardApprovals from './pages/dashboard/Approvals';
 import DashboardBudget from './pages/dashboard/Budget';
 import DashboardRoutines from './pages/dashboard/Routines';
+import DashboardChat from './pages/dashboard/Chat';
 import AdminDashboardLayout from './components/AdminDashboardLayout';
 import FloatingChatWidget from './components/FloatingChatWidget';
 import AdminDashboard from './pages/admin/Dashboard';
@@ -88,6 +90,7 @@ const AuthenticatedApp = () => {
         <Route path="inbox" element={<DashboardInbox />} />
         <Route path="files" element={<DashboardFiles />} />
         <Route path="tasks" element={<DashboardTasks />} />
+        <Route path="projects" element={<DashboardProjects />} />
         <Route path="automations" element={<DashboardAutomations />} />
         <Route path="integrations" element={<DashboardIntegrations />} />
         <Route path="skills" element={<DashboardSkills />} />
@@ -101,12 +104,13 @@ const AuthenticatedApp = () => {
         <Route path="approvals" element={<DashboardApprovals />} />
         <Route path="budget" element={<DashboardBudget />} />
         <Route path="routines" element={<DashboardRoutines />} />
+        <Route path="chat" element={<DashboardChat />} />
       </Route>
       <Route path="/admin" element={<AdminDashboardLayout />} >
         <Route index element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="instances" element={<ProtectedAdminRoute><AdminInstances /></ProtectedAdminRoute>} />
       </Route>
-      <Route path="/chat" element={<AgentChat />} />
+      <Route path="/chat" element={<Navigate to="/dashboard/chat" replace />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/about" element={<About />} />
       <Route path="/blog/:slug" element={<BlogArticle />} />
@@ -131,12 +135,12 @@ function App() {
         <Router>
           <ScrollToTop />
           <AuthenticatedApp />
-          <FloatingChatWidget />
         </Router>
         <Toaster />
       </QueryClientProvider>
     </AuthProvider>
-  )
+  );
+  // Note: FloatingChatWidget removed from global level — FloatingFreemiChat is rendered per-dashboard-page inside DashboardLayout
 }
 
 export default App

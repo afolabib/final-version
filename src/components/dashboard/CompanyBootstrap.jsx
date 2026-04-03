@@ -71,7 +71,7 @@ export default function CompanyBootstrap({ onComplete }) {
       onComplete(companyId);
       setStep('done');
     } catch (e) {
-      setError('Invalid export file. Please use a FreemiOS or Paperclip export.');
+      setError('Invalid export file. Please use a Freemi or Paperclip export.');
     } finally {
       setImporting(false);
     }
@@ -83,9 +83,9 @@ export default function CompanyBootstrap({ onComplete }) {
 
       {/* Ambient blobs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle,#6C5CE7 0%,transparent 70%)' }} />
+        style={{ background: 'radial-gradient(circle,#5B5FFF 0%,transparent 70%)' }} />
       <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full opacity-15 blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle,#7C6CF7 0%,transparent 70%)' }} />
+        style={{ background: 'radial-gradient(circle,#6B63FF 0%,transparent 70%)' }} />
 
       <AnimatePresence mode="wait">
 
@@ -95,22 +95,22 @@ export default function CompanyBootstrap({ onComplete }) {
             className="w-full max-w-lg px-4">
             <div className="text-center mb-10">
               <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center ambient-pulse"
-                style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)', boxShadow: '0 8px 30px rgba(108,92,231,0.4)' }}>
+                style={{ background: 'linear-gradient(135deg,#5B5FFF,#6B63FF)', boxShadow: '0 8px 30px rgba(91,95,255,0.4)' }}>
                 <div className="w-5 h-5 rounded-full bg-white/90" />
               </div>
-              <h1 className="text-3xl font-bold mb-2" style={{ color: '#0A0A1A' }}>Welcome to FreemiOS</h1>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#0A0A1A' }}>Welcome to Freemi</h1>
               <p className="text-base" style={{ color: '#64748B' }}>Your AI-powered company, run by Freemi</p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { id: 'create', icon: Building2, title: 'New Company', sub: 'Start from scratch', color: '#6C5CE7' },
-                { id: 'import', icon: Upload, title: 'Import Company', sub: 'From Paperclip or FreemiOS export', color: '#00B894' },
+                { id: 'create', icon: Building2, title: 'New Company', sub: 'Start from scratch', color: '#5B5FFF' },
+                { id: 'import', icon: Upload, title: 'Import Company', sub: 'From Paperclip or Freemi export', color: '#00B894' },
               ].map(opt => (
                 <button key={opt.id} onClick={() => { setMode(opt.id); setStep(opt.id === 'import' ? 'importing' : 'setup'); }}
                   className="flex flex-col items-start gap-3 p-6 rounded-2xl text-left transition-all duration-200 card-lift"
-                  style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(108,92,231,0.1)', boxShadow: '0 4px 20px rgba(108,92,231,0.07)' }}
+                  style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(91,95,255,0.1)', boxShadow: '0 4px 20px rgba(91,95,255,0.07)' }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = `${opt.color}40`}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(108,92,231,0.1)'}>
+                  onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(91,95,255,0.1)'}>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: `${opt.color}15` }}>
                     <opt.icon size={20} style={{ color: opt.color }} />
@@ -130,17 +130,17 @@ export default function CompanyBootstrap({ onComplete }) {
           <motion.div key="importing" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="w-full max-w-md px-4">
             <div className="rounded-2xl p-8 text-center"
-              style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(108,92,231,0.1)', boxShadow: '0 8px 40px rgba(108,92,231,0.12)' }}>
+              style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(91,95,255,0.1)', boxShadow: '0 8px 40px rgba(91,95,255,0.12)' }}>
               <div className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
                 style={{ background: 'rgba(0,184,148,0.1)' }}>
                 <Upload size={22} style={{ color: '#00B894' }} />
               </div>
               <h2 className="text-xl font-bold mb-2" style={{ color: '#0A0A1A' }}>Import Company</h2>
-              <p className="text-sm mb-6" style={{ color: '#64748B' }}>Upload a FreemiOS or Paperclip export JSON file to restore your company, agents, and goals.</p>
+              <p className="text-sm mb-6" style={{ color: '#64748B' }}>Upload a Freemi or Paperclip export JSON file to restore your company, agents, and goals.</p>
               {error && <p className="text-sm mb-4 text-red-500">{error}</p>}
               <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
               {importing ? (
-                <div className="flex items-center justify-center gap-2 py-3" style={{ color: '#6C5CE7' }}>
+                <div className="flex items-center justify-center gap-2 py-3" style={{ color: '#5B5FFF' }}>
                   <Loader2 size={18} className="animate-spin" />
                   <span className="text-sm font-medium">Importing…</span>
                 </div>
@@ -161,10 +161,10 @@ export default function CompanyBootstrap({ onComplete }) {
           <motion.div key="setup" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="w-full max-w-lg px-4">
             <div className="rounded-2xl p-8"
-              style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(108,92,231,0.1)', boxShadow: '0 8px 40px rgba(108,92,231,0.12)' }}>
+              style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(91,95,255,0.1)', boxShadow: '0 8px 40px rgba(91,95,255,0.12)' }}>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(108,92,231,0.1)' }}>
-                  <Building2 size={20} style={{ color: '#6C5CE7' }} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(91,95,255,0.1)' }}>
+                  <Building2 size={20} style={{ color: '#5B5FFF' }} />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold" style={{ color: '#0A0A1A' }}>Company Setup</h2>
@@ -178,7 +178,7 @@ export default function CompanyBootstrap({ onComplete }) {
                   <input value={form.name} onChange={e => setField('name', e.target.value)}
                     placeholder="e.g. Acme Corp"
                     className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all input-focus-ring"
-                    style={{ background: '#F8FAFF', border: '1.5px solid rgba(108,92,231,0.15)', color: '#0A0A1A' }} />
+                    style={{ background: '#F8FAFF', border: '1.5px solid rgba(91,95,255,0.15)', color: '#0A0A1A' }} />
                 </div>
 
                 <div>
@@ -188,9 +188,9 @@ export default function CompanyBootstrap({ onComplete }) {
                       <button key={ind} onClick={() => setField('industry', ind)}
                         className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                         style={{
-                          background: form.industry === ind ? 'rgba(108,92,231,0.12)' : 'rgba(108,92,231,0.04)',
-                          color: form.industry === ind ? '#6C5CE7' : '#64748B',
-                          border: `1.5px solid ${form.industry === ind ? 'rgba(108,92,231,0.3)' : 'transparent'}`,
+                          background: form.industry === ind ? 'rgba(91,95,255,0.12)' : 'rgba(91,95,255,0.04)',
+                          color: form.industry === ind ? '#5B5FFF' : '#64748B',
+                          border: `1.5px solid ${form.industry === ind ? 'rgba(91,95,255,0.3)' : 'transparent'}`,
                         }}>{ind}</button>
                     ))}
                   </div>
@@ -203,10 +203,10 @@ export default function CompanyBootstrap({ onComplete }) {
                       <button key={sz.id} onClick={() => setField('size', sz.id)}
                         className="flex flex-col items-center py-3 rounded-xl text-center transition-all"
                         style={{
-                          background: form.size === sz.id ? 'rgba(108,92,231,0.08)' : 'rgba(108,92,231,0.03)',
-                          border: `1.5px solid ${form.size === sz.id ? 'rgba(108,92,231,0.3)' : 'rgba(108,92,231,0.08)'}`,
+                          background: form.size === sz.id ? 'rgba(91,95,255,0.08)' : 'rgba(91,95,255,0.03)',
+                          border: `1.5px solid ${form.size === sz.id ? 'rgba(91,95,255,0.3)' : 'rgba(91,95,255,0.08)'}`,
                         }}>
-                        <span className="text-xs font-bold" style={{ color: form.size === sz.id ? '#6C5CE7' : '#374151' }}>{sz.label}</span>
+                        <span className="text-xs font-bold" style={{ color: form.size === sz.id ? '#5B5FFF' : '#374151' }}>{sz.label}</span>
                         <span className="text-[10px] mt-0.5" style={{ color: '#94A3B8' }}>{sz.sub}</span>
                       </button>
                     ))}
@@ -217,7 +217,7 @@ export default function CompanyBootstrap({ onComplete }) {
               <button onClick={() => { if (form.name.trim()) setStep('mission'); }}
                 disabled={!form.name.trim()}
                 className="mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all btn-press"
-                style={{ background: form.name.trim() ? 'linear-gradient(135deg,#6C5CE7,#7C6CF7)' : '#E2E8F0', boxShadow: form.name.trim() ? '0 4px 16px rgba(108,92,231,0.35)' : 'none' }}>
+                style={{ background: form.name.trim() ? 'linear-gradient(135deg,#5B5FFF,#6B63FF)' : '#E2E8F0', boxShadow: form.name.trim() ? '0 4px 16px rgba(91,95,255,0.35)' : 'none' }}>
                 Continue <ArrowRight size={14} />
               </button>
               <button onClick={() => setStep('mode')} className="mt-2 w-full text-sm py-1.5" style={{ color: '#94A3B8' }}>← Back</button>
@@ -230,10 +230,10 @@ export default function CompanyBootstrap({ onComplete }) {
           <motion.div key="mission" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="w-full max-w-lg px-4">
             <div className="rounded-2xl p-8"
-              style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(108,92,231,0.1)', boxShadow: '0 8px 40px rgba(108,92,231,0.12)' }}>
+              style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(91,95,255,0.1)', boxShadow: '0 8px 40px rgba(91,95,255,0.12)' }}>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(108,92,231,0.1)' }}>
-                  <Target size={20} style={{ color: '#6C5CE7' }} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(91,95,255,0.1)' }}>
+                  <Target size={20} style={{ color: '#5B5FFF' }} />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold" style={{ color: '#0A0A1A' }}>Company Mission</h2>
@@ -247,7 +247,7 @@ export default function CompanyBootstrap({ onComplete }) {
                 placeholder="e.g. Build the most user-friendly CRM for small businesses and close 100 enterprise deals in 2025"
                 rows={4}
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all resize-none input-focus-ring"
-                style={{ background: '#F8FAFF', border: '1.5px solid rgba(108,92,231,0.15)', color: '#0A0A1A', lineHeight: 1.7 }}
+                style={{ background: '#F8FAFF', border: '1.5px solid rgba(91,95,255,0.15)', color: '#0A0A1A', lineHeight: 1.7 }}
               />
               <p className="text-xs mt-2" style={{ color: '#94A3B8' }}>Be specific. "Grow revenue by 3x" is better than "be successful".</p>
 
@@ -255,8 +255,8 @@ export default function CompanyBootstrap({ onComplete }) {
 
               <button onClick={handleCreate} disabled={!mission.trim() || saving}
                 className="mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all btn-press"
-                style={{ background: mission.trim() ? 'linear-gradient(135deg,#6C5CE7,#7C6CF7)' : '#E2E8F0', boxShadow: mission.trim() ? '0 4px 20px rgba(108,92,231,0.4)' : 'none' }}>
-                {saving ? <Loader2 size={16} className="animate-spin" /> : <><Zap size={14} /> Launch FreemiOS</>}
+                style={{ background: mission.trim() ? 'linear-gradient(135deg,#5B5FFF,#6B63FF)' : '#E2E8F0', boxShadow: mission.trim() ? '0 4px 20px rgba(91,95,255,0.4)' : 'none' }}>
+                {saving ? <Loader2 size={16} className="animate-spin" /> : <><Zap size={14} /> Launch Freemi</>}
               </button>
               <button onClick={() => setStep('setup')} className="mt-2 w-full text-sm py-1.5" style={{ color: '#94A3B8' }}>← Back</button>
             </div>
@@ -271,7 +271,7 @@ export default function CompanyBootstrap({ onComplete }) {
               style={{ background: 'linear-gradient(135deg,#00B894,#00CEC9)', boxShadow: '0 8px 30px rgba(0,184,148,0.4)' }}>
               <Check size={28} className="text-white" />
             </div>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: '#0A0A1A' }}>FreemiOS is live</h2>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: '#0A0A1A' }}>Freemi is live</h2>
             <p className="text-sm mb-2" style={{ color: '#64748B' }}>Freemi is ready. Tell her your goals and she'll run the company.</p>
           </motion.div>
         )}

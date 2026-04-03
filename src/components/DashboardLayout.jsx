@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import DashboardSidebar from './dashboard/DashboardSidebar';
 import CompanyBootstrap from './dashboard/CompanyBootstrap';
+import FloatingFreemiChat from './dashboard/FloatingFreemiChat';
 import { CompanyProvider, useCompany } from '@/contexts/CompanyContext';
 
 function DashboardContent() {
@@ -22,20 +23,20 @@ function DashboardContent() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center" style={{ background: 'linear-gradient(180deg,#EEF0F8 0%,#F8FAFF 40%,#FFF 100%)' }}>
+      <div className="flex h-screen items-center justify-center" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 rounded-2xl flex items-center justify-center ambient-pulse"
-            style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)', boxShadow: '0 4px 20px rgba(108,92,231,0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, #5B5FFF, #2563EB)', boxShadow: '0 4px 20px rgba(91,95,255,0.4)' }}>
             <div className="w-4 h-4 rounded-full bg-white opacity-90" />
           </div>
-          <p className="text-sm font-medium" style={{ color: '#94A3B8' }}>Loading FreemiOS…</p>
+          <p className="text-sm font-semibold" style={{ color: '#94A3B8' }}>Loading Freemi…</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ fontFamily: 'var(--font-body)', background: 'linear-gradient(180deg,#EEF0F8 0%,#F8FAFF 40%,#FFF 100%)' }}>
+    <div className="flex h-screen overflow-hidden" style={{ fontFamily: 'var(--font-body)', background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
 
       {/* Bootstrap overlay — shown if company not set up yet */}
       {!isBootstrapped && (
@@ -70,16 +71,16 @@ function DashboardContent() {
       <main className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Mobile topbar */}
         <div className="md:hidden flex items-center justify-between px-4 py-3 flex-shrink-0"
-          style={{ background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+          style={{ background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
           <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-xl transition-colors" style={{ color: '#6B7280' }}>
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)' }}>
+              style={{ background: 'linear-gradient(135deg, #5B5FFF, #2563EB)' }}>
               <div className="w-2 h-2 rounded-full bg-white/90" />
             </div>
-            <span className="font-bold text-sm" style={{ color: '#0A0A1A' }}>FreemiOS</span>
+            <span className="font-bold text-sm" style={{ color: '#0A0A1A' }}>Freemi</span>
           </div>
           <div className="w-9" />
         </div>
@@ -95,6 +96,9 @@ function DashboardContent() {
           </AnimatePresence>
         </div>
       </main>
+
+      {/* Floating Freemi chat — visible on every dashboard page */}
+      <FloatingFreemiChat />
     </div>
   );
 }

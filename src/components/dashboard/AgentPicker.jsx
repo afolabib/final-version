@@ -33,14 +33,14 @@ function isHostedWizard() {
 const agents = [
   { name: 'Freemi', sub: 'The Operator Agent', subColor: '#4A6CF7', desc: 'Your all-in-one business operator — handles tasks, delegates to other agents, and keeps everything running.', popular: true, cat: 'Productivity' },
   { name: 'Custom Agent', sub: 'Build your own', subColor: '#F59E0B', desc: 'Design an agent from scratch with your own personality, tools, and workflows.', badge: 'Builder', cat: 'Productivity' },
-  { name: 'Dev', sub: 'Web Development Agent', subColor: '#8B5CF6', desc: 'Full-stack web development — HTML, CSS, JS, React, backend, debugging, and deployment. Builds sites, apps, and fixes bugs.', popular: true, cat: 'Development' },
+  { name: 'Dev', sub: 'Web Development Agent', subColor: '#818CF8', desc: 'Full-stack web development — HTML, CSS, JS, React, backend, debugging, and deployment. Builds sites, apps, and fixes bugs.', popular: true, cat: 'Development' },
   { name: 'Tweet Machine', sub: 'Twitter Growth Engine', subColor: '#4A6CF7', desc: 'Draft daily tweets, build threads, and analyze engagement to grow your audience.', cat: 'Social Media' },
   { name: 'Triager', sub: 'Support Ticket Triager', subColor: '#10B981', desc: 'Auto-prioritize support tickets and draft responses instantly.', cat: 'Support' },
   { name: 'Aria', sub: 'Founder Assistant', subColor: '#F59E0B', desc: 'Morning briefs, meeting prep, and daily recaps for busy founders.', cat: 'Productivity' },
   { name: 'Ghost', sub: 'LinkedIn Ghostwriter', subColor: '#4A6CF7', desc: 'Write thought leadership posts that drive engagement and inbound leads.', cat: 'Social Media' },
   { name: 'Rex', sub: 'Sales SDR', subColor: '#EC4899', desc: 'Qualify leads, send follow-ups, and book demos on autopilot.', cat: 'Sales' },
   { name: 'Outreacher', sub: 'Cold Outreach Drafter', subColor: '#F59E0B', desc: 'Research prospects and write personalized cold emails that convert.', cat: 'Sales' },
-  { name: 'Lens', sub: 'Market Research Analyst', subColor: '#8B5CF6', desc: 'Track competitors, trends, and news — summarized daily in your inbox.', cat: 'Research' },
+  { name: 'Lens', sub: 'Market Research Analyst', subColor: '#818CF8', desc: 'Track competitors, trends, and news — summarized daily in your inbox.', cat: 'Research' },
 ];
 
 export default function AgentPicker({ onBack }) {
@@ -138,18 +138,18 @@ export default function AgentPicker({ onBack }) {
             <button key={agent.name} onClick={() => agent.name === 'Custom Agent' ? navigate('/dashboard/custom-agent') : setWizardAgent(agent)}
               className="text-left rounded-2xl p-5 flex flex-col relative"
               style={{
-                background: isFreemi ? 'linear-gradient(180deg, rgba(108,92,231,0.08) 0%, #fff 38%)' : '#fff',
-                border: isFreemi ? '2px solid rgba(108,92,231,0.28)' : '1.5px solid #E8EAFF',
-                boxShadow: isFreemi ? '0 10px 30px rgba(108,92,231,0.14)' : '0 2px 8px rgba(74,108,247,0.04)',
+                background: isFreemi ? 'linear-gradient(180deg, rgba(91,95,255,0.08) 0%, #fff 38%)' : '#fff',
+                border: isFreemi ? '2px solid rgba(91,95,255,0.28)' : '1.5px solid #E8EAFF',
+                boxShadow: isFreemi ? '0 10px 30px rgba(91,95,255,0.14)' : '0 2px 8px rgba(74,108,247,0.04)',
                 transition: 'transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out'
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = isFreemi ? 'rgba(108,92,231,0.48)' : '#4A6CF7'; e.currentTarget.style.boxShadow = isFreemi ? '0 14px 36px rgba(108,92,231,0.22)' : '0 8px 28px rgba(74,108,247,0.15)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = isFreemi ? 'rgba(108,92,231,0.28)' : '#E8EAFF'; e.currentTarget.style.boxShadow = isFreemi ? '0 10px 30px rgba(108,92,231,0.14)' : '0 2px 8px rgba(74,108,247,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = isFreemi ? 'rgba(91,95,255,0.48)' : '#4A6CF7'; e.currentTarget.style.boxShadow = isFreemi ? '0 14px 36px rgba(91,95,255,0.22)' : '0 8px 28px rgba(74,108,247,0.15)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = isFreemi ? 'rgba(91,95,255,0.28)' : '#E8EAFF'; e.currentTarget.style.boxShadow = isFreemi ? '0 10px 30px rgba(91,95,255,0.14)' : '0 2px 8px rgba(74,108,247,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
               onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.97)'; }}
               onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}>
               {agent.popular && (
                 <span className="absolute top-4 right-4 text-[11px] font-extrabold px-3 py-1 rounded-full"
-                  style={{ background: isFreemi ? 'rgba(108,92,231,0.14)' : 'rgba(74,108,247,0.1)', color: isFreemi ? '#6C5CE7' : '#4A6CF7', boxShadow: isFreemi ? '0 6px 18px rgba(108,92,231,0.12)' : 'none' }}>Most Popular</span>
+                  style={{ background: isFreemi ? 'rgba(91,95,255,0.14)' : 'rgba(74,108,247,0.1)', color: isFreemi ? '#5B5FFF' : '#4A6CF7', boxShadow: isFreemi ? '0 6px 18px rgba(91,95,255,0.12)' : 'none' }}>Most Popular</span>
               )}
               {agent.badge && (
                 <span className="absolute top-4 right-4 text-[9px] font-bold px-2 py-0.5 rounded-full"

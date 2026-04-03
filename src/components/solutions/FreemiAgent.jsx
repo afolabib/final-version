@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 
 const agentStyles = {
-  freemi: { color: '#6C5CE7', gradient: '#7C3AED', hat: null,      glasses: null },
+  freemi: { color: '#5B5FFF', gradient: '#7C3AED', hat: null,      glasses: null },
   sam:   { color: '#4A6CF7', gradient: '#7FB3FF', hat: null,      glasses: 'round' },
   rex:   { color: '#E84393', gradient: '#FF6BB5', hat: 'cap',     glasses: 'shades' },
   nova:  { color: '#00B894', gradient: '#55EFC4', hat: 'tophat',  glasses: 'monocle' },

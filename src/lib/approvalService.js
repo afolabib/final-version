@@ -2,7 +2,8 @@ import {
   collection, doc, addDoc, updateDoc, onSnapshot,
   serverTimestamp, query, where, orderBy
 } from 'firebase/firestore';
-import { firestore } from './firebaseClient';
+import { firestore, isDemoMode } from './firebaseClient';
+import { localSubscribeApprovals } from './localDB';
 import { logActivity } from './activityService';
 
 const COL = 'approvals';
@@ -64,6 +65,7 @@ export async function rejectRequest(companyId, userId, approvalId, note = '') {
 }
 
 export function subscribePendingApprovals(companyId, cb) {
+  if (isDemoMode) return localSubscribeApprovals(companyId, cb);
   const q = query(
     collection(firestore, COL),
     where('companyId', '==', companyId),

@@ -11,7 +11,7 @@ const workActions = {
 };
 
 const roleColors = {
-  sales: '#6C5CE7',
+  sales: '#5B5FFF',
   support: '#7C3AED',
   ops: '#059669',
   cs: '#D97706',
@@ -36,7 +36,7 @@ const workerSpots = [
 ];
 
 export default function WorkingFreemi({ roleKey }) {
-  const color = roleColors[roleKey] || '#6C5CE7';
+  const color = roleColors[roleKey] || '#5B5FFF';
   const actions = workActions[roleKey] || ['Working...'];
   const [step, setStep] = useState(0);
   const [actionIdx, setActionIdx] = useState(0);

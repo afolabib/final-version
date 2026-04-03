@@ -1,12 +1,13 @@
-import { ExternalLink, MessageCircle, Check, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import BrandLogo from '@/components/BrandLogo';
 
 const channels = [
-  { name: 'WhatsApp', desc: 'Chat via WhatsApp Business (QR pairing)', emoji: '💬', color: '#25D366', connected: false },
-  { name: 'Telegram', desc: 'Connect your Telegram bot', emoji: '✈️', color: '#0088CC', connected: false },
-  { name: 'Discord', desc: 'Deploy as a Discord bot', emoji: '🎮', color: '#5865F2', connected: true },
-  { name: 'Slack', desc: 'Integrate with Slack workspace', emoji: '💼', color: '#E01E5A', connected: false },
-  { name: 'Email', desc: 'Receive and respond via email', emoji: '📧', color: '#6366F1', connected: false },
-  { name: 'Web Widget', desc: 'Embed chat on your website', emoji: '🌐', color: '#14B8A6', connected: false },
+  { name: 'WhatsApp', desc: 'Chat via WhatsApp Business (QR pairing)', color: '#25D366', connected: false },
+  { name: 'Telegram', desc: 'Connect your Telegram bot', color: '#0088CC', connected: false },
+  { name: 'Discord', desc: 'Deploy as a Discord bot', color: '#5865F2', connected: true },
+  { name: 'Slack', desc: 'Integrate with Slack workspace', color: '#E01E5A', connected: false },
+  { name: 'Gmail', desc: 'Receive and respond via email', color: '#EA4335', connected: false },
+  { name: 'Microsoft Teams', desc: 'Deploy as a Teams bot', color: '#6264A7', connected: false },
 ];
 
 export default function ChannelsTab() {
@@ -26,10 +27,7 @@ export default function ChannelsTab() {
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#4A6CF7'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(74,108,247,0.08)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = '#E8EAFF'; e.currentTarget.style.boxShadow = 'none'; }}>
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-                style={{ background: `${ch.color}15`, boxShadow: `0 4px 12px ${ch.color}10` }}>
-                {ch.emoji}
-              </div>
+              <BrandLogo name={ch.name} fallbackColor={ch.color} size={40} />
               <div>
                 <p className="text-sm font-bold" style={{ color: '#374151' }}>{ch.name}</p>
                 <p className="text-xs" style={{ color: '#9CA3AF' }}>{ch.desc}</p>

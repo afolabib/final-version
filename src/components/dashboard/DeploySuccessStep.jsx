@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ExternalLink, Globe, LayoutDashboard, Check, Sparkles, Zap, Shield, Server, MessageCircle, Send, MonitorSmartphone, RefreshCw, AlertCircle } from 'lucide-react';
 import { verifyInstanceHealth } from '@/lib/onboardingService';
 
-const confettiColors = ['#4A6CF7', '#6366F1', '#818CF8', '#22C55E', '#34D399', '#F59E0B', '#FBBF24', '#EC4899', '#F472B6', '#60A5FA', '#38BDF8'];
+const confettiColors = ['#4A6CF7', '#6B63FF', '#818CF8', '#22C55E', '#34D399', '#F59E0B', '#FBBF24', '#EC4899', '#F472B6', '#60A5FA', '#38BDF8'];
 
 const confetti = Array.from({ length: 80 }, (_, i) => ({
   id: i,
@@ -195,7 +195,7 @@ export default function DeploySuccessStep({ agent, channel = 'web', deployConfig
             />
           ))}
           <div className="w-20 h-20 rounded-3xl flex items-center justify-center relative"
-            style={{ background: 'linear-gradient(135deg, #4A6CF7, #6366F1)', boxShadow: '0 12px 48px rgba(74,108,247,0.3), 0 4px 16px rgba(74,108,247,0.2)' }}>
+            style={{ background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)', boxShadow: '0 12px 48px rgba(74,108,247,0.3), 0 4px 16px rgba(74,108,247,0.2)' }}>
             <motion.div
               initial={{ scale: 0, rotate: -45 }}
               animate={{ scale: 1, rotate: 0 }}
@@ -225,7 +225,7 @@ export default function DeploySuccessStep({ agent, channel = 'web', deployConfig
             { icon: Zap, label: deploymentStatus === 'healthy' ? 'Active' : 'Deploying', color: '#22C55E' },
             { icon: StatusIcon, label: healthLabel, color: '#4A6CF7' },
             { icon: Sparkles, label: channelLabel, color: '#F59E0B' },
-            ...(instanceId ? [{ icon: Globe, label: `Instance ${instanceId}`, color: '#6366F1' }] : []),
+            ...(instanceId ? [{ icon: Globe, label: `Instance ${instanceId}`, color: '#6B63FF' }] : []),
           ].map(s => (
             <div key={s.label} className="flex items-center gap-2 px-3.5 py-2 rounded-xl"
               style={{ background: '#FFFFFF', border: '1px solid #E8EAFF' }}>
@@ -350,7 +350,7 @@ export default function DeploySuccessStep({ agent, channel = 'web', deployConfig
             whileTap={{ scale: 0.97 }}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-sm font-bold text-white transition-all"
             style={{
-              background: 'linear-gradient(135deg, #4A6CF7, #6366F1)',
+              background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)',
               boxShadow: '0 8px 28px rgba(74,108,247,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
             }}>
             {deploymentUrl ? <Globe size={15} strokeWidth={2} /> : <LayoutDashboard size={15} strokeWidth={2} />}
@@ -378,7 +378,7 @@ export default function DeploySuccessStep({ agent, channel = 'web', deployConfig
           whileTap={{ scale: 0.97 }}
           className="px-8 py-3.5 rounded-2xl text-sm font-bold text-white transition-all"
           style={{
-            background: 'linear-gradient(135deg, #4A6CF7, #6366F1)',
+            background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)',
             boxShadow: '0 8px 28px rgba(74,108,247,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
           }}>
           {deploymentUrl ? '🌐 Open deployed agent' : '📋 View deployment'}

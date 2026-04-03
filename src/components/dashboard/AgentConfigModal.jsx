@@ -35,8 +35,10 @@ function TabContent({ tab }) {
   }
 }
 
-export default function AgentConfigModal({ onClose }) {
+export default function AgentConfigModal({ agent, onClose }) {
   const [activeTab, setActiveTab] = useState('settings');
+  const agentName = agent?.name || 'Atlas';
+  const agentInitial = agentName[0]?.toUpperCase() || 'A';
 
   return (
     <motion.div
@@ -72,9 +74,9 @@ export default function AgentConfigModal({ onClose }) {
           {/* Agent header */}
           <div className="flex items-center gap-3 px-3 pb-4 mb-3" style={{ borderBottom: '1px solid #E8EAFF' }}>
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #4A6CF7, #6366F1)', boxShadow: '0 4px 12px rgba(74,108,247,0.3)' }}>A</div>
+              style={{ background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)', boxShadow: '0 4px 12px rgba(74,108,247,0.3)' }}>{agentInitial}</div>
             <div className="min-w-0">
-              <span className="text-sm font-bold block truncate" style={{ color: '#0A0A1A' }}>Atlas</span>
+              <span className="text-sm font-bold block truncate" style={{ color: '#0A0A1A' }}>{agentName}</span>
               <span className="text-[10px] font-medium" style={{ color: '#9CA3AF' }}>/ Configure</span>
             </div>
           </div>

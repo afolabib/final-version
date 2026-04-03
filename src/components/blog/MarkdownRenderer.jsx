@@ -42,7 +42,7 @@ export default function MarkdownRenderer({ content }) {
     // Blockquote
     if (trimmed.startsWith('> ')) {
       elements.push(
-        <blockquote key={elements.length} className="pl-5 py-2 my-6 italic text-base" style={{ borderLeft: '3px solid #6C5CE7', color: '#64748B' }}>
+        <blockquote key={elements.length} className="pl-5 py-2 my-6 italic text-base" style={{ borderLeft: '3px solid #5B5FFF', color: '#64748B' }}>
           <InlineMarkdown text={trimmed.replace('> ', '')} />
         </blockquote>
       );
@@ -60,7 +60,7 @@ export default function MarkdownRenderer({ content }) {
         <div key={elements.length} className="my-3 space-y-2">
           {items.map((item, idx) => (
             <div key={idx} className="flex items-start gap-3">
-              <div className="w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0" style={{ background: '#6C5CE7' }} />
+              <div className="w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0" style={{ background: '#5B5FFF' }} />
               <p className="text-base leading-relaxed"><InlineMarkdown text={item} /></p>
             </div>
           ))}
@@ -81,7 +81,7 @@ export default function MarkdownRenderer({ content }) {
         <div key={elements.length} className="my-3 space-y-2">
           {items.map((item, idx) => (
             <div key={idx} className="flex items-start gap-3">
-              <span className="text-sm font-bold mt-0.5 flex-shrink-0" style={{ color: '#6C5CE7' }}>{idx + 1}.</span>
+              <span className="text-sm font-bold mt-0.5 flex-shrink-0" style={{ color: '#5B5FFF' }}>{idx + 1}.</span>
               <p className="text-base leading-relaxed"><InlineMarkdown text={item} /></p>
             </div>
           ))}
@@ -138,7 +138,7 @@ function MarkdownTable({ lines }) {
     <div className="my-8 overflow-x-auto rounded-2xl" style={{ border: '1px solid rgba(0,0,0,0.06)' }}>
       <table className="w-full text-sm">
         <thead>
-          <tr style={{ background: 'rgba(108,92,231,0.04)' }}>
+          <tr style={{ background: 'rgba(91,95,255,0.04)' }}>
             {headers.map((h, i) => (
               <th key={i} className="text-left px-5 py-3 font-bold" style={{ color: '#0F172A', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                 <InlineMarkdown text={h} />

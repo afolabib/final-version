@@ -95,7 +95,7 @@ export default function SamDemo() {
                       : 'text-gray-700'
                   }`}
                   style={{
-                    background: msg.role === 'user' ? 'linear-gradient(135deg, #4A6CF7, #6366F1)' : '#F4F5FC',
+                    background: msg.role === 'user' ? 'linear-gradient(135deg, #4A6CF7, #6B63FF)' : '#F4F5FC',
                     boxShadow: msg.role === 'user' ? '0 4px 12px rgba(74,108,247,0.25)' : 'none'
                   }}
                 >
@@ -137,7 +137,7 @@ export default function SamDemo() {
                 disabled={!input.trim() || loading}
                 className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
                 style={{
-                  background: input.trim() && !loading ? 'linear-gradient(135deg, #4A6CF7, #6366F1)' : '#EEF0F8',
+                  background: input.trim() && !loading ? 'linear-gradient(135deg, #4A6CF7, #6B63FF)' : '#EEF0F8',
                   color: input.trim() && !loading ? '#fff' : '#C5C9E0',
                   cursor: input.trim() && !loading ? 'pointer' : 'not-allowed'
                 }}
@@ -162,7 +162,7 @@ export default function SamDemo() {
           <button
             className="px-8 py-3.5 rounded-2xl text-sm font-bold text-white transition-all"
             style={{
-              background: 'linear-gradient(135deg, #4A6CF7, #6366F1)',
+              background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)',
               boxShadow: '0 8px 28px rgba(74,108,247,0.3)'
             }}
           >

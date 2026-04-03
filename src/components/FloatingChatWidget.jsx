@@ -31,8 +31,8 @@ export default function FloatingChatWidget() {
                 exit={{ scale: 0.5, opacity: 0 }}
                 className="w-14 h-14 rounded-2xl flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)',
-                  boxShadow: '0 4px 20px rgba(108,92,231,0.4)',
+                  background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)',
+                  boxShadow: '0 4px 20px rgba(91,95,255,0.4)',
                 }}
               >
                 <X size={22} className="text-white" />
@@ -53,13 +53,13 @@ export default function FloatingChatWidget() {
                   className="absolute -top-12 right-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold shadow-lg pointer-events-none"
                   style={{
                     background: '#fff',
-                    color: '#6C5CE7',
-                    border: '1px solid rgba(108,92,231,0.15)',
-                    boxShadow: '0 4px 16px rgba(108,92,231,0.12)',
+                    color: '#5B5FFF',
+                    border: '1px solid rgba(91,95,255,0.15)',
+                    boxShadow: '0 4px 16px rgba(91,95,255,0.12)',
                   }}
                 >
                   Hi! I'm Freemi, nice to meet you 👋
-                  <div className="absolute -bottom-1 right-5 w-2.5 h-2.5 rotate-45" style={{ background: '#fff', borderRight: '1px solid rgba(108,92,231,0.15)', borderBottom: '1px solid rgba(108,92,231,0.15)' }} />
+                  <div className="absolute -bottom-1 right-5 w-2.5 h-2.5 rotate-45" style={{ background: '#fff', borderRight: '1px solid rgba(91,95,255,0.15)', borderBottom: '1px solid rgba(91,95,255,0.15)' }} />
                 </motion.div>
                 <FreemiCharacter size="sm" />
               </motion.div>

@@ -60,7 +60,7 @@ export default function MeetSam() {
           <button
             className="px-10 py-4 rounded-2xl text-base font-bold text-white transition-all hover:scale-105"
             style={{
-              background: 'linear-gradient(135deg, #4A6CF7, #6366F1)',
+              background: 'linear-gradient(135deg, #4A6CF7, #6B63FF)',
               boxShadow: '0 12px 40px rgba(74,108,247,0.35)'
             }}
           >

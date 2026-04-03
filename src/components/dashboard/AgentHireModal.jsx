@@ -91,7 +91,7 @@ export default function AgentHireModal({ reportsToId, onClose }) {
           {step === 1 && (
             <div className="grid grid-cols-2 gap-3">
               {ROLE_TEMPLATES.map(t => {
-                const color = ROLE_COLORS[t.role] || '#6C5CE7';
+                const color = ROLE_COLORS[t.role] || '#5B5FFF';
                 return (
                   <button key={t.role}
                     onClick={() => { setSelectedRole(t); setStep(2); }}
@@ -123,7 +123,7 @@ export default function AgentHireModal({ reportsToId, onClose }) {
                   placeholder={`e.g. ${selectedRole.label} Rex`}
                   value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  onFocus={e => { e.target.style.borderColor = '#6C5CE7'; }}
+                  onFocus={e => { e.target.style.borderColor = '#5B5FFF'; }}
                   onBlur={e => { e.target.style.borderColor = 'rgba(0,0,0,0.08)'; }}
                 />
               </div>
@@ -151,12 +151,12 @@ export default function AgentHireModal({ reportsToId, onClose }) {
                       onClick={() => setForm(f => ({ ...f, autonomy: a.value }))}
                       className="w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 transition-all border"
                       style={{
-                        border: form.autonomy === a.value ? '1.5px solid #6C5CE7' : '1.5px solid rgba(0,0,0,0.07)',
-                        background: form.autonomy === a.value ? 'rgba(108,92,231,0.06)' : '#F8FAFF',
+                        border: form.autonomy === a.value ? '1.5px solid #5B5FFF' : '1.5px solid rgba(0,0,0,0.07)',
+                        background: form.autonomy === a.value ? 'rgba(91,95,255,0.06)' : '#F8FAFF',
                       }}>
-                      <Shield size={14} style={{ color: form.autonomy === a.value ? '#6C5CE7' : '#94A3B8', flexShrink: 0 }} />
+                      <Shield size={14} style={{ color: form.autonomy === a.value ? '#5B5FFF' : '#94A3B8', flexShrink: 0 }} />
                       <div>
-                        <div className="text-sm font-medium" style={{ color: form.autonomy === a.value ? '#6C5CE7' : '#0A0A1A' }}>{a.label}</div>
+                        <div className="text-sm font-medium" style={{ color: form.autonomy === a.value ? '#5B5FFF' : '#0A0A1A' }}>{a.label}</div>
                         <div className="text-xs" style={{ color: '#94A3B8' }}>{a.desc}</div>
                       </div>
                     </button>
@@ -175,7 +175,7 @@ export default function AgentHireModal({ reportsToId, onClose }) {
                     value={form.budgetMonthly}
                     onChange={e => setForm(f => ({ ...f, budgetMonthly: e.target.value }))}
                     className="flex-1 accent-indigo-500" />
-                  <span className="text-sm font-bold w-14 text-right" style={{ color: '#6C5CE7' }}>
+                  <span className="text-sm font-bold w-14 text-right" style={{ color: '#5B5FFF' }}>
                     ${form.budgetMonthly}
                   </span>
                 </div>
@@ -220,9 +220,9 @@ export default function AgentHireModal({ reportsToId, onClose }) {
                 disabled={loading}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all"
                 style={{
-                  background: loading ? '#E2E8F0' : 'linear-gradient(135deg,#6C5CE7,#7C6CF7)',
+                  background: loading ? '#E2E8F0' : 'linear-gradient(135deg,#5B5FFF,#6B63FF)',
                   color: loading ? '#94A3B8' : '#fff',
-                  boxShadow: loading ? 'none' : '0 4px 14px rgba(108,92,231,0.35)',
+                  boxShadow: loading ? 'none' : '0 4px 14px rgba(91,95,255,0.35)',
                 }}>
                 {loading ? 'Hiring…' : (
                   <>

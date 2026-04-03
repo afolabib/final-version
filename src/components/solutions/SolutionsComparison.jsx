@@ -27,7 +27,7 @@ export default function SolutionsComparison() {
         <div className="text-center mb-10 md:mb-14">
           <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
             className="inline-block text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-4"
-            style={{ color: '#6C5CE7', background: 'rgba(108,92,231,0.06)', border: '1px solid rgba(108,92,231,0.1)' }}>
+            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
             Why Freemi
           </motion.span>
           <motion.h2 initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -45,9 +45,9 @@ export default function SolutionsComparison() {
           style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 8px 40px rgba(0,0,0,0.03)' }}>
           {/* Header */}
           <div className="grid grid-cols-4 text-center py-4 px-4 md:px-6"
-            style={{ background: 'linear-gradient(135deg, rgba(108,92,231,0.04), rgba(108,92,231,0.02))', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+            style={{ background: 'linear-gradient(135deg, rgba(91,95,255,0.04), rgba(91,95,255,0.02))', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
             <div className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Feature</div>
-            <div className="text-xs font-bold uppercase tracking-wider" style={{ color: '#6C5CE7' }}>Freemi</div>
+            <div className="text-xs font-bold uppercase tracking-wider" style={{ color: '#5B5FFF' }}>Freemi</div>
             <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Human Hire</div>
             <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Chatbot</div>
           </div>

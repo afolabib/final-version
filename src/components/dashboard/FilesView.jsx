@@ -33,7 +33,7 @@ export default function FilesView() {
   const filteredFiles = files.filter((file) => file.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: '#F4F5FC' }}>
+    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
       <input ref={fileInputRef} type="file" className="hidden" onChange={handleUpload} />
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex items-center justify-between mb-6">

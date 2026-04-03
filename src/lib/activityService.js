@@ -2,11 +2,13 @@ import {
   collection, addDoc, onSnapshot, serverTimestamp,
   query, where, orderBy, limit
 } from 'firebase/firestore';
-import { firestore } from './firebaseClient';
+import { firestore, isDemoMode } from './firebaseClient';
+import { localLogActivity, localSubscribeActivity } from './localDB';
 
 const COL = 'activity_log';
 
 export async function logActivity(companyId, actorId, actorType = 'user', action, entityId, summary, metadata = {}) {
+  if (isDemoMode) return localLogActivity(companyId, { actorId, actorType, action, entityId, summary, metadata });
   try {
     await addDoc(collection(firestore, COL), {
       companyId,
@@ -24,6 +26,7 @@ export async function logActivity(companyId, actorId, actorType = 'user', action
 }
 
 export function subscribeRecentActivity(companyId, cb, count = 50) {
+  if (isDemoMode) return localSubscribeActivity(companyId, cb, count);
   const q = query(
     collection(firestore, COL),
     where('companyId', '==', companyId),

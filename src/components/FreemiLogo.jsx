@@ -15,9 +15,9 @@ export default function FreemiLogo({ size = 'md' }) {
       <motion.div
         animate={{
           boxShadow: [
-            '0 0 24px 8px rgba(108,92,231,0.12), 0 0 48px 16px rgba(108,92,231,0.06)',
-            '0 0 36px 14px rgba(108,92,231,0.24), 0 0 64px 24px rgba(108,92,231,0.12)',
-            '0 0 24px 8px rgba(108,92,231,0.12), 0 0 48px 16px rgba(108,92,231,0.06)',
+            '0 0 24px 8px rgba(91,95,255,0.12), 0 0 48px 16px rgba(91,95,255,0.06)',
+            '0 0 36px 14px rgba(91,95,255,0.24), 0 0 64px 24px rgba(91,95,255,0.12)',
+            '0 0 24px 8px rgba(91,95,255,0.12), 0 0 48px 16px rgba(91,95,255,0.06)',
           ],
           scale: [1, 1.05, 1],
         }}
@@ -33,8 +33,8 @@ export default function FreemiLogo({ size = 'md' }) {
         <div
           className={`${s.inner} rounded-xl flex items-center justify-center`}
           style={{
-            background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)',
-            boxShadow: '0 4px 16px rgba(108,92,231,0.35)',
+            background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)',
+            boxShadow: '0 4px 16px rgba(91,95,255,0.35)',
           }}
         >
           {/* Blinking eye */}

@@ -10,8 +10,8 @@ export default function SolutionsCTA() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="relative rounded-3xl p-8 md:p-14 text-center overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #6C5CE7, #7C3AED)',
-            boxShadow: '0 24px 60px rgba(108,92,231,0.3)',
+            background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)',
+            boxShadow: '0 24px 60px rgba(91,95,255,0.3)',
           }}>
           {/* Decorative orbs */}
           <div className="absolute top-0 left-0 w-40 h-40 rounded-full blur-3xl pointer-events-none" style={{ background: 'rgba(255,255,255,0.08)' }} />
@@ -37,7 +37,7 @@ export default function SolutionsCTA() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link to="/dashboard"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm transition-all"
-                style={{ background: 'white', color: '#6C5CE7', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
+                style={{ background: 'white', color: '#5B5FFF', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
                 Start Free Trial <ArrowRight size={16} />
               </Link>
               <Link to="/about"

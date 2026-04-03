@@ -2,7 +2,8 @@ import {
   collection, doc, addDoc, getDoc, updateDoc, deleteDoc,
   onSnapshot, serverTimestamp, query, where, orderBy, getDocs
 } from 'firebase/firestore';
-import { firestore } from './firebaseClient';
+import { firestore, isDemoMode } from './firebaseClient';
+import { localCreateAgent, localSubscribeAgents, localUpdateAgent } from './localDB';
 import { logActivity } from './activityService';
 
 const COL = 'agents';
@@ -80,8 +81,7 @@ export async function createAgent(companyId, userId, agentData) {
 }
 
 export async function createCEOAgent(companyId, userId) {
-  const ref = await addDoc(collection(firestore, COL), {
-    companyId,
+  const data = {
     ownerId: userId,
     name: 'Freemi',
     role: AGENT_ROLES.CEO,
@@ -96,8 +96,10 @@ export async function createCEOAgent(companyId, userId) {
     lastHeartbeatAt: null,
     nextHeartbeatAt: null,
     isCEO: true,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+  };
+  if (isDemoMode) return localCreateAgent(companyId, data);
+  const ref = await addDoc(collection(firestore, COL), {
+    companyId, ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
   });
   return ref.id;
 }
@@ -137,6 +139,7 @@ export async function resumeAgent(agentId) {
 }
 
 export function subscribeToAgents(companyId, cb) {
+  if (isDemoMode) return localSubscribeAgents(companyId, cb);
   const q = query(
     collection(firestore, COL),
     where('companyId', '==', companyId),
@@ -163,9 +166,10 @@ export async function getAgent(agentId) {
 export function buildOrgTree(agents) {
   const map = {};
   const roots = [];
-  agents.forEach(a => { map[a.id] = { ...a, reports: [] }; });
+  agents.forEach(a => { map[a.id] = { ...a, children: [] }; });
   agents.forEach(a => {
-    if (a.reportsTo && map[a.reportsTo]) map[a.reportsTo].reports.push(map[a.id]);
+    const parentId = a.reportsTo || a.reportsToId;
+    if (parentId && map[parentId]) map[parentId].children.push(map[a.id]);
     else roots.push(map[a.id]);
   });
   return roots;

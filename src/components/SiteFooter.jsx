@@ -16,13 +16,13 @@ export default function SiteFooter() {
             <div className="col-span-2 sm:col-span-3 md:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #6C5CE7, #7C6CF7)', boxShadow: '0 2px 12px rgba(108,92,231,0.3)' }}>
+                  style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 2px 12px rgba(91,95,255,0.3)' }}>
                   <div className="w-3 h-3 rounded-full bg-white/90" />
                 </div>
-                <span className="font-bold text-surface text-base tracking-tight">FreemiOS</span>
+                <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
               </div>
               <p className="text-sm text-gray-400 leading-relaxed max-w-[200px]">
-                Your AI company OS. One CEO agent, a full team of specialists.
+                Your AI CEO and agent team, running your business 24/7.
               </p>
             </div>
 
@@ -82,7 +82,7 @@ export default function SiteFooter() {
               { icon: '⚡', label: '99.9% Uptime' },
             ].map(badge => (
               <div key={badge.label} className="flex items-center gap-2 px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(108,92,231,0.04)', border: '1px solid rgba(108,92,231,0.06)' }}>
+                style={{ background: 'rgba(91,95,255,0.04)', border: '1px solid rgba(91,95,255,0.06)' }}>
                 <span className="text-xs">{badge.icon}</span>
                 <span className="text-[11px] font-semibold text-gray-500">{badge.label}</span>
               </div>
@@ -92,9 +92,9 @@ export default function SiteFooter() {
           {/* Bottom bar */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8"
             style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-            <div className="text-xs text-gray-400">© 2026 FreemiOS. All rights reserved.</div>
+            <div className="text-xs text-gray-400">© 2026 Freemi. All rights reserved.</div>
             <div className="flex items-center gap-6 text-xs text-gray-400">
-              <span>Built for teams that ship.</span>
+              <span>Built for businesses that run on outcomes.</span>
             </div>
           </div>
         </div>

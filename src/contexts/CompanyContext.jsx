@@ -6,6 +6,7 @@ import { subscribeGoals } from '@/lib/goalService';
 import { subscribePendingApprovals } from '@/lib/approvalService';
 import { subscribeRecentActivity } from '@/lib/activityService';
 import { subscribeTasks } from '@/lib/taskService';
+import { isDemoMode } from '@/lib/firebaseClient';
 
 const CompanyContext = createContext(null);
 
@@ -42,16 +43,26 @@ export function CompanyProvider({ children }) {
     let cancelled = false;
     setLoading(true);
 
+    // In demo mode, localStorage resolves synchronously — no timeout needed
+    // In Firebase mode, add a 4s safety timeout in case of connectivity issues
+    const timeout = isDemoMode ? null : setTimeout(() => {
+      if (!cancelled) setLoading(false);
+    }, 4000);
+
     getUserCompanies(uid).then(companies => {
+      if (timeout) clearTimeout(timeout);
       if (cancelled) return;
       if (companies.length > 0) {
         setActiveCompanyId(companies[0].id);
       } else {
         setLoading(false);
       }
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      if (timeout) clearTimeout(timeout);
+      if (!cancelled) setLoading(false);
+    });
 
-    return () => { cancelled = true; };
+    return () => { cancelled = true; if (timeout) clearTimeout(timeout); };
   }, [user?.uid]);
 
   // Subscribe to company doc

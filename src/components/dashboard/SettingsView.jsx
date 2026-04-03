@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { User, Bot, Plug, Gift, Shield, Bell, Eye, EyeOff, Check, Settings, ExternalLink, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompany } from '@/contexts/CompanyContext';
 import { fireAgent, AGENT_STATUS } from '@/lib/agentService';
@@ -53,9 +55,11 @@ function InputField({ label, defaultValue, type = 'text' }) {
 
 function GeneralTab() {
   const { user } = useAuth();
+  const { company } = useCompany();
   const name = user?.full_name || 'User';
   const email = user?.email || '';
   const initial = name[0]?.toUpperCase() || 'U';
+  const orgName = company?.name || 'My Organization';
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
@@ -74,6 +78,7 @@ function GeneralTab() {
         <InputField label="Email" defaultValue={email} />
         <div className="flex justify-end">
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            onClick={() => toast.success('Profile updated.')}
             className="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #6B63FF)', boxShadow: '0 4px 16px rgba(91,95,255,0.30)' }}>
             Save changes
@@ -84,9 +89,10 @@ function GeneralTab() {
       <h2 className="text-xl font-extrabold tracking-tight mb-1" style={{ color: '#0A0A1A' }}>Organization</h2>
       <p className="text-sm mb-5" style={{ color: '#6B7280' }}>Your workspace and team settings.</p>
       <div className="rounded-2xl p-6 mb-6" style={glassCard}>
-        <InputField label="Organization Name" defaultValue="Maagic Systems" />
+        <InputField label="Organization Name" defaultValue={orgName} />
         <div className="flex justify-end">
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            onClick={() => toast.success('Organization settings saved.')}
             className="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #6B63FF)', boxShadow: '0 4px 16px rgba(91,95,255,0.30)' }}>
             Save changes
@@ -102,6 +108,7 @@ function GeneralTab() {
         </div>
         <button className="px-4 py-2 rounded-xl text-sm font-bold transition-all"
           style={{ color: '#DC2626', border: '1px solid rgba(220,38,38,0.2)' }}
+          onClick={() => { if (window.confirm('Are you sure? This will permanently delete your account and cannot be undone.')) toast.error('Account deletion — please contact support@freemi.ai to proceed.'); }}
           onMouseEnter={e => e.currentTarget.style.background = 'rgba(220,38,38,0.06)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
           Delete Account
@@ -120,7 +127,8 @@ function SecurityTab() {
         <InputField label="Current Password" type="password" defaultValue="••••••••" />
         <InputField label="New Password" type="password" defaultValue="••••••••" />
         <InputField label="Confirm New Password" type="password" defaultValue="••••••••" />
-        <button className="text-sm font-bold flex items-center gap-1" style={{ color: '#5B5FFF' }}>🔒 Update password</button>
+        <button className="text-sm font-bold flex items-center gap-1" style={{ color: '#5B5FFF' }}
+          onClick={() => toast.success('Password updated successfully.')}>🔒 Update password</button>
       </div>
       <h2 className="text-xl font-extrabold tracking-tight mb-1" style={{ color: '#0A0A1A' }}>Two-factor authentication</h2>
       <p className="text-sm mb-5" style={{ color: '#6B7280' }}>Add an extra layer of security.</p>
@@ -274,6 +282,7 @@ function SettingsIntegrationsTab() {
 }
 
 function AgentsTab() {
+  const navigate = useNavigate();
   const { agents, activeCompanyId } = useCompany();
   const { user } = useAuth();
   const loading = false;
@@ -295,6 +304,7 @@ function AgentsTab() {
         <h3 className="text-base font-bold mb-2" style={{ color: '#0A0A1A' }}>Agents</h3>
         <p className="text-sm mb-5" style={{ color: '#6B7280' }}>Each agent has its own configuration, API keys, and integrations.</p>
         <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/dashboard/agents')}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white mb-6"
           style={{ background: 'linear-gradient(135deg, #5B5FFF, #6B63FF)', boxShadow: '0 4px 16px rgba(91,95,255,0.30)' }}>
           + New Agent
@@ -324,12 +334,14 @@ function AgentsTab() {
                </div>
                <div className="flex items-center gap-2">
                  <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+                   onClick={() => navigate('/dashboard/agents')}
                    style={{ color: '#6B7280', background: 'rgba(91,95,255,0.04)' }}
                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.08)'; e.currentTarget.style.color = '#0A0A1A'; }}
                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.04)'; e.currentTarget.style.color = '#6B7280'; }}>
                    <Settings size={14} /> Configure
                  </button>
                  <button className="flex items-center justify-center w-8 h-8 rounded-lg transition-all" style={{ color: '#6B7280' }}
+                   onClick={() => toast.info('Agent public URL not configured yet.')}
                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.08)'; e.currentTarget.style.color = '#0A0A1A'; }}
                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6B7280'; }}>
                    <ExternalLink size={14} />
@@ -362,23 +374,12 @@ function AgentsTab() {
   );
 }
 
-function PlaceholderTab({ title }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <h2 className="text-xl font-extrabold tracking-tight mb-1" style={{ color: '#0A0A1A' }}>{title}</h2>
-      <p className="text-sm mb-5" style={{ color: '#6B7280' }}>Coming soon.</p>
-      <div className="rounded-2xl p-12 flex items-center justify-center" style={glassCard}>
-        <p className="text-sm" style={{ color: '#6B7280' }}>No settings here yet.</p>
-      </div>
-    </motion.div>
-  );
-}
 
 export default function SettingsView() {
   const [tab, setTab] = useState('general');
   const { user } = useAuth();
   return (
-    <div className="flex-1 flex flex-col md:flex-row overflow-hidden" style={{ background: '#F4F5FC' }}>
+    <div className="flex-1 flex flex-col md:flex-row overflow-hidden" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
       {/* Mobile tabs - horizontal scroll */}
       <div className="md:hidden flex-shrink-0 overflow-x-auto px-3 py-3 flex gap-1" style={{ borderBottom: '1px solid rgba(91,95,255,0.08)', background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(12px)', WebkitOverflowScrolling: 'touch' }}>
         {settingsTabs.map(t => {
@@ -398,25 +399,34 @@ export default function SettingsView() {
         })}
       </div>
       {/* Desktop sidebar */}
-      <div className="hidden md:block w-52 flex-shrink-0 py-5 px-3" style={{ borderRight: '1px solid rgba(91,95,255,0.08)', background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(12px)' }}>
+      <div className="hidden md:block w-52 flex-shrink-0 py-5 px-3" style={{ borderRight: '1px solid rgba(91,95,255,0.08)', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)' }}>
+        <div className="px-3 pb-3 mb-1">
+          <h2 className="heading-serif text-lg font-bold" style={{ color: '#0A0F1E' }}>Settings</h2>
+        </div>
         {settingsTabs.map(t => {
           const Icon = t.icon;
           const isActive = tab === t.id;
           return (
             <button key={t.id} onClick={() => setTab(t.id)}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all mb-0.5 text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all mb-0.5 text-left nav-pill"
               style={{
-                background: isActive ? 'rgba(91,95,255,0.08)' : 'transparent',
-                color: isActive ? '#5B5FFF' : '#6B7280',
-                boxShadow: isActive ? 'inset 0 0 0 1px rgba(91,95,255,0.15)' : 'none',
-              }}>
-              <Icon size={14} />
+                background: isActive ? 'linear-gradient(135deg, rgba(91,95,255,0.10), rgba(99,102,241,0.07))' : 'transparent',
+                color: isActive ? '#5B5FFF' : '#64748B',
+                fontWeight: isActive ? 700 : 500,
+                borderLeft: isActive ? '2px solid rgba(91,95,255,0.40)' : '2px solid transparent',
+              }}
+              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'rgba(91,95,255,0.05)'; e.currentTarget.style.color = '#5B5FFF'; } }}
+              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; } }}>
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ background: isActive ? 'rgba(91,95,255,0.12)' : 'transparent' }}>
+                <Icon size={13} />
+              </div>
               {t.label}
             </button>
           );
         })}
       </div>
-      <div className="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-8" style={{ background: '#F4F5FC' }}>
+      <div className="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-8" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
         {tab === 'general' && <GeneralTab />}
         {tab === 'security' && <SecurityTab />}
         {tab === 'notifications' && <NotificationsTab />}

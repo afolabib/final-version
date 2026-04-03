@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  Terminal, Users, Target, CheckSquare, Inbox,
-  RefreshCw, Plug, Wrench, FolderOpen,
-  BarChart2, Settings, HelpCircle, LogOut, ChevronDown,
-  Plus, Bell, Building2, Download, Upload, Zap
+  Home, Briefcase, Inbox, FolderOpen, Layers,
+  Zap, Plug, Wrench, Settings, CreditCard, HelpCircle,
+  LogOut, ChevronDown, Plus, Bell, MessageSquare,
+  Target, CheckSquare, DollarSign
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -13,48 +13,88 @@ import { ROLE_COLORS, AGENT_STATUS } from '@/lib/agentService';
 // ── Status dot ────────────────────────────────────────────────────────────────
 function StatusDot({ status }) {
   const map = {
-    [AGENT_STATUS.ACTIVE]:           { color: '#00B894', pulse: true },
-    [AGENT_STATUS.SLEEPING]:         { color: '#FDCB6E', pulse: false },
-    [AGENT_STATUS.PAUSED]:           { color: '#B2BEC3', pulse: false },
-    [AGENT_STATUS.ERROR]:            { color: '#D63031', pulse: true },
-    [AGENT_STATUS.PENDING_APPROVAL]: { color: '#A29BFE', pulse: true },
-    [AGENT_STATUS.TERMINATED]:       { color: '#636E72', pulse: false },
+    [AGENT_STATUS.ACTIVE]:           { color: '#10B981', pulse: true },
+    [AGENT_STATUS.SLEEPING]:         { color: '#F59E0B', pulse: false },
+    [AGENT_STATUS.PAUSED]:           { color: '#94A3B8', pulse: false },
+    [AGENT_STATUS.ERROR]:            { color: '#EF4444', pulse: true },
+    [AGENT_STATUS.PENDING_APPROVAL]: { color: '#8B5CF6', pulse: true },
+    [AGENT_STATUS.TERMINATED]:       { color: '#CBD5E1', pulse: false },
   };
-  const { color, pulse } = map[status] || { color: '#B2BEC3', pulse: false };
+  const { color, pulse } = map[status] || { color: '#CBD5E1', pulse: false };
   return (
     <span className="relative flex-shrink-0" style={{ width: 8, height: 8 }}>
       <span className="block rounded-full w-2 h-2" style={{ background: color }} />
       {pulse && (
-        <span className="absolute inset-0 rounded-full animate-ping opacity-60" style={{ background: color }} />
+        <span className="absolute inset-0 rounded-full animate-ping opacity-50"
+          style={{ background: color }} />
       )}
     </span>
   );
 }
 
 // ── Nav button ────────────────────────────────────────────────────────────────
-function NavBtn({ icon: Icon, label, id, active, onClick, badge, badgeCount }) {
+function NavBtn({ icon: Icon, label, id, active, onClick, badge, badgeCount, bellBadge }) {
   const isActive = active === id;
   return (
     <button
       onClick={() => onClick(id)}
-      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150"
+      data-active={isActive ? 'true' : 'false'}
+      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium nav-pill group/nav"
       style={{
-        color: isActive ? '#6C5CE7' : '#64748B',
-        background: isActive ? 'rgba(108,92,231,0.09)' : 'transparent',
-        fontWeight: isActive ? 600 : 500,
+        color: isActive ? '#5B5FFF' : '#64748B',
+        background: isActive
+          ? 'linear-gradient(135deg, rgba(91,95,255,0.10), rgba(99,102,241,0.07))'
+          : 'transparent',
+        fontWeight: isActive ? 700 : 500,
+        borderLeft: isActive ? '2px solid rgba(91,95,255,0.40)' : '2px solid transparent',
       }}
-      onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'rgba(108,92,231,0.05)'; e.currentTarget.style.color = '#6C5CE7'; }}}
-      onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}}
+      onMouseEnter={e => {
+        if (!isActive) {
+          e.currentTarget.style.background = 'rgba(91,95,255,0.06)';
+          e.currentTarget.style.color = '#5B5FFF';
+        }
+      }}
+      onMouseLeave={e => {
+        if (!isActive) {
+          e.currentTarget.style.background = 'transparent';
+          e.currentTarget.style.color = '#64748B';
+        }
+      }}
     >
-      <Icon size={15} strokeWidth={isActive ? 2.2 : 1.8} style={{ flexShrink: 0 }} />
-      <span className="flex-1 text-left truncate">{label}</span>
-      {badgeCount > 0 && (
+      <div className="flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-all"
+        style={{
+          background: isActive ? 'rgba(91,95,255,0.12)' : 'transparent',
+        }}>
+        <Icon
+          size={14}
+          strokeWidth={isActive ? 2.3 : 1.9}
+          style={{ transition: 'stroke-width 150ms' }}
+        />
+      </div>
+      <span className="flex-1 text-left truncate text-[13px]">{label}</span>
+
+      {/* Red badge (inbox) */}
+      {badgeCount > 0 && !bellBadge && (
         <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full text-[10px] font-bold flex items-center justify-center text-white px-1"
-          style={{ background: '#6C5CE7' }}>{badgeCount}</span>
+          style={{ background: '#EF4444', boxShadow: '0 2px 6px rgba(239,68,68,0.35)' }}>
+          {badgeCount}
+        </span>
       )}
+
+      {/* Bell indigo badge (tasks) */}
+      {bellBadge && badgeCount > 0 && (
+        <span className="flex-shrink-0 flex items-center gap-1">
+          <Bell size={10} style={{ color: '#5B5FFF' }} />
+          <span className="min-w-[16px] h-[16px] rounded-full text-[9px] font-bold flex items-center justify-center px-1"
+            style={{ background: 'rgba(91,95,255,0.10)', color: '#5B5FFF' }}>
+            {badgeCount}
+          </span>
+        </span>
+      )}
+
       {badge && !badgeCount && (
         <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-          style={{ background: 'rgba(108,92,231,0.08)', color: '#6C5CE7' }}>{badge}</span>
+          style={{ background: 'rgba(91,95,255,0.07)', color: '#5B5FFF' }}>{badge}</span>
       )}
     </button>
   );
@@ -64,25 +104,27 @@ function NavBtn({ icon: Icon, label, id, active, onClick, badge, badgeCount }) {
 function SectionLabel({ label }) {
   return (
     <div className="px-3 pt-5 pb-1.5">
-      <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#CBD5E1' }}>{label}</span>
+      <span className="text-[9px] font-black tracking-[0.12em] uppercase" style={{ color: '#C7D0E8' }}>
+        {label}
+      </span>
     </div>
   );
 }
 
-// ── Agent row in sidebar ──────────────────────────────────────────────────────
-function AgentRow({ agent, companyId, onClick }) {
-  const color = ROLE_COLORS[agent.role] || '#6C5CE7';
+// ── Agent row ─────────────────────────────────────────────────────────────────
+function AgentRow({ agent, onClick }) {
+  const color = ROLE_COLORS[agent.role] || '#5B5FFF';
   const initial = agent.name?.[0]?.toUpperCase() || '?';
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl transition-all duration-150 group"
+      className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl transition-all duration-150"
       style={{ color: '#64748B' }}
-      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.04)'; }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.04)'; e.currentTarget.style.color = '#5B5FFF'; }}
+      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
     >
       <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-        style={{ background: color, boxShadow: `0 2px 6px ${color}40` }}>
+        style={{ background: color, boxShadow: `0 2px 6px ${color}35` }}>
         {initial}
       </div>
       <span className="flex-1 text-left text-xs font-medium truncate">{agent.name}</span>
@@ -97,21 +139,39 @@ function UserMenu({ onClose, onSettings, onLogout, user }) {
   const email = user?.email || '';
   const initial = name[0]?.toUpperCase() || 'U';
   return (
-    <div className="absolute bottom-16 left-2 right-2 rounded-2xl overflow-hidden z-50 shadow-xl"
-      style={{ background: 'rgba(255,255,255,0.98)', border: '1px solid rgba(108,92,231,0.12)' }}>
-      <div className="flex items-center gap-3 px-4 py-4" style={{ borderBottom: '1px solid rgba(108,92,231,0.08)' }}>
+    <div className="absolute bottom-16 left-2 right-2 rounded-2xl overflow-hidden z-50"
+      style={{
+        background: 'rgba(255,255,255,0.99)',
+        border: '1px solid rgba(91,95,255,0.1)',
+        boxShadow: '0 -8px 32px rgba(91,95,255,0.10), 0 4px 24px rgba(0,0,0,0.08)',
+        backdropFilter: 'blur(12px)',
+      }}>
+      {/* User info */}
+      <div className="flex items-center gap-3 px-4 py-4"
+        style={{ borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
         <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)' }}>{initial}</div>
+          style={{ background: 'linear-gradient(135deg, #5B5FFF, #2563EB)' }}>
+          {initial}
+        </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold truncate" style={{ color: '#0A0A1A' }}>{name}</p>
+          <p className="text-sm font-semibold truncate" style={{ color: '#0A0F1E' }}>{name}</p>
           <p className="text-xs truncate" style={{ color: '#94A3B8' }}>{email}</p>
         </div>
       </div>
+
+      {/* System status chip */}
+      <div className="px-4 py-2.5" style={{ borderBottom: '1px solid rgba(91,95,255,0.06)' }}>
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span className="text-[11px] font-semibold" style={{ color: '#64748B' }}>All systems operational</span>
+        </div>
+      </div>
+
       {[{ icon: Settings, label: 'Settings', action: onSettings }].map(item => (
         <button key={item.label} onClick={() => { item.action(); onClose(); }}
           className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors"
-          style={{ color: '#374151', borderBottom: '1px solid rgba(108,92,231,0.06)' }}
-          onMouseEnter={e => e.currentTarget.style.background = 'rgba(108,92,231,0.04)'}
+          style={{ color: '#374151', borderBottom: '1px solid rgba(91,95,255,0.05)' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.04)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
           <item.icon size={14} strokeWidth={1.8} /><span>{item.label}</span>
         </button>
@@ -131,16 +191,19 @@ function UserMenu({ onClose, onSettings, onLogout, user }) {
 export default function DashboardSidebar({ active, onNav }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { company, agents, activeCompanyId, pendingApprovals } = useCompany();
+  const { company, agents, tasks, activeCompanyId, pendingApprovals } = useCompany();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
 
   const name = user?.full_name || user?.displayName || 'User';
   const initial = name[0]?.toUpperCase() || 'U';
   const approvalCount = pendingApprovals.length;
+  const openTaskCount = (tasks || []).filter(t => t.status !== 'done' && t.status !== 'cancelled').length;
 
   useEffect(() => {
-    const handler = e => { if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false); };
+    const handler = e => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
+    };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
@@ -151,11 +214,11 @@ export default function DashboardSidebar({ active, onNav }) {
     <aside
       className="flex-shrink-0 flex flex-col h-full m-2 rounded-2xl overflow-visible relative"
       style={{
-        width: 260,
-        background: 'rgba(255,255,255,0.94)',
+        width: 240,
+        background: 'rgba(255,255,255,0.97)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(108,92,231,0.08)',
-        boxShadow: '0 8px 30px rgba(108,92,231,0.07), inset 0 1px 0 rgba(255,255,255,0.6)',
+        border: '1px solid rgba(91,95,255,0.08)',
+        boxShadow: '0 8px 32px rgba(91,95,255,0.07), inset 0 1px 0 rgba(255,255,255,0.8)',
       }}
     >
       {showMenu && (
@@ -169,30 +232,41 @@ export default function DashboardSidebar({ active, onNav }) {
         </div>
       )}
 
-      {/* ── Logo + company ── */}
+      {/* ── Logo ── */}
       <div className="flex items-center justify-between px-4 py-4 flex-shrink-0"
-        style={{ borderBottom: '1px solid rgba(108,92,231,0.07)' }}>
+        style={{ borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
         <div className="flex items-center gap-2.5 min-w-0">
+          {/* Logo mark */}
           <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.35)' }}>
-            <div className="w-2.5 h-2.5 rounded-full bg-white opacity-90" />
+            style={{
+              background: 'linear-gradient(135deg, #5B5FFF, #2563EB)',
+              boxShadow: '0 4px 12px rgba(91,95,255,0.35)',
+            }}>
+            <div className="w-2.5 h-2.5 rounded-full bg-white opacity-95" />
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm truncate" style={{ color: '#0A0A1A', lineHeight: 1.2 }}>FreemiOS</p>
+            <p className="font-black text-sm tracking-tight truncate" style={{ color: '#0A0F1E', lineHeight: 1.2 }}>
+              Freemi
+            </p>
             {company?.name && (
-              <p className="text-[10px] truncate" style={{ color: '#94A3B8' }}>{company.name}</p>
+              <p className="text-[10px] truncate font-medium" style={{ color: '#94A3B8' }}>
+                {company.name}
+              </p>
             )}
           </div>
         </div>
+
         {approvalCount > 0 && (
           <button onClick={() => onNav('inbox')}
             className="relative flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-            style={{ color: '#6C5CE7' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(108,92,231,0.08)'}
+            style={{ color: '#5B5FFF' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.08)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
             <Bell size={13} />
             <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold text-white flex items-center justify-center"
-              style={{ background: '#D63031' }}>{approvalCount}</span>
+              style={{ background: '#EF4444' }}>
+              {approvalCount}
+            </span>
           </button>
         )}
       </div>
@@ -200,60 +274,68 @@ export default function DashboardSidebar({ active, onNav }) {
       {/* ── Nav ── */}
       <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
 
-        <SectionLabel label="Work" />
-        <NavBtn icon={Terminal}    label="Command"      id="home"         active={active} onClick={onNav} />
-        <NavBtn icon={Users}       label="Team"         id="agents"       active={active} onClick={onNav} />
+        {/* Workspace */}
+        <NavBtn icon={Home}          label="Home"         id="home"         active={active} onClick={onNav} />
+        <NavBtn icon={MessageSquare} label="Chat"        id="chat"         active={active} onClick={onNav} />
+        <NavBtn icon={Briefcase}   label="Agents"       id="agents"       active={active} onClick={onNav} />
+        <NavBtn icon={Inbox}       label="Inbox"        id="inbox"        active={active} onClick={onNav} badgeCount={approvalCount} />
+        <NavBtn icon={Layers}      label="Projects"     id="projects"     active={active} onClick={onNav} badgeCount={openTaskCount} bellBadge />
+        <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} badge="Beta" />
         <NavBtn icon={Target}      label="Goals"        id="goals"        active={active} onClick={onNav} />
-        <NavBtn icon={CheckSquare} label="Tasks"        id="tasks"        active={active} onClick={onNav} />
-        <NavBtn icon={Inbox}       label="Inbox"        id="inbox"        active={active} onClick={onNav}
-          badgeCount={approvalCount} />
+        <NavBtn icon={CheckSquare} label="Approvals"   id="approvals"    active={active} onClick={onNav} badgeCount={approvalCount} />
+        <NavBtn icon={DollarSign}  label="Budget"       id="budget"       active={active} onClick={onNav} />
 
+        {/* Configure */}
         <SectionLabel label="Configure" />
-        <NavBtn icon={RefreshCw}   label="Routines"     id="routines"     active={active} onClick={onNav} />
+        <NavBtn icon={Zap}         label="Automations"  id="automations"  active={active} onClick={onNav} badge="Beta" />
         <NavBtn icon={Plug}        label="Integrations" id="integrations" active={active} onClick={onNav} />
         <NavBtn icon={Wrench}      label="Skills"       id="skills"       active={active} onClick={onNav} />
-        <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} />
-
-        <SectionLabel label="Account" />
-        <NavBtn icon={BarChart2}   label="Budget"       id="budget"       active={active} onClick={onNav} />
         <NavBtn icon={Settings}    label="Settings"     id="settings"     active={active} onClick={onNav} />
+        <NavBtn icon={CreditCard}  label="Credits"      id="credits"      active={active} onClick={onNav} />
         <NavBtn icon={HelpCircle}  label="Support"      id="support"      active={active} onClick={onNav} />
 
-        {/* ── Agent team ── */}
-        {visibleAgents.length > 0 && (
-          <>
-            <div className="px-3 pt-5 pb-1.5 flex items-center justify-between">
-              <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#CBD5E1' }}>Your Team</span>
-              <button onClick={() => onNav('agents')}
-                className="w-5 h-5 rounded-md flex items-center justify-center transition-colors"
-                style={{ color: '#CBD5E1' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.08)'; e.currentTarget.style.color = '#6C5CE7'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#CBD5E1'; }}>
-                <Plus size={11} />
-              </button>
-            </div>
-            {visibleAgents.map(agent => (
-              <AgentRow key={agent.id} agent={agent} companyId={activeCompanyId} onClick={() => onNav('agents')} />
-            ))}
-          </>
+        {/* Deployed agents */}
+        <div className="px-3 pt-5 pb-1.5 flex items-center justify-between">
+          <span className="text-[9px] font-black tracking-[0.12em] uppercase" style={{ color: '#C7D0E8' }}>
+            Deployed Operators
+          </span>
+          <button onClick={() => onNav('agents')}
+            className="w-5 h-5 rounded-md flex items-center justify-center transition-colors"
+            style={{ color: '#C7D0E8' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.08)'; e.currentTarget.style.color = '#5B5FFF'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C7D0E8'; }}>
+            <Plus size={11} />
+          </button>
+        </div>
+
+        {visibleAgents.length === 0 ? (
+          <p className="px-3 text-xs font-medium" style={{ color: '#CBD5E1' }}>No operators yet</p>
+        ) : (
+          visibleAgents.map(agent => (
+            <AgentRow key={agent.id} agent={agent} onClick={() => onNav('agents')} />
+          ))
         )}
       </nav>
 
       {/* ── User row ── */}
-      <div className="px-2 py-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(108,92,231,0.07)' }}>
+      <div className="px-2 py-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(91,95,255,0.07)' }}>
         <button
           onClick={() => setShowMenu(s => !s)}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all"
           style={{ color: '#374151' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(108,92,231,0.05)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.05)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
         >
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#6C5CE7,#7C6CF7)', boxShadow: '0 4px 12px rgba(108,92,231,0.3)' }}>
+            style={{
+              background: 'linear-gradient(135deg, #5B5FFF, #2563EB)',
+              boxShadow: '0 4px 10px rgba(91,95,255,0.28)',
+            }}>
             {initial}
           </div>
           <span className="text-sm font-semibold truncate flex-1 text-left">{name.split(' ')[0]}</span>
-          <ChevronDown size={12} style={{ color: '#CBD5E1', flexShrink: 0 }} />
+          <ChevronDown size={12} style={{ color: '#CBD5E1', flexShrink: 0, transition: 'transform 150ms' }}
+            className={showMenu ? 'rotate-180' : ''} />
         </button>
       </div>
     </aside>

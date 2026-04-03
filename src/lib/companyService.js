@@ -2,11 +2,16 @@ import {
   collection, doc, addDoc, getDoc, setDoc, updateDoc,
   onSnapshot, serverTimestamp, query, where, getDocs
 } from 'firebase/firestore';
-import { firestore } from './firebaseClient';
+import { firestore, isDemoMode } from './firebaseClient';
+import {
+  localGetUserCompanies, localCreateCompany, localGetCompany,
+  localUpdateCompany, localSubscribeToCompany,
+} from './localDB';
 
 const COL = 'companies';
 
 export async function createCompany(userId, { name, mission, industry = '', size = 'startup' }) {
+  if (isDemoMode) return localCreateCompany(userId, { name, mission, industry, size });
   const ref = await addDoc(collection(firestore, COL), {
     ownerId: userId,
     name,
@@ -24,17 +29,20 @@ export async function createCompany(userId, { name, mission, industry = '', size
 }
 
 export async function getCompany(companyId) {
+  if (isDemoMode) return localGetCompany(companyId);
   const snap = await getDoc(doc(firestore, COL, companyId));
   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
 }
 
 export async function getUserCompanies(userId) {
+  if (isDemoMode) return localGetUserCompanies(userId);
   const q = query(collection(firestore, COL), where('ownerId', '==', userId));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
 export function subscribeToCompany(companyId, cb) {
+  if (isDemoMode) return localSubscribeToCompany(companyId, cb);
   return onSnapshot(doc(firestore, COL, companyId), snap => {
     if (snap.exists()) cb({ id: snap.id, ...snap.data() });
     else cb(null);
@@ -42,10 +50,12 @@ export function subscribeToCompany(companyId, cb) {
 }
 
 export async function updateCompany(companyId, updates) {
+  if (isDemoMode) return localUpdateCompany(companyId, updates);
   await updateDoc(doc(firestore, COL, companyId), { ...updates, updatedAt: serverTimestamp() });
 }
 
 export async function markBootstrapped(companyId) {
+  if (isDemoMode) return localUpdateCompany(companyId, { isBootstrapped: true });
   await updateDoc(doc(firestore, COL, companyId), { isBootstrapped: true, updatedAt: serverTimestamp() });
 }
 

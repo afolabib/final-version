@@ -235,7 +235,7 @@ export default function PaymentStep({ agent, answers, questions, deployConfig, o
           whileTap={!loading ? { scale: 0.97 } : {}}
           className="flex items-center gap-2.5 px-7 py-3 rounded-2xl text-sm font-bold transition-all duration-200"
           style={{
-            background: !loading ? 'linear-gradient(135deg, #4A6CF7, #6366F1)' : '#EEF0F8',
+            background: !loading ? 'linear-gradient(135deg, #4A6CF7, #6B63FF)' : '#EEF0F8',
             color: !loading ? '#fff' : '#C5C9E0',
             cursor: !loading ? 'pointer' : 'not-allowed',
             boxShadow: !loading ? '0 4px 20px rgba(74,108,247,0.3)' : 'none',

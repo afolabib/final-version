@@ -90,7 +90,7 @@ export default function TaskCard({ task, onDelete, onEdit, provided }) {
           {task.assignee && (
             <div className="flex items-center gap-1">
               <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
-                style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}>
+                style={{ background: 'linear-gradient(135deg, #6B63FF, #8B5CF6)' }}>
                 {task.assignee[0]}
               </div>
               <span className="text-[10px] font-medium" style={{ color: '#94A3B8' }}>{task.assignee}</span>

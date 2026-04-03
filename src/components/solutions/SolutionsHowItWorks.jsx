@@ -7,7 +7,7 @@ const steps = [
     number: '01',
     title: 'Pick Your Operator',
     description: 'Choose from six specialized AI operators — each built for a specific business function with domain expertise.',
-    color: '#6C5CE7',
+    color: '#5B5FFF',
   },
   {
     icon: Settings2,
@@ -39,7 +39,7 @@ export default function SolutionsHowItWorks() {
         <div className="text-center mb-12 md:mb-16">
           <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
             className="inline-block text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-4"
-            style={{ color: '#6C5CE7', background: 'rgba(108,92,231,0.06)', border: '1px solid rgba(108,92,231,0.1)' }}>
+            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
             How It Works
           </motion.span>
           <motion.h2 initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}

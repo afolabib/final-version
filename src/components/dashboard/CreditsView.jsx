@@ -36,10 +36,10 @@ export default function CreditsView() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 space-y-6" style={{ background: '#F4F5FC' }}>
+    <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 space-y-6" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
       {/* YOUR PLAN */}
       <div>
-        <h2 className="text-lg font-extrabold mb-4" style={{ color: '#0A0A1A' }}>Your Plan</h2>
+        <h2 className="heading-serif text-2xl font-bold mb-4" style={{ color: '#0A0F1E', letterSpacing: '-0.02em' }}>Your Plan</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
             className="rounded-2xl p-6 relative overflow-hidden" style={glassCard}>
@@ -135,6 +135,7 @@ export default function CreditsView() {
             ))}
           </div>
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            onClick={() => handleUpgrade(selectedPack)}
             className="w-full py-2.5 rounded-xl text-sm font-bold text-white"
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #6B63FF)', boxShadow: '0 4px 16px rgba(91,95,255,0.30)' }}>
             Buy {selectedPack} Credits

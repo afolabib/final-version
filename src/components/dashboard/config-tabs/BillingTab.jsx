@@ -18,7 +18,7 @@ export default function BillingTab() {
         <div className="space-y-2 mb-4">
           {[
             { id: 'credits', label: 'Use Credits', desc: 'Deducted from your credit balance. No API key needed.', icon: Zap, iconColor: '#F59E0B' },
-            { id: 'api-key', label: 'Use Your API Key', desc: 'Billed directly to your provider account.', icon: Key, iconColor: '#6366F1' },
+            { id: 'api-key', label: 'Use Your API Key', desc: 'Billed directly to your provider account.', icon: Key, iconColor: '#6B63FF' },
           ].map(opt => {
             const isActive = billingMode === opt.id;
             return (

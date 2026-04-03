@@ -7,7 +7,7 @@ import { ROLE_COLORS } from '@/lib/agentService';
 
 const COLUMNS = [
   { id: TASK_STATUS.TODO,         label: 'To Do',       color: '#94A3B8', Icon: Circle },
-  { id: TASK_STATUS.IN_PROGRESS,  label: 'In Progress', color: '#6C5CE7', Icon: Clock },
+  { id: TASK_STATUS.IN_PROGRESS,  label: 'In Progress', color: '#5B5FFF', Icon: Clock },
   { id: TASK_STATUS.NEEDS_REVIEW, label: 'Review',      color: '#F59E0B', Icon: AlertTriangle },
   { id: TASK_STATUS.DONE,         label: 'Done',        color: '#00B894', Icon: CheckCircle2 },
 ];
@@ -15,14 +15,14 @@ const COLUMNS = [
 const PRIORITY_COLORS = {
   critical: '#EF4444',
   high:     '#F59E0B',
-  medium:   '#6C5CE7',
+  medium:   '#5B5FFF',
   low:      '#94A3B8',
 };
 
 // ─── Task card ────────────────────────────────────────────────────────────────
 function TaskCard({ task, agents, onStatusChange }) {
   const agent = agents.find(a => a.id === task.assignedAgentId);
-  const agentColor = agent ? (ROLE_COLORS[agent.role] || '#6C5CE7') : null;
+  const agentColor = agent ? (ROLE_COLORS[agent.role] || '#5B5FFF') : null;
   const priColor = PRIORITY_COLORS[task.priority] || '#94A3B8';
 
   return (
@@ -76,7 +76,7 @@ function CreateTaskInline({ companyId, userId, defaultStatus, onDone, onCancel }
   }
 
   return (
-    <div className="rounded-xl p-3 mb-2" style={{ background: '#F8FAFF', border: '1.5px solid rgba(108,92,231,0.2)' }}>
+    <div className="rounded-xl p-3 mb-2" style={{ background: '#F8FAFF', border: '1.5px solid rgba(91,95,255,0.2)' }}>
       <input
         autoFocus
         value={title}
@@ -89,7 +89,7 @@ function CreateTaskInline({ companyId, userId, defaultStatus, onDone, onCancel }
       <div className="flex items-center gap-2">
         <button onClick={handleCreate} disabled={loading || !title.trim()}
           className="text-xs font-semibold px-3 py-1 rounded-lg transition-colors"
-          style={{ background: '#6C5CE7', color: '#fff', opacity: loading || !title.trim() ? 0.5 : 1 }}>
+          style={{ background: '#5B5FFF', color: '#fff', opacity: loading || !title.trim() ? 0.5 : 1 }}>
           {loading ? '…' : 'Add'}
         </button>
         <button onClick={onCancel} className="text-xs px-2 py-1 rounded-lg hover:bg-slate-100" style={{ color: '#94A3B8' }}>
@@ -173,7 +173,7 @@ export default function TasksView() {
   const doneCount = tasks.filter(t => t.status === TASK_STATUS.DONE).length;
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(180deg,#EEF0F8 0%,#F8FAFF 40%,#FFF 100%)' }}>
+    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
 
       {/* Header */}
       <div className="flex items-center justify-between px-8 py-5 flex-shrink-0">

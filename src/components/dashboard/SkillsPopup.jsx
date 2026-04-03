@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Search, Puzzle, Check, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const installed = [
   { name: 'calendar' },
@@ -14,6 +15,7 @@ const available = [
 ];
 
 export default function SkillsPopup() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
   const filteredInstalled = installed.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
@@ -84,12 +86,13 @@ export default function SkillsPopup() {
       )}
 
       {/* Footer */}
-      <div className="flex items-center gap-2 px-4 py-3.5" style={{ borderTop: '1px solid #F0F1FF' }}>
+      <button onClick={() => navigate('/dashboard/skills')}
+        className="w-full flex items-center gap-2 px-4 py-3.5 transition-colors hover:bg-gray-50" style={{ borderTop: '1px solid #F0F1FF' }}>
         <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(74,108,247,0.1)' }}>
           <Plus size={11} style={{ color: '#4A6CF7' }} />
         </div>
         <span className="text-sm font-semibold" style={{ color: '#4A6CF7' }}>Manage skills</span>
-      </div>
+      </button>
     </div>
   );
 }
