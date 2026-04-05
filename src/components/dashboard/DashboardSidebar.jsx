@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  Home, Briefcase, Inbox, Zap, Settings,
-  LogOut, ChevronDown, Plus, Bell, Users
+  Home, Briefcase, Inbox, FolderOpen, Layers,
+  Zap, Plug, Wrench, Settings, CreditCard, HelpCircle,
+  LogOut, ChevronDown, Plus, Bell, MessageSquare,
+  Target, Building2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -31,8 +33,8 @@ function StatusDot({ status }) {
 }
 
 // ── Nav button ────────────────────────────────────────────────────────────────
-function NavBtn({ icon: Icon, label, id, active, onClick, badgeCount, badge, activeIds }) {
-  const isActive = activeIds ? activeIds.includes(active) : active === id;
+function NavBtn({ icon: Icon, label, id, active, onClick, badge, badgeCount, bellBadge }) {
+  const isActive = active === id;
   return (
     <button
       onClick={() => onClick(id)}
@@ -60,15 +62,33 @@ function NavBtn({ icon: Icon, label, id, active, onClick, badgeCount, badge, act
       }}
     >
       <div className="flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-all"
-        style={{ background: isActive ? 'rgba(91,95,255,0.12)' : 'transparent' }}>
-        <Icon size={14} strokeWidth={isActive ? 2.3 : 1.9} style={{ transition: 'stroke-width 150ms' }} />
+        style={{
+          background: isActive ? 'rgba(91,95,255,0.12)' : 'transparent',
+        }}>
+        <Icon
+          size={14}
+          strokeWidth={isActive ? 2.3 : 1.9}
+          style={{ transition: 'stroke-width 150ms' }}
+        />
       </div>
       <span className="flex-1 text-left truncate text-[13px]">{label}</span>
 
-      {badgeCount > 0 && (
+      {/* Red badge (inbox) */}
+      {badgeCount > 0 && !bellBadge && (
         <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full text-[10px] font-bold flex items-center justify-center text-white px-1"
           style={{ background: '#EF4444', boxShadow: '0 2px 6px rgba(239,68,68,0.35)' }}>
           {badgeCount}
+        </span>
+      )}
+
+      {/* Bell indigo badge (tasks) */}
+      {bellBadge && badgeCount > 0 && (
+        <span className="flex-shrink-0 flex items-center gap-1">
+          <Bell size={10} style={{ color: '#5B5FFF' }} />
+          <span className="min-w-[16px] h-[16px] rounded-full text-[9px] font-bold flex items-center justify-center px-1"
+            style={{ background: 'rgba(91,95,255,0.10)', color: '#5B5FFF' }}>
+            {badgeCount}
+          </span>
         </span>
       )}
 
@@ -80,14 +100,29 @@ function NavBtn({ icon: Icon, label, id, active, onClick, badgeCount, badge, act
   );
 }
 
+// ── Section label ─────────────────────────────────────────────────────────────
+function SectionLabel({ label }) {
+  return (
+    <div className="px-3 pt-5 pb-1.5">
+      <span className="text-[9px] font-black tracking-[0.12em] uppercase" style={{ color: '#C7D0E8' }}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
 // ── Agent row ─────────────────────────────────────────────────────────────────
-function AgentRow({ agent }) {
+function AgentRow({ agent, onClick }) {
   const color = ROLE_COLORS[agent.role] || '#5B5FFF';
   const emoji = getRoleEmoji(agent);
   const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/dashboard/chat?agent=${encodeURIComponent(agent.name)}`);
+    if (onClick) onClick();
+  };
   return (
     <button
-      onClick={() => navigate(`/dashboard/chat?agent=${encodeURIComponent(agent.name)}`)}
+      onClick={handleClick}
       className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl transition-all duration-150"
       style={{ color: '#64748B' }}
       onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.04)'; e.currentTarget.style.color = '#5B5FFF'; }}
@@ -116,6 +151,7 @@ function UserMenu({ onClose, onSettings, onLogout, user }) {
         boxShadow: '0 -8px 32px rgba(91,95,255,0.10), 0 4px 24px rgba(0,0,0,0.08)',
         backdropFilter: 'blur(12px)',
       }}>
+      {/* User info */}
       <div className="flex items-center gap-3 px-4 py-4"
         style={{ borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
         <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
@@ -127,19 +163,24 @@ function UserMenu({ onClose, onSettings, onLogout, user }) {
           <p className="text-xs truncate" style={{ color: '#94A3B8' }}>{email}</p>
         </div>
       </div>
+
+      {/* System status chip */}
       <div className="px-4 py-2.5" style={{ borderBottom: '1px solid rgba(91,95,255,0.06)' }}>
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
           <span className="text-[11px] font-semibold" style={{ color: '#64748B' }}>All systems operational</span>
         </div>
       </div>
-      <button onClick={() => { onSettings(); onClose(); }}
-        className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors"
-        style={{ color: '#374151', borderBottom: '1px solid rgba(91,95,255,0.05)' }}
-        onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.04)'}
-        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-        <Settings size={14} strokeWidth={1.8} /><span>Settings</span>
-      </button>
+
+      {[{ icon: Settings, label: 'Settings', action: onSettings }].map(item => (
+        <button key={item.label} onClick={() => { item.action(); onClose(); }}
+          className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors"
+          style={{ color: '#374151', borderBottom: '1px solid rgba(91,95,255,0.05)' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.04)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+          <item.icon size={14} strokeWidth={1.8} /><span>{item.label}</span>
+        </button>
+      ))}
       <button onClick={() => { onLogout(); onClose(); }}
         className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors"
         style={{ color: '#EF4444' }}
@@ -193,22 +234,11 @@ function CompanySwitcher({ company, allCompanies, activeCompanyId, onSwitch, onN
   );
 }
 
-// ── Nav items config ──────────────────────────────────────────────────────────
-// id = what we call onNav with; activeIds = which route segments match as "active"
-const NAV_ITEMS = [
-  { icon: Home,     label: 'Home',      id: 'home',      activeIds: ['home', ''] },
-  { icon: Briefcase,label: 'Work',      id: 'projects',  activeIds: ['projects', 'goals', 'tasks', 'files'] },
-  { icon: Users,    label: 'Team',      id: 'agents',    activeIds: ['agents', 'chat', 'orgchart'] },
-  { icon: Inbox,    label: 'Inbox',     id: 'inbox',     activeIds: ['inbox'], hasBadge: true },
-  { icon: Zap,      label: 'Playbooks', id: 'automations',activeIds: ['automations', 'routines', 'skills'], badge: 'Beta' },
-  { icon: Settings, label: 'Settings',  id: 'settings',  activeIds: ['settings', 'credits', 'integrations'] },
-];
-
 // ── Main sidebar ──────────────────────────────────────────────────────────────
 export default function DashboardSidebar({ active, onNav }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { company, allCompanies, agents, activeCompanyId, pendingApprovals, switchCompany } = useCompany();
+  const { company, allCompanies, agents, tasks, activeCompanyId, pendingApprovals, switchCompany } = useCompany();
   const [showMenu, setShowMenu] = useState(false);
   const [showSwitcher, setShowSwitcher] = useState(false);
   const menuRef = useRef(null);
@@ -217,6 +247,7 @@ export default function DashboardSidebar({ active, onNav }) {
   const name = user?.full_name || user?.displayName || 'User';
   const initial = name[0]?.toUpperCase() || 'U';
   const approvalCount = pendingApprovals.length;
+  const openTaskCount = (tasks || []).filter(t => t.status !== 'done' && t.status !== 'cancelled').length;
 
   useEffect(() => {
     const handler = e => {
@@ -227,13 +258,13 @@ export default function DashboardSidebar({ active, onNav }) {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const visibleAgents = agents.filter(a => a.status !== AGENT_STATUS.TERMINATED).slice(0, 6);
+  const visibleAgents = agents.filter(a => a.status !== AGENT_STATUS.TERMINATED).slice(0, 8);
 
   return (
     <aside
       className="flex-shrink-0 flex flex-col h-full m-2 rounded-2xl overflow-visible relative"
       style={{
-        width: 220,
+        width: 240,
         background: 'rgba(255,255,255,0.97)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(91,95,255,0.08)',
@@ -264,13 +295,13 @@ export default function DashboardSidebar({ active, onNav }) {
         </div>
       )}
 
-      {/* ── Header ── */}
-      <div className="flex items-center gap-2 px-3 py-3 flex-shrink-0"
+      {/* ── Header: Freemi logo + company switcher ── */}
+      <div className="flex items-center justify-between px-3 py-3 flex-shrink-0"
         style={{ borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
 
         {/* Logo */}
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="w-7 h-7 rounded-xl flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)', boxShadow: '0 4px 12px rgba(91,95,255,0.35)' }}>
             <div className="w-2.5 h-2.5 rounded-full bg-white opacity-95" />
           </div>
@@ -280,7 +311,7 @@ export default function DashboardSidebar({ active, onNav }) {
         {/* Company switcher pill */}
         <button
           onClick={() => setShowSwitcher(s => !s)}
-          className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl min-w-0 max-w-[90px] transition-all flex-shrink-0"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl min-w-0 max-w-[110px] transition-all"
           style={{
             background: showSwitcher ? 'rgba(91,95,255,0.10)' : 'rgba(91,95,255,0.05)',
             border: '1px solid rgba(91,95,255,0.12)',
@@ -291,10 +322,10 @@ export default function DashboardSidebar({ active, onNav }) {
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)' }}>
             {company?.name?.[0]?.toUpperCase() || 'F'}
           </div>
-          <span className="text-[10px] font-bold truncate" style={{ color: '#374151' }}>
-            {company?.name || 'Co'}
+          <span className="text-[11px] font-bold truncate" style={{ color: '#374151' }}>
+            {company?.name || 'My Company'}
           </span>
-          <ChevronDown size={10} style={{ color: '#94A3B8', flexShrink: 0, transform: showSwitcher ? 'rotate(180deg)' : 'none', transition: 'transform 150ms' }} />
+          <ChevronDown size={11} style={{ color: '#94A3B8', flexShrink: 0, transform: showSwitcher ? 'rotate(180deg)' : 'none', transition: 'transform 150ms' }} />
         </button>
 
         {approvalCount > 0 && (
@@ -313,25 +344,30 @@ export default function DashboardSidebar({ active, onNav }) {
       </div>
 
       {/* ── Nav ── */}
-      <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
-        {NAV_ITEMS.map(item => (
-          <NavBtn
-            key={item.id}
-            icon={item.icon}
-            label={item.label}
-            id={item.id}
-            active={active}
-            activeIds={item.activeIds}
-            onClick={onNav}
-            badgeCount={item.hasBadge ? approvalCount : 0}
-            badge={item.badge}
-          />
-        ))}
+      <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
 
-        {/* ── Deployed operators ── */}
+        {/* Workspace */}
+        <NavBtn icon={Home}          label="Home"         id="home"         active={active} onClick={onNav} />
+<NavBtn icon={Building2}   label="Companies"    id="companies"    active={active} onClick={onNav} />
+        <NavBtn icon={Briefcase}   label="Agents"       id="agents"       active={active} onClick={onNav} />
+        <NavBtn icon={Inbox}       label="Inbox"        id="inbox"        active={active} onClick={onNav} badgeCount={approvalCount} />
+        <NavBtn icon={Layers}      label="Projects"     id="projects"     active={active} onClick={onNav} badgeCount={openTaskCount} bellBadge />
+        <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} badge="Beta" />
+        <NavBtn icon={Target}      label="Taskboard"    id="goals"        active={active} onClick={onNav} />
+
+        {/* Configure */}
+        <SectionLabel label="Configure" />
+        <NavBtn icon={Zap}         label="Automations"  id="automations"  active={active} onClick={onNav} badge="Beta" />
+        <NavBtn icon={Plug}        label="Integrations" id="integrations" active={active} onClick={onNav} />
+        <NavBtn icon={Wrench}      label="Skills"       id="skills"       active={active} onClick={onNav} />
+        <NavBtn icon={Settings}    label="Settings"     id="settings"     active={active} onClick={onNav} />
+        <NavBtn icon={CreditCard}  label="Credits"      id="credits"      active={active} onClick={onNav} />
+        <NavBtn icon={HelpCircle}  label="Support"      id="support"      active={active} onClick={onNav} />
+
+        {/* Deployed agents */}
         <div className="px-3 pt-5 pb-1.5 flex items-center justify-between">
           <span className="text-[9px] font-black tracking-[0.12em] uppercase" style={{ color: '#C7D0E8' }}>
-            Operators
+            Deployed Operators
           </span>
           <button onClick={() => onNav('agents')}
             className="w-5 h-5 rounded-md flex items-center justify-center transition-colors"
@@ -346,7 +382,7 @@ export default function DashboardSidebar({ active, onNav }) {
           <p className="px-3 text-xs font-medium" style={{ color: '#CBD5E1' }}>No operators yet</p>
         ) : (
           visibleAgents.map(agent => (
-            <AgentRow key={agent.id} agent={agent} />
+            <AgentRow key={agent.id} agent={agent} onClick={() => setSidebarOpen?.(false)} />
           ))
         )}
       </nav>
@@ -361,7 +397,10 @@ export default function DashboardSidebar({ active, onNav }) {
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
         >
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #5B5FFF, #2563EB)', boxShadow: '0 4px 10px rgba(91,95,255,0.28)' }}>
+            style={{
+              background: 'linear-gradient(135deg, #5B5FFF, #2563EB)',
+              boxShadow: '0 4px 10px rgba(91,95,255,0.28)',
+            }}>
             {initial}
           </div>
           <span className="text-sm font-semibold truncate flex-1 text-left">{name.split(' ')[0]}</span>
