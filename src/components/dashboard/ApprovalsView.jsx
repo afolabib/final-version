@@ -90,8 +90,19 @@ function NeedsInputCard({ approval, companyId, index }) {
           setResolved(true);
         }, 1200);
       }
-    } catch {
-      setLocalMessages(prev => [...prev, { role: 'agent', text: "I had trouble processing that. Please try again." }]);
+    } catch (err) {
+      // chatProxy failed (rate limit, cold start, etc.) — still deliver message via approveRequest
+      // so the CF picks it up and the agent retries
+      try {
+        await approveRequest(companyId, uid, approval.id, msg);
+        setLocalMessages(prev => [...prev, {
+          role: 'agent',
+          text: "Got it — your message was delivered. I'm processing it now and will follow up if I need anything else.",
+        }]);
+        setTimeout(() => setResolved(true), 2000);
+      } catch {
+        setLocalMessages(prev => [...prev, { role: 'agent', text: "Delivery failed — please try again in a moment." }]);
+      }
     } finally {
       setThinking(false);
     }
