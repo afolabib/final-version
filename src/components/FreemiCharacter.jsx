@@ -2,14 +2,14 @@ import { motion } from 'framer-motion';
 
 export default function FreemiCharacter({ size = 'lg', color = '#5B5FFF' }) {
   const isLg = size === 'lg';
-  const body = isLg ? 120 : 64;
-  const eyeSize = isLg ? 28 : 16;
-  const radius = isLg ? 32 : 16;
-  const armW = isLg ? 10 : 5;
-  const armH = isLg ? 28 : 14;
-  const legW = isLg ? 10 : 5;
-  const legH = isLg ? 22 : 11;
-  const totalW = body + 40;
+  const body = size === 'lg' ? 120 : size === 'sm' ? 64 : 28; // xs = 28
+  const eyeSize = size === 'lg' ? 28 : size === 'sm' ? 16 : 7;
+  const radius = size === 'lg' ? 32 : size === 'sm' ? 16 : 7;
+  const armW = size === 'lg' ? 10 : size === 'sm' ? 5 : 2;
+  const armH = size === 'lg' ? 28 : size === 'sm' ? 14 : 6;
+  const legW = size === 'lg' ? 10 : size === 'sm' ? 5 : 2;
+  const legH = size === 'lg' ? 22 : size === 'sm' ? 11 : 5;
+  const totalW = body + (size === 'xs' ? 8 : 40);
 
   return (
     <div className="relative flex flex-col items-center" style={{ width: totalW, height: body + legH + 12 }}>

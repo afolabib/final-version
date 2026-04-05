@@ -3,7 +3,7 @@ import {
   serverTimestamp, query, where, orderBy
 } from 'firebase/firestore';
 import { firestore, isDemoMode } from './firebaseClient';
-import { localSubscribeApprovals } from './localDB';
+import { localSubscribeApprovals, localApproveRequest, localRejectRequest } from './localDB';
 import { logActivity } from './activityService';
 
 const COL = 'approvals';
@@ -42,6 +42,7 @@ export async function createApproval(companyId, requestingActorId, { type, title
 }
 
 export async function approveRequest(companyId, userId, approvalId, note = '') {
+  if (isDemoMode) { localApproveRequest(companyId, userId, approvalId); return; }
   const ref = doc(firestore, COL, approvalId);
   await updateDoc(ref, {
     status: APPROVAL_STATUS.APPROVED,
@@ -54,6 +55,7 @@ export async function approveRequest(companyId, userId, approvalId, note = '') {
 }
 
 export async function rejectRequest(companyId, userId, approvalId, note = '') {
+  if (isDemoMode) { localRejectRequest(companyId, userId, approvalId, note); return; }
   await updateDoc(doc(firestore, COL, approvalId), {
     status: APPROVAL_STATUS.REJECTED,
     decidedByUserId: userId,

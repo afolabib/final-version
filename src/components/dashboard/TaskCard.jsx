@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Clock, Flag, User, MoreHorizontal, Trash2, Edit3 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Clock, Flag, User, MoreHorizontal, Trash2, Edit3, ChevronDown, ChevronUp, Copy, CheckCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const priorityConfig = {
   urgent: { color: '#EF4444', bg: 'rgba(239,68,68,0.08)', label: 'Urgent' },
@@ -11,7 +11,17 @@ const priorityConfig = {
 
 export default function TaskCard({ task, onDelete, onEdit, provided }) {
   const [showMenu, setShowMenu] = useState(false);
+  const [showOutput, setShowOutput] = useState(false);
+  const [copied, setCopied] = useState(false);
   const priority = priorityConfig[task.priority] || priorityConfig.medium;
+  const hasOutput = task.outputSummary && task.outputSummary.length > 10;
+
+  const copyOutput = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(task.outputSummary);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   return (
     <div
@@ -81,6 +91,45 @@ export default function TaskCard({ task, onDelete, onEdit, provided }) {
             <span key={tag} className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
               style={{ background: '#F0F1FF', color: '#4A6CF7' }}>{tag}</span>
           ))}
+        </div>
+      )}
+
+      {/* Agent output — shown if task has outputSummary */}
+      {hasOutput && (
+        <div className="mb-2">
+          <button
+            onClick={e => { e.stopPropagation(); setShowOutput(v => !v); }}
+            className="flex items-center gap-1.5 text-[11px] font-semibold w-full px-2.5 py-1.5 rounded-lg transition-colors"
+            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.1)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(91,95,255,0.06)'}>
+            {showOutput ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+            {showOutput ? 'Hide output' : 'View agent output'}
+          </button>
+          <AnimatePresence>
+            {showOutput && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.18 }}
+                className="overflow-hidden">
+                <div className="mt-2 rounded-xl p-3 relative"
+                  style={{ background: '#F8FAFF', border: '1px solid rgba(91,95,255,0.1)' }}>
+                  <button onClick={copyOutput}
+                    className="absolute top-2 right-2 p-1.5 rounded-lg transition-colors"
+                    style={{ color: copied ? '#5B5FFF' : '#94A3B8', background: copied ? 'rgba(91,95,255,0.08)' : 'transparent' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.08)'; e.currentTarget.style.color = '#5B5FFF'; }}
+                    onMouseLeave={e => { if (!copied) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; } }}>
+                    {copied ? <CheckCheck size={11} /> : <Copy size={11} />}
+                  </button>
+                  <p className="text-xs leading-relaxed pr-6 whitespace-pre-wrap" style={{ color: '#374151' }}>
+                    {task.outputSummary}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
 

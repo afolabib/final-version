@@ -1,5 +1,5 @@
 import {
-  collection, doc, addDoc, updateDoc, onSnapshot,
+  collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot,
   serverTimestamp, query, where, orderBy, runTransaction
 } from 'firebase/firestore';
 import { firestore, isDemoMode } from './firebaseClient';
@@ -57,6 +57,11 @@ export async function updateTask(companyId, userId, taskId, updates) {
   }
 }
 
+export async function deleteTask(companyId, taskId) {
+  if (isDemoMode) return;
+  await deleteDoc(doc(firestore, COL, taskId));
+}
+
 // Atomic task checkout — prevents double-work (Paperclip semantics)
 export async function checkoutTask(taskId, agentId, runId) {
   const ref = doc(firestore, COL, taskId);
@@ -90,18 +95,24 @@ export function subscribeTasks(companyId, cb) {
   if (isDemoMode) return localSubscribeTasks(companyId, cb);
   const q = query(
     collection(firestore, COL),
-    where('companyId', '==', companyId),
-    orderBy('createdAt', 'desc')
+    where('companyId', '==', companyId)
   );
-  return onSnapshot(q, snap => cb(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
+  return onSnapshot(q, snap => {
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    cb(docs);
+  });
 }
 
 export function subscribeTasksByAgent(companyId, agentId, cb) {
   const q = query(
     collection(firestore, COL),
     where('companyId', '==', companyId),
-    where('assignedAgentId', '==', agentId),
-    orderBy('createdAt', 'desc')
+    where('assignedAgentId', '==', agentId)
   );
-  return onSnapshot(q, snap => cb(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
+  return onSnapshot(q, snap => {
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    cb(docs);
+  });
 }

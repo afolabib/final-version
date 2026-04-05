@@ -70,18 +70,39 @@ export function subscribeAgentHeartbeats(companyId, agentId, cb) {
   return onSnapshot(q, snap => cb(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
 }
 
-// Manual heartbeat trigger — calls the Fly.io OpenClaw gateway
+// Manual heartbeat trigger — calls the actual Fly.io machine endpoint
 export async function triggerManualHeartbeat(agentId, companyId) {
-  // This calls the Fly.io VPS endpoint to wake the OpenClaw agent
-  // The VPS writes the heartbeat result back to Firestore
   try {
-    const res = await fetch(`/api/heartbeat/trigger`, {
+    // Look up the agent's machine in Firestore to get the URL + gateway token
+    const { getDocs, query, where, collection } = await import('firebase/firestore');
+    const { firestore } = await import('./firebaseClient');
+
+    const machinesSnap = await getDocs(
+      query(
+        collection(firestore, 'agent_machines'),
+        where('agentId', '==', agentId),
+        where('status', '==', 'running')
+      )
+    );
+
+    if (machinesSnap.empty) {
+      console.warn('No running machine found for agent', agentId);
+      return false;
+    }
+
+    const machine = machinesSnap.docs[0].data();
+    const { url, gatewayToken } = machine;
+
+    const res = await fetch(`${url}/heartbeat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ agentId, companyId }),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(gatewayToken ? { Authorization: `Bearer ${gatewayToken}` } : {}),
+      },
     });
     return res.ok;
-  } catch {
+  } catch (err) {
+    console.error('triggerManualHeartbeat error:', err);
     return false;
   }
 }

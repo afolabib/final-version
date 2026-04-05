@@ -3,7 +3,7 @@ import {
   Home, Briefcase, Inbox, FolderOpen, Layers,
   Zap, Plug, Wrench, Settings, CreditCard, HelpCircle,
   LogOut, ChevronDown, Plus, Bell, MessageSquare,
-  Target, CheckSquare, DollarSign
+  Target, Building2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -115,9 +115,14 @@ function SectionLabel({ label }) {
 function AgentRow({ agent, onClick }) {
   const color = ROLE_COLORS[agent.role] || '#5B5FFF';
   const initial = agent.name?.[0]?.toUpperCase() || '?';
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/dashboard/chat?agent=${encodeURIComponent(agent.name)}`);
+    if (onClick) onClick();
+  };
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl transition-all duration-150"
       style={{ color: '#64748B' }}
       onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.04)'; e.currentTarget.style.color = '#5B5FFF'; }}
@@ -187,13 +192,57 @@ function UserMenu({ onClose, onSettings, onLogout, user }) {
   );
 }
 
+// ── Company switcher dropdown ─────────────────────────────────────────────────
+function CompanySwitcher({ company, allCompanies, activeCompanyId, onSwitch, onNew, onClose }) {
+  return (
+    <div className="absolute top-16 left-2 right-2 rounded-2xl overflow-hidden z-50"
+      style={{
+        background: 'rgba(255,255,255,0.99)',
+        border: '1px solid rgba(91,95,255,0.12)',
+        boxShadow: '0 12px 40px rgba(91,95,255,0.15)',
+      }}>
+      <div className="px-3 py-2.5" style={{ borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
+        <span className="text-[9px] font-black tracking-[0.12em] uppercase" style={{ color: '#C7D0E8' }}>Workspaces</span>
+      </div>
+      <div className="py-1 max-h-48 overflow-y-auto">
+        {allCompanies.map(co => (
+          <button key={co.id} onClick={() => { onSwitch(co.id); onClose(); }}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 transition-colors text-left"
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.04)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-[11px] font-black flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)' }}>
+              {co.name?.[0]?.toUpperCase() || 'F'}
+            </div>
+            <span className="flex-1 text-sm font-semibold truncate" style={{ color: '#0A0F1E' }}>{co.name}</span>
+            {co.id === activeCompanyId && (
+              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#5B5FFF' }} />
+            )}
+          </button>
+        ))}
+      </div>
+      <div style={{ borderTop: '1px solid rgba(91,95,255,0.07)' }}>
+        <button onClick={() => { onNew(); onClose(); }}
+          className="w-full flex items-center gap-2.5 px-3 py-3 text-sm font-semibold transition-colors"
+          style={{ color: '#5B5FFF' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.04)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+          <Plus size={14} /> New company
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main sidebar ──────────────────────────────────────────────────────────────
 export default function DashboardSidebar({ active, onNav }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { company, agents, tasks, activeCompanyId, pendingApprovals } = useCompany();
+  const { company, allCompanies, agents, tasks, activeCompanyId, pendingApprovals, switchCompany } = useCompany();
   const [showMenu, setShowMenu] = useState(false);
+  const [showSwitcher, setShowSwitcher] = useState(false);
   const menuRef = useRef(null);
+  const switcherRef = useRef(null);
 
   const name = user?.full_name || user?.displayName || 'User';
   const initial = name[0]?.toUpperCase() || 'U';
@@ -203,6 +252,7 @@ export default function DashboardSidebar({ active, onNav }) {
   useEffect(() => {
     const handler = e => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
+      if (switcherRef.current && !switcherRef.current.contains(e.target)) setShowSwitcher(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -232,38 +282,60 @@ export default function DashboardSidebar({ active, onNav }) {
         </div>
       )}
 
-      {/* ── Logo ── */}
-      <div className="flex items-center justify-between px-4 py-4 flex-shrink-0"
+      {showSwitcher && (
+        <div ref={switcherRef}>
+          <CompanySwitcher
+            company={company}
+            allCompanies={allCompanies}
+            activeCompanyId={activeCompanyId}
+            onSwitch={switchCompany}
+            onNew={() => onNav('companies')}
+            onClose={() => setShowSwitcher(false)}
+          />
+        </div>
+      )}
+
+      {/* ── Header: Freemi logo + company switcher ── */}
+      <div className="flex items-center justify-between px-3 py-3 flex-shrink-0"
         style={{ borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
-        <div className="flex items-center gap-2.5 min-w-0">
-          {/* Logo mark */}
-          <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, #5B5FFF, #2563EB)',
-              boxShadow: '0 4px 12px rgba(91,95,255,0.35)',
-            }}>
+
+        {/* Logo */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="w-7 h-7 rounded-xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)', boxShadow: '0 4px 12px rgba(91,95,255,0.35)' }}>
             <div className="w-2.5 h-2.5 rounded-full bg-white opacity-95" />
           </div>
-          <div className="min-w-0">
-            <p className="font-black text-sm tracking-tight truncate" style={{ color: '#0A0F1E', lineHeight: 1.2 }}>
-              Freemi
-            </p>
-            {company?.name && (
-              <p className="text-[10px] truncate font-medium" style={{ color: '#94A3B8' }}>
-                {company.name}
-              </p>
-            )}
-          </div>
+          <span className="font-black text-sm tracking-tight" style={{ color: '#0A0F1E' }}>Freemi</span>
         </div>
+
+        {/* Company switcher pill */}
+        <button
+          onClick={() => setShowSwitcher(s => !s)}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl min-w-0 max-w-[110px] transition-all"
+          style={{
+            background: showSwitcher ? 'rgba(91,95,255,0.10)' : 'rgba(91,95,255,0.05)',
+            border: '1px solid rgba(91,95,255,0.12)',
+          }}
+          onMouseEnter={e => { if (!showSwitcher) e.currentTarget.style.background = 'rgba(91,95,255,0.09)'; }}
+          onMouseLeave={e => { if (!showSwitcher) e.currentTarget.style.background = 'rgba(91,95,255,0.05)'; }}>
+          <div className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-black flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)' }}>
+            {company?.name?.[0]?.toUpperCase() || 'F'}
+          </div>
+          <span className="text-[11px] font-bold truncate" style={{ color: '#374151' }}>
+            {company?.name || 'My Company'}
+          </span>
+          <ChevronDown size={11} style={{ color: '#94A3B8', flexShrink: 0, transform: showSwitcher ? 'rotate(180deg)' : 'none', transition: 'transform 150ms' }} />
+        </button>
 
         {approvalCount > 0 && (
           <button onClick={() => onNav('inbox')}
-            className="relative flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+            className="relative flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-colors"
             style={{ color: '#5B5FFF' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.08)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-            <Bell size={13} />
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold text-white flex items-center justify-center"
+            <Bell size={12} />
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full text-[8px] font-bold text-white flex items-center justify-center"
               style={{ background: '#EF4444' }}>
               {approvalCount}
             </span>
@@ -276,14 +348,12 @@ export default function DashboardSidebar({ active, onNav }) {
 
         {/* Workspace */}
         <NavBtn icon={Home}          label="Home"         id="home"         active={active} onClick={onNav} />
-        <NavBtn icon={MessageSquare} label="Chat"        id="chat"         active={active} onClick={onNav} />
+<NavBtn icon={Building2}   label="Companies"    id="companies"    active={active} onClick={onNav} />
         <NavBtn icon={Briefcase}   label="Agents"       id="agents"       active={active} onClick={onNav} />
         <NavBtn icon={Inbox}       label="Inbox"        id="inbox"        active={active} onClick={onNav} badgeCount={approvalCount} />
         <NavBtn icon={Layers}      label="Projects"     id="projects"     active={active} onClick={onNav} badgeCount={openTaskCount} bellBadge />
         <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} badge="Beta" />
-        <NavBtn icon={Target}      label="Goals"        id="goals"        active={active} onClick={onNav} />
-        <NavBtn icon={CheckSquare} label="Approvals"   id="approvals"    active={active} onClick={onNav} badgeCount={approvalCount} />
-        <NavBtn icon={DollarSign}  label="Budget"       id="budget"       active={active} onClick={onNav} />
+        <NavBtn icon={Target}      label="Taskboard"    id="goals"        active={active} onClick={onNav} />
 
         {/* Configure */}
         <SectionLabel label="Configure" />
@@ -312,7 +382,7 @@ export default function DashboardSidebar({ active, onNav }) {
           <p className="px-3 text-xs font-medium" style={{ color: '#CBD5E1' }}>No operators yet</p>
         ) : (
           visibleAgents.map(agent => (
-            <AgentRow key={agent.id} agent={agent} onClick={() => onNav('agents')} />
+            <AgentRow key={agent.id} agent={agent} onClick={() => setSidebarOpen?.(false)} />
           ))
         )}
       </nav>

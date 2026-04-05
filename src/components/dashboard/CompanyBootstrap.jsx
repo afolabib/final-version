@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Building2, Target, ArrowRight, Upload, Check, Loader2, Globe, Users, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { createCompany, importCompany } from '@/lib/companyService';
 import { createCEOAgent } from '@/lib/agentService';
@@ -8,6 +9,27 @@ import { markBootstrapped } from '@/lib/companyService';
 import { useCompany } from '@/contexts/CompanyContext';
 
 const STEPS = ['mode', 'setup', 'mission', 'done'];
+
+function DoneStep({ navigate }) {
+  useEffect(() => {
+    const t = setTimeout(() => navigate('/dashboard'), 1800);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+      className="w-full max-w-sm px-4 text-center">
+      <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+        style={{ background: 'linear-gradient(135deg,#5B5FFF,#7C3AED)', boxShadow: '0 8px 30px rgba(91,95,255,0.4)' }}>
+        <Check size={28} className="text-white" />
+      </div>
+      <h2 className="text-2xl font-bold mb-2" style={{ color: '#0A0A1A' }}>Freemi is live</h2>
+      <p className="text-sm" style={{ color: '#64748B' }}>Taking you to your workspace…</p>
+      <div className="mt-4 flex justify-center">
+        <div className="w-6 h-6 border-2 border-indigo-300 border-t-indigo-600 rounded-full animate-spin" />
+      </div>
+    </motion.div>
+  );
+}
 
 const INDUSTRIES = ['SaaS', 'E-Commerce', 'Agency', 'Healthcare', 'Logistics', 'Hospitality', 'Finance', 'Other'];
 const SIZES = [
@@ -19,6 +41,7 @@ const SIZES = [
 export default function CompanyBootstrap({ onComplete }) {
   const { user } = useAuth();
   const { onBootstrapComplete } = useCompany();
+  const navigate = useNavigate();
   const [step, setStep] = useState('mode'); // mode | setup | mission | importing | done
   const [mode, setMode] = useState(null);   // 'create' | 'import'
   const [form, setForm] = useState({ name: '', industry: 'SaaS', size: 'startup' });
@@ -265,15 +288,7 @@ export default function CompanyBootstrap({ onComplete }) {
 
         {/* ── Done ── */}
         {step === 'done' && (
-          <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-sm px-4 text-center">
-            <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#00B894,#00CEC9)', boxShadow: '0 8px 30px rgba(0,184,148,0.4)' }}>
-              <Check size={28} className="text-white" />
-            </div>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: '#0A0A1A' }}>Freemi is live</h2>
-            <p className="text-sm mb-2" style={{ color: '#64748B' }}>Freemi is ready. Tell her your goals and she'll run the company.</p>
-          </motion.div>
+          <DoneStep navigate={navigate} />
         )}
 
       </AnimatePresence>

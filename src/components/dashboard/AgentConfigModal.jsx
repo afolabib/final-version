@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useCompany } from '@/contexts/CompanyContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Settings, MessageCircle, Bot, Link, Code2, Wrench, CreditCard, FolderOpen, Search, RefreshCw, Trash2, ExternalLink, Plus, Eye, EyeOff, FileText, Check, ChevronRight, Shield, Palette, Globe, Bell, Key, Zap } from 'lucide-react';
 import SettingsTab from './config-tabs/SettingsTab';
@@ -21,7 +22,7 @@ const configTabs = [
   { id: 'files', label: 'Files', icon: FolderOpen },
 ];
 
-function TabContent({ tab }) {
+function TabContent({ tab, agent, companyId }) {
   switch (tab) {
     case 'settings': return <SettingsTab />;
     case 'channels': return <ChannelsTab />;
@@ -30,12 +31,13 @@ function TabContent({ tab }) {
     case 'custom-apis': return <CustomAPIsTab />;
     case 'skills': return <SkillsTab />;
     case 'billing': return <BillingTab />;
-    case 'files': return <FilesTab />;
+    case 'files': return <FilesTab agent={agent} companyId={companyId} />;
     default: return null;
   }
 }
 
 export default function AgentConfigModal({ agent, onClose }) {
+  const { activeCompanyId } = useCompany();
   const [activeTab, setActiveTab] = useState('settings');
   const agentName = agent?.name || 'Atlas';
   const agentInitial = agentName[0]?.toUpperCase() || 'A';
@@ -128,7 +130,7 @@ export default function AgentConfigModal({ agent, onClose }) {
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.2 }}
               >
-                <TabContent tab={activeTab} />
+                <TabContent tab={activeTab} agent={agent} companyId={activeCompanyId} />
               </motion.div>
             </AnimatePresence>
           </div>

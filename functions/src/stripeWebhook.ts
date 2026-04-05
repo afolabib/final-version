@@ -37,7 +37,7 @@ async function createFlyMachine(subdomain: string, userId: string, env: Record<s
     throw new Error(`Failed to create volume: ${await volumeResponse.text()}`);
   }
 
-  const volume = await volumeResponse.json();
+  const volume = await volumeResponse.json() as any;
 
   // 2. Create machine
   const config = {
@@ -104,7 +104,7 @@ async function createFlyMachine(subdomain: string, userId: string, env: Record<s
     throw new Error(`Failed to create machine: ${await machineResponse.text()}`);
   }
 
-  const machine = await machineResponse.json();
+  const machine = await machineResponse.json() as any;
 
   // 3. Wait for machine to start
   await fetch(

@@ -6,13 +6,15 @@ import { useFileUpload } from '@/hooks/useFileUpload';
 import AgentSettingsPanel from './AgentSettingsPanel';
 import IntegrationsPopup from './IntegrationsPopup';
 import SkillsPopup from './SkillsPopup';
+import FilesPopup from './FilesPopup';
 
-export default function ChatInput({ onSend, onOpenComputer }) {
+export default function ChatInput({ onSend, onOpenComputer, agent, companyId }) {
   const navigate = useNavigate();
   const [input, setInput] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [showIntegrations, setShowIntegrations] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
+  const [showFiles, setShowFiles] = useState(false);
   const [tooltip, setTooltip] = useState('');
   const fileInputRef = useRef(null);
   const { uploadFile, uploading } = useFileUpload();
@@ -42,13 +44,14 @@ export default function ChatInput({ onSend, onOpenComputer }) {
     if (except !== 'integrations') setShowIntegrations(false);
     if (except !== 'skills') setShowSkills(false);
     if (except !== 'settings') setShowSettings(false);
+    if (except !== 'files') setShowFiles(false);
   };
 
   const toolbarItems = [
     { icon: Paperclip, id: 'attach', tip: 'Attach file', onClick: handleFileClick },
     { icon: Monitor, id: 'screen', tip: "Agent's computer", onClick: () => onOpenComputer?.() },
     { icon: Puzzle, id: 'skills', tip: 'Skills', onClick: () => { closeAll('skills'); setShowSkills(v => !v); } },
-    { icon: FileText, id: 'file', tip: 'Files', onClick: () => navigate('/dashboard/files') },
+    { icon: FileText, id: 'file', tip: 'Files', onClick: () => { closeAll('files'); setShowFiles(v => !v); } },
   ];
 
   return (
@@ -74,6 +77,12 @@ export default function ChatInput({ onSend, onOpenComputer }) {
                 {item.id === 'skills' && showSkills && (
                   <div className="absolute bottom-full mb-1 left-0 z-50">
                     <SkillsPopup />
+                  </div>
+                )}
+                {/* Files popup above this button */}
+                {item.id === 'file' && showFiles && (
+                  <div className="absolute bottom-full mb-1 left-0 z-50">
+                    <FilesPopup agent={agent} companyId={companyId} />
                   </div>
                 )}
                 <button

@@ -37,6 +37,9 @@ import FloatingChatWidget from './components/FloatingChatWidget';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminInstances from './pages/admin/Instances';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import DashboardCompanies from './pages/dashboard/Companies';
 import Blog from './pages/Blog';
 import About from './pages/About';
 import BlogArticle from './pages/BlogArticle';
@@ -52,6 +55,21 @@ function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return null;
+}
+
+function RequireAuth({ children }) {
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const location = useLocation();
+  if (isLoadingAuth) return null;
+  if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
+  return children;
+}
+
+function RedirectIfAuth({ children }) {
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  if (isLoadingAuth) return null;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  return children;
 }
 
 const AuthenticatedApp = () => {
@@ -86,6 +104,7 @@ const AuthenticatedApp = () => {
         <Route path="picker" element={<DashboardPicker />} />
         <Route path="wizard" element={<DashboardWizard />} />
         <Route index element={<DashboardHome />} />
+        <Route path="companies" element={<DashboardCompanies />} />
         <Route path="agents" element={<DashboardAgents />} />
         <Route path="inbox" element={<DashboardInbox />} />
         <Route path="files" element={<DashboardFiles />} />
@@ -110,6 +129,8 @@ const AuthenticatedApp = () => {
         <Route index element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="instances" element={<ProtectedAdminRoute><AdminInstances /></ProtectedAdminRoute>} />
       </Route>
+      <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
       <Route path="/chat" element={<Navigate to="/dashboard/chat" replace />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/about" element={<About />} />

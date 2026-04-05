@@ -6,6 +6,7 @@ import { subscribeGoals } from '@/lib/goalService';
 import { subscribePendingApprovals } from '@/lib/approvalService';
 import { subscribeRecentActivity } from '@/lib/activityService';
 import { subscribeTasks } from '@/lib/taskService';
+import { subscribeLatestHeartbeats } from '@/lib/heartbeatService';
 import { isDemoMode } from '@/lib/firebaseClient';
 
 const CompanyContext = createContext(null);
@@ -22,29 +23,28 @@ function getOrCreateGuestId() {
 export function CompanyProvider({ children }) {
   const { user } = useAuth();
 
-  const [company, setCompany] = useState(null);
+  const [allCompanies, setAllCompanies]       = useState([]);
+  const [company, setCompany]                 = useState(null);
   const [activeCompanyId, setActiveCompanyId] = useState(null);
-  const [agents, setAgents] = useState([]);
-  const [goals, setGoals] = useState([]);
+  const [agents, setAgents]                   = useState([]);
+  const [goals, setGoals]                     = useState([]);
   const [pendingApprovals, setPendingApprovals] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [bootstrapping, setBootstrapping] = useState(false);
+  const [recentActivity, setRecentActivity]   = useState([]);
+  const [tasks, setTasks]                     = useState([]);
+  const [heartbeats, setHeartbeats]           = useState([]);
+  const [loading, setLoading]                 = useState(true);
+  const [bootstrapping, setBootstrapping]     = useState(false);
 
   // Derived
-  const ceoAgent = agents.find(a => a.role === 'ceo' || a.isCEO) || null;
+  const ceoAgent      = agents.find(a => a.role === 'ceo' || a.isCEO) || null;
   const isBootstrapped = !!company?.isBootstrapped;
 
-  // Load user's first company on auth (or as guest)
+  // ── Load all user companies on auth ────────────────────────────────────────
   useEffect(() => {
     const uid = user?.uid || getOrCreateGuestId();
-
     let cancelled = false;
     setLoading(true);
 
-    // In demo mode, localStorage resolves synchronously — no timeout needed
-    // In Firebase mode, add a 4s safety timeout in case of connectivity issues
     const timeout = isDemoMode ? null : setTimeout(() => {
       if (!cancelled) setLoading(false);
     }, 4000);
@@ -52,8 +52,12 @@ export function CompanyProvider({ children }) {
     getUserCompanies(uid).then(companies => {
       if (timeout) clearTimeout(timeout);
       if (cancelled) return;
+      setAllCompanies(companies);
       if (companies.length > 0) {
-        setActiveCompanyId(companies[0].id);
+        // Restore last active company from localStorage
+        const stored = localStorage.getItem('freemi_active_company');
+        const valid  = companies.find(c => c.id === stored);
+        setActiveCompanyId(valid ? valid.id : companies[0].id);
       } else {
         setLoading(false);
       }
@@ -65,9 +69,10 @@ export function CompanyProvider({ children }) {
     return () => { cancelled = true; if (timeout) clearTimeout(timeout); };
   }, [user?.uid]);
 
-  // Subscribe to company doc
+  // ── Subscribe to active company doc ────────────────────────────────────────
   useEffect(() => {
     if (!activeCompanyId) return;
+    localStorage.setItem('freemi_active_company', activeCompanyId);
     const unsub = subscribeToCompany(activeCompanyId, data => {
       setCompany(data);
       setLoading(false);
@@ -75,67 +80,78 @@ export function CompanyProvider({ children }) {
     return unsub;
   }, [activeCompanyId]);
 
-  // Subscribe to agents
+  // ── Subscribe to agents ────────────────────────────────────────────────────
   useEffect(() => {
     if (!activeCompanyId) return;
-    const unsub = subscribeToAgents(activeCompanyId, setAgents);
-    return unsub;
+    return subscribeToAgents(activeCompanyId, setAgents);
   }, [activeCompanyId]);
 
-  // Subscribe to goals
+  // ── Subscribe to goals ─────────────────────────────────────────────────────
   useEffect(() => {
     if (!activeCompanyId) return;
-    const unsub = subscribeGoals(activeCompanyId, setGoals);
-    return unsub;
+    return subscribeGoals(activeCompanyId, setGoals);
   }, [activeCompanyId]);
 
-  // Subscribe to pending approvals
+  // ── Subscribe to approvals ─────────────────────────────────────────────────
   useEffect(() => {
     if (!activeCompanyId) return;
-    const unsub = subscribePendingApprovals(activeCompanyId, setPendingApprovals);
-    return unsub;
+    return subscribePendingApprovals(activeCompanyId, setPendingApprovals);
   }, [activeCompanyId]);
 
-  // Subscribe to activity
+  // ── Subscribe to activity ──────────────────────────────────────────────────
   useEffect(() => {
     if (!activeCompanyId) return;
-    const unsub = subscribeRecentActivity(activeCompanyId, setRecentActivity, 50);
-    return unsub;
+    return subscribeRecentActivity(activeCompanyId, setRecentActivity, 50);
   }, [activeCompanyId]);
 
-  // Subscribe to tasks
+  // ── Subscribe to tasks ─────────────────────────────────────────────────────
   useEffect(() => {
     if (!activeCompanyId) return;
-    const unsub = subscribeTasks(activeCompanyId, setTasks);
-    return unsub;
+    return subscribeTasks(activeCompanyId, setTasks);
   }, [activeCompanyId]);
 
+  // ── Subscribe to heartbeats ────────────────────────────────────────────────
+  useEffect(() => {
+    if (!activeCompanyId) return;
+    return subscribeLatestHeartbeats(activeCompanyId, setHeartbeats, 20);
+  }, [activeCompanyId]);
+
+  // ── Switch active company ──────────────────────────────────────────────────
   const switchCompany = useCallback((companyId) => {
     setActiveCompanyId(companyId);
+    setCompany(null);
     setAgents([]);
     setGoals([]);
     setPendingApprovals([]);
     setRecentActivity([]);
     setTasks([]);
+    setHeartbeats([]);
   }, []);
 
-  const onCompanyCreated = useCallback((companyId) => {
+  // ── After creating a new company ───────────────────────────────────────────
+  const onCompanyCreated = useCallback((companyId, companyData) => {
+    if (companyData) {
+      setAllCompanies(prev => {
+        const exists = prev.find(c => c.id === companyId);
+        return exists ? prev : [...prev, { id: companyId, ...companyData }];
+      });
+    }
     setActiveCompanyId(companyId);
   }, []);
 
   const onBootstrapComplete = useCallback(async () => {
-    if (activeCompanyId) {
-      await markBootstrapped(activeCompanyId);
-    }
+    if (activeCompanyId) await markBootstrapped(activeCompanyId);
   }, [activeCompanyId]);
 
   return (
     <CompanyContext.Provider value={{
+      allCompanies,
       company,
       activeCompanyId,
       agents,
       goals,
       tasks,
+      heartbeats,
       pendingApprovals,
       recentActivity,
       ceoAgent,

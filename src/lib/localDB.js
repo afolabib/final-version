@@ -131,6 +131,20 @@ export function localSubscribeApprovals(companyId, cb) {
   return () => clearInterval(iv);
 }
 
+export function localApproveRequest(companyId, userId, approvalId) {
+  const all = get('approvals_' + companyId) || [];
+  const idx = all.findIndex(a => a.id === approvalId);
+  if (idx !== -1) { all[idx] = { ...all[idx], status: 'approved', decidedByUserId: userId, decidedAt: new Date().toISOString() }; }
+  set('approvals_' + companyId, all);
+}
+
+export function localRejectRequest(companyId, userId, approvalId, note = '') {
+  const all = get('approvals_' + companyId) || [];
+  const idx = all.findIndex(a => a.id === approvalId);
+  if (idx !== -1) { all[idx] = { ...all[idx], status: 'rejected', decidedByUserId: userId, decidedAt: new Date().toISOString(), decisionNote: note }; }
+  set('approvals_' + companyId, all);
+}
+
 // ─── Activity ─────────────────────────────────────────────────────────────────
 
 export function localGetActivity(companyId, limit = 50) {

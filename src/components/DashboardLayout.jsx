@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import DashboardSidebar from './dashboard/DashboardSidebar';
-import CompanyBootstrap from './dashboard/CompanyBootstrap';
 import FloatingFreemiChat from './dashboard/FloatingFreemiChat';
 import { CompanyProvider, useCompany } from '@/contexts/CompanyContext';
+import ErrorBoundary from './ErrorBoundary';
 
 function DashboardContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isBootstrapped, loading, onCompanyCreated } = useCompany();
+  const { isBootstrapped, loading } = useCompany();
 
   const active = location.pathname.replace('/dashboard', '').replace('/', '') || 'home';
+
+  // Redirect to Companies setup page if no company yet
+  useEffect(() => {
+    if (!loading && !isBootstrapped && location.pathname !== '/dashboard/companies') {
+      navigate('/dashboard/companies', { replace: true });
+    }
+  }, [loading, isBootstrapped, location.pathname]);
 
   const handleNav = id => {
     setSidebarOpen(false);
@@ -37,13 +44,6 @@ function DashboardContent() {
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ fontFamily: 'var(--font-body)', background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
-
-      {/* Bootstrap overlay — shown if company not set up yet */}
-      {!isBootstrapped && (
-        <div className="fixed inset-0 z-50">
-          <CompanyBootstrap onComplete={onCompanyCreated} />
-        </div>
-      )}
 
       {/* Desktop sidebar */}
       <div className="hidden md:block flex-shrink-0">
@@ -91,7 +91,9 @@ function DashboardContent() {
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}>
-              <Outlet />
+              <ErrorBoundary>
+                <Outlet />
+              </ErrorBoundary>
             </motion.div>
           </AnimatePresence>
         </div>

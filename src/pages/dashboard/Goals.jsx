@@ -1,5 +1,5 @@
-import GoalTreeView from '../../components/dashboard/GoalTreeView';
+import KanbanBoard from '../../components/dashboard/KanbanBoard';
 
 export default function DashboardGoals() {
-  return <GoalTreeView />;
+  return <KanbanBoard />;
 }

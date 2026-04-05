@@ -22,8 +22,8 @@ export const GOAL_PRIORITY = {
   LOW: 'low',
 };
 
-export async function createGoal(companyId, userId, { title, description = '', parentGoalId = null, ownerAgentId = null, priority = 'high', dueDate = null }) {
-  if (isDemoMode) return localCreateGoal(companyId, userId, { title, description, parentGoalId, ownerAgentId, priority, dueDate });
+export async function createGoal(companyId, userId, { title, description = '', parentGoalId = null, ownerAgentId = null, priority = 'high', dueDate = null, emoji = null }) {
+  if (isDemoMode) return localCreateGoal(companyId, userId, { title, description, parentGoalId, ownerAgentId, priority, dueDate, emoji });
   const ref = await addDoc(collection(firestore, COL), {
     companyId,
     title,
@@ -32,6 +32,7 @@ export async function createGoal(companyId, userId, { title, description = '', p
     ownerAgentId,
     priority,
     dueDate,
+    emoji,
     status: GOAL_STATUS.ACTIVE,
     progressPct: 0,
     createdByUserId: userId,
