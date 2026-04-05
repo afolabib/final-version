@@ -1,6 +1,6 @@
 import {
   collection, doc, addDoc, updateDoc, onSnapshot,
-  serverTimestamp, query, where, orderBy
+  serverTimestamp, query, where, orderBy, arrayUnion
 } from 'firebase/firestore';
 import { firestore, isDemoMode } from './firebaseClient';
 import { localSubscribeApprovals, localApproveRequest, localRejectRequest } from './localDB';
@@ -53,6 +53,18 @@ export async function approveRequest(companyId, userId, approvalId, note = '') {
     updatedAt: serverTimestamp(),
   });
   await logActivity(companyId, userId, 'user', 'approval.approved', approvalId, `Approved: ${note || 'no note'}`);
+}
+
+/**
+ * Add a message to an approval's conversation thread without resolving it.
+ * The CF picks up `lastUserMessage` to continue the conversation.
+ */
+export async function addApprovalMessage(approvalId, role, text) {
+  await updateDoc(doc(firestore, COL, approvalId), {
+    messages: arrayUnion({ role, text, ts: new Date().toISOString() }),
+    lastUserMessage: role === 'user' ? text : null,
+    updatedAt: serverTimestamp(),
+  });
 }
 
 export async function rejectRequest(companyId, userId, approvalId, note = '') {
