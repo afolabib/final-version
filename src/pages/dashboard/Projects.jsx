@@ -1,2 +1,2 @@
-import ProjectsView from '../../components/dashboard/ProjectsView';
-export default function DashboardProjects() { return <ProjectsView />; }
+import KanbanBoard from '../../components/dashboard/KanbanBoard';
+export default function DashboardProjects() { return <KanbanBoard />; }

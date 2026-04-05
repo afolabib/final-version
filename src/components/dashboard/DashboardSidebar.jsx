@@ -3,7 +3,7 @@ import {
   Home, Briefcase, Inbox, FolderOpen, Layers,
   Zap, Plug, Wrench, Settings, CreditCard, HelpCircle,
   LogOut, ChevronDown, Plus, Bell, MessageSquare,
-  Target, Building2
+  Building2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -352,7 +352,6 @@ export default function DashboardSidebar({ active, onNav }) {
         <NavBtn icon={Inbox}        label="Inbox"        id="inbox"        active={active} onClick={onNav} badgeCount={approvalCount} />
         <NavBtn icon={Layers}      label="Projects"     id="projects"     active={active} onClick={onNav} badgeCount={openTaskCount} bellBadge />
         <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} badge="Beta" />
-        <NavBtn icon={Target}      label="Taskboard"    id="goals"        active={active} onClick={onNav} />
 
         {/* Configure */}
         <SectionLabel label="Configure" />
