@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Zap, MessageSquare, CheckCircle2, Activity, Plus, ChevronRight, ArrowUpRight, Archive, RotateCcw } from 'lucide-react';
+import { Sparkles, Activity, Plus, ArrowUpRight, Archive, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCompany } from '@/contexts/CompanyContext';
 import { useAuth } from '@/lib/AuthContext';
@@ -77,47 +77,40 @@ function getRoleEmoji(agent) {
   return ROLE_EMOJI[role] || ROLE_EMOJI.default;
 }
 
-// ── Activity descriptors per role ─────────────────────────────────────────────
+// ── Real last-action helpers ──────────────────────────────────────────────────
 
-const ROLE_ACTIVITY = {
-  ceo: ['Reviewing company strategy', 'Delegating tasks', 'Monitoring KPIs'],
-  sales: ['Scoring new leads', 'Sending follow-ups', 'Updating CRM'],
-  support: ['Resolving tickets', 'Drafting replies', 'Monitoring inbox'],
-  marketing: ['Scheduling content', 'Analyzing metrics', 'Creating campaigns'],
-  operations: ['Running workflows', 'Processing data', 'Monitoring systems'],
-  default: ['Processing tasks', 'Monitoring activity', 'Standing by'],
-};
+function timeAgo(ts) {
+  if (!ts) return null;
+  const date = ts?.toDate ? ts.toDate() : new Date(ts);
+  const mins = Math.round((Date.now() - date.getTime()) / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1440) return `${Math.round(mins / 60)}h ago`;
+  return `${Math.round(mins / 1440)}d ago`;
+}
 
-function getActivity(agent) {
-  const role = agent.role?.toLowerCase() || 'default';
-  const pool = ROLE_ACTIVITY[role] || ROLE_ACTIVITY.default;
-  if (agent.status === AGENT_STATUS.ACTIVE) return pool[0];
+function getLastAction(agentId, recentActivity) {
+  const entry = (recentActivity || []).find(a => a.actorId === agentId && a.actorType === 'agent');
+  if (!entry) return null;
+  return { summary: entry.summary, time: timeAgo(entry.createdAt) };
+}
+
+function getFallbackActivity(agent) {
   if (agent.status === AGENT_STATUS.SLEEPING) return 'Standing by';
   if (agent.status === AGENT_STATUS.PAUSED)   return 'Paused by operator';
   if (agent.status === AGENT_STATUS.ERROR)    return 'Needs attention';
-  return 'Initialising…';
-}
-
-// ── Fake micro-stats per agent (illustrative) ─────────────────────────────────
-
-function agentStats(agent, index) {
-  const base = (index + 1) * 3;
-  return {
-    tasks: agent.status === AGENT_STATUS.ACTIVE ? base + 4 : 0,
-    messages: agent.status === AGENT_STATUS.ACTIVE ? base + 2 : 0,
-    uptime: agent.status !== AGENT_STATUS.TERMINATED ? `${92 + (index % 7)}%` : '—',
-  };
+  if (agent.status === AGENT_STATUS.RESERVE)  return 'In reserve pool';
+  return 'No activity logged yet';
 }
 
 // ── Agent card ────────────────────────────────────────────────────────────────
 
-function AgentCard({ agent, index, onView, onReserve }) {
+function AgentCard({ agent, index, onView, onReserve, lastAction }) {
   const [hovered, setHovered] = useState(false);
   const color = ROLE_COLORS[agent.role] || '#5B5FFF';
   const emoji = getRoleEmoji(agent);
   const cfg = STATUS_CONFIG[agent.status] || STATUS_CONFIG[AGENT_STATUS.PAUSED];
-  const activity = getActivity(agent);
-  const stats = agentStats(agent, index);
+  const activityText = lastAction?.summary || getFallbackActivity(agent);
 
   return (
     <motion.div
@@ -188,34 +181,20 @@ function AgentCard({ agent, index, onView, onReserve }) {
           </span>
         </div>
 
-        {/* Activity line */}
-        <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-4"
+        {/* Last action */}
+        <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl mb-4"
           style={{ background: 'rgba(91,95,255,0.04)', border: '1px solid rgba(91,95,255,0.07)' }}>
-          <Activity size={11} style={{ color: '#5B5FFF', flexShrink: 0 }} />
-          <span className="text-xs font-medium truncate" style={{ color: '#5B5FFF' }}>
-            {activity}
-          </span>
-        </div>
-
-        {/* Micro-stats */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {[
-            { label: 'Tasks', value: stats.tasks, icon: CheckCircle2, color: '#5B5FFF' },
-            { label: 'Messages', value: stats.messages, icon: MessageSquare, color: '#0EA5E9' },
-            { label: 'Uptime', value: stats.uptime, icon: Zap, color: '#10B981' },
-          ].map(s => (
-            <div key={s.label} className="rounded-xl p-2.5 text-center"
-              style={{ background: 'rgba(248,250,255,0.8)', border: '1px solid rgba(91,95,255,0.06)' }}>
-              <s.icon size={10} style={{ color: s.color, margin: '0 auto 3px' }} />
-              <p className="text-sm font-bold leading-none mb-0.5"
-                style={{ color: '#0A0F1E', fontVariantNumeric: 'tabular-nums' }}>
-                {s.value}
-              </p>
-              <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: '#94A3B8' }}>
-                {s.label}
-              </p>
-            </div>
-          ))}
+          <Activity size={11} style={{ color: '#5B5FFF', flexShrink: 0, marginTop: 2 }} />
+          <div className="flex-1 min-w-0">
+            <span className="text-xs font-medium leading-snug" style={{ color: '#5B5FFF' }}>
+              {activityText}
+            </span>
+            {lastAction?.time && (
+              <span className="block text-[10px] mt-0.5" style={{ color: '#94A3B8' }}>
+                {lastAction.time}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Action buttons */}
@@ -283,7 +262,7 @@ function DeployCard({ onClick }) {
 
 export default function AgentsView({ onDeploy }) {
   const navigate = useNavigate();
-  const { agents, activeCompanyId } = useCompany();
+  const { agents, activeCompanyId, recentActivity } = useCompany();
   const { user } = useAuth();
   const [configAgent, setConfigAgent] = useState(null);
   const allVisible = (agents || []).filter(a => a.status !== AGENT_STATUS.TERMINATED);
@@ -370,6 +349,7 @@ export default function AgentsView({ onDeploy }) {
               index={i}
               onView={() => setConfigAgent(agent)}
               onReserve={() => reserveAgent(activeCompanyId, user?.uid, agent.id, 'Moved to reserve')}
+              lastAction={getLastAction(agent.id, recentActivity)}
             />
           ))}
           <DeployCard onClick={onDeploy} />
