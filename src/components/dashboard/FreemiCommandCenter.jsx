@@ -257,7 +257,7 @@ export default function FreemiCommandCenter() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const userName = company?.name || '';
+  const userName = user?.displayName || user?.email?.split('@')[0] || '';
   const doneTasks   = tasks.filter(t => t.status === 'done').length;
   const openTasks   = tasks.filter(t => t.status !== 'done');
   const activeGoals = goals.filter(g => g.status === 'active');

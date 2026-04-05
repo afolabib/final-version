@@ -240,7 +240,8 @@ function TaskRow({ task, companyId, userId }) {
 
 // ── Project card ──────────────────────────────────────────────────────────────
 function ProjectCard({ goal, tasks, companyId, userId, index }) {
-  const [expanded, setExpanded] = useState(true);
+  const isDone = goal.status === 'completed' || goal.status === 'cancelled';
+  const [expanded, setExpanded] = useState(!isDone);
   const [showDone, setShowDone] = useState(false);
   const [addingTask, setAddingTask] = useState(false);
   const st = GOAL_STATUS_STYLES[goal.status] || GOAL_STATUS_STYLES.active;

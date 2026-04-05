@@ -2,6 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Sparkles, ChevronDown } from 'lucide-react';
 import FreemiCharacter from '@/components/FreemiCharacter';
+import { httpsCallable } from 'firebase/functions';
+import { functions as firebaseFunctions } from '@/lib/firebaseClient';
+import { useCompany } from '@/contexts/CompanyContext';
+import { useAuth } from '@/lib/AuthContext';
+
+const chatProxyFn = httpsCallable(firebaseFunctions, 'chatProxy');
 
 const SUGGESTED = [
   'What did my agents do today?',
@@ -16,6 +22,8 @@ const WELCOME = {
 };
 
 export default function FloatingFreemiChat() {
+  const { activeCompanyId } = useCompany();
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([WELCOME]);
   const [input, setInput] = useState('');
@@ -23,6 +31,7 @@ export default function FloatingFreemiChat() {
   const [pulse, setPulse] = useState(false);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
+  const historyRef = useRef([]);
 
   // Occasional pulse to draw attention
   useEffect(() => {
@@ -43,17 +52,30 @@ export default function FloatingFreemiChat() {
 
   const send = async (text) => {
     const msg = text || input.trim();
-    if (!msg) return;
+    if (!msg || thinking) return;
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: msg }]);
     setThinking(true);
-    // Simulate response
-    await new Promise(r => setTimeout(r, 1200 + Math.random() * 600));
-    setThinking(false);
-    setMessages(prev => [...prev, {
-      role: 'assistant',
-      text: getResponse(msg),
-    }]);
+
+    // Build message history for context
+    const history = historyRef.current.slice(-10);
+    historyRef.current = [...history, { role: 'user', content: msg }];
+
+    try {
+      const result = await chatProxyFn({
+        agentName: 'Freemi',
+        agentRole: 'ceo',
+        companyId: activeCompanyId || '',
+        messages: historyRef.current,
+      });
+      const reply = result.data?.reply || "I'm having trouble responding right now. Try again.";
+      historyRef.current = [...historyRef.current, { role: 'assistant', content: reply }];
+      setMessages(prev => [...prev, { role: 'assistant', text: reply }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', text: "Connection error — please try again." }]);
+    } finally {
+      setThinking(false);
+    }
   };
 
   return (
@@ -250,12 +272,3 @@ export default function FloatingFreemiChat() {
   );
 }
 
-function getResponse(msg) {
-  const m = msg.toLowerCase();
-  if (m.includes('task') || m.includes('priorit')) return "You have 3 high-priority tasks due today. Rex has 2 open leads to follow up on, and Dev flagged a critical bug for your review.";
-  if (m.includes('budget')) return "You're at 68% of your monthly budget. Marketing spend is running 12% over — I can have Nova generate a detailed breakdown and flag any anomalies.";
-  if (m.includes('support') || m.includes('ticket')) return "Echo resolved 9 support tickets today with a 97% satisfaction score. 2 tickets are escalated and awaiting your input.";
-  if (m.includes('agent') || m.includes('today')) return "Today your agents closed 4 deals (Rex), resolved 9 tickets (Echo), filed 3 ops reports (Nova), and merged 2 PRs (Dev). Strong day overall.";
-  if (m.includes('goal')) return "You have 4 active goals. 'Q2 Revenue Target' is on track at 74%. I'd recommend reviewing the 'Launch Email Campaign' goal — it's at 22% with 8 days left.";
-  return "On it. I'm pulling that data from your connected tools now. I'll have a full summary ready in just a moment — anything else you want me to include?";
-}

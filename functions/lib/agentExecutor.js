@@ -65,6 +65,17 @@ exports.onTaskAssigned = functions.firestore
     // approval request and reset the task to 'todo' so it can be retried.
     const justBlocked = status === 'blocked' && (!before || before.status !== 'blocked');
     if (justBlocked) {
+        // Dedup: only create one pending approval per task — skip if one already exists
+        const existing = await firebase_1.db.collection('approvals')
+            .where('payload.taskId', '==', taskId)
+            .where('status', '==', 'pending')
+            .limit(1)
+            .get();
+        if (!existing.empty) {
+            console.log(`Task "${title}" (${taskId}) blocked again but approval already pending — just resetting to todo`);
+            await change.after.ref.update({ status: 'todo', blockedReason: '', updatedAt: (0, firebase_1.serverTimestamp)() });
+            return null;
+        }
         console.log(`Task "${title}" (${taskId}) is blocked — auto-escalating to approvals`);
         const approvalRef = firebase_1.db.collection('approvals').doc();
         await approvalRef.set({
@@ -84,7 +95,7 @@ exports.onTaskAssigned = functions.firestore
             createdAt: (0, firebase_1.serverTimestamp)(),
             updatedAt: (0, firebase_1.serverTimestamp)(),
         });
-        // Reset task to 'todo' so it can be retried once the founder responds
+        // Reset task to 'todo' — wait for founder to respond before agent retries
         await change.after.ref.update({ status: 'todo', blockedReason: '', updatedAt: (0, firebase_1.serverTimestamp)() });
         return null;
     }

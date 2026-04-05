@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, CheckCircle2, Circle, Clock, AlertTriangle, X, Copy, CheckCheck, Trash2, ChevronDown, ShieldAlert, ArrowUpRight } from 'lucide-react';
+// ShieldAlert kept for blocked task detail popup
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '@/lib/firebaseClient';
@@ -13,7 +14,6 @@ const COLUMNS = [
   { id: TASK_STATUS.IN_PROGRESS,  label: 'In Progress', color: '#5B5FFF', Icon: Clock },
   { id: TASK_STATUS.NEEDS_REVIEW, label: 'Review',      color: '#F59E0B', Icon: AlertTriangle },
   { id: TASK_STATUS.DONE,         label: 'Done',        color: '#00B894', Icon: CheckCircle2 },
-  { id: TASK_STATUS.BLOCKED,      label: 'Blocked',     color: '#EF4444', Icon: ShieldAlert },
 ];
 
 const PRIORITY_COLORS = {
@@ -355,7 +355,7 @@ function CreateTaskInline({ companyId, userId, onDone, onCancel }) {
 }
 
 // ─── Kanban column ────────────────────────────────────────────────────────────
-function KanbanColumn({ col, tasks, agents, companyId, userId, onCardClick }) {
+function KanbanColumn({ col, tasks, agents, companyId, userId, onCardClick, showAllDoneToggle, showAllDone, onToggleAllDone, hiddenDoneCount }) {
   const [adding, setAdding] = useState(false);
   const Icon = col.Icon;
 
@@ -370,13 +370,11 @@ function KanbanColumn({ col, tasks, agents, companyId, userId, onCardClick }) {
             {tasks.length}
           </span>
         </div>
-        {col.id !== TASK_STATUS.BLOCKED && (
-          <button onClick={() => setAdding(true)}
-            className="w-5 h-5 rounded-md flex items-center justify-center hover:bg-slate-100 transition-colors"
-            style={{ color: '#CBD5E1' }}>
-            <Plus size={11} />
-          </button>
-        )}
+        <button onClick={() => setAdding(true)}
+          className="w-5 h-5 rounded-md flex items-center justify-center hover:bg-slate-100 transition-colors"
+          style={{ color: '#CBD5E1' }}>
+          <Plus size={11} />
+        </button>
       </div>
 
       <div className="flex-1 min-h-24">
@@ -395,6 +393,16 @@ function KanbanColumn({ col, tasks, agents, companyId, userId, onCardClick }) {
             style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
             <span className="text-xs" style={{ color: '#CBD5E1' }}>No tasks</span>
           </div>
+        )}
+        {showAllDoneToggle && (
+          <button
+            onClick={onToggleAllDone}
+            className="w-full text-center text-xs font-semibold py-2 rounded-xl mt-1 transition-all"
+            style={{ color: '#94A3B8', background: 'rgba(0,0,0,0.03)', border: '1px dashed rgba(0,0,0,0.08)' }}
+            onMouseEnter={e => e.currentTarget.style.color = '#5B5FFF'}
+            onMouseLeave={e => e.currentTarget.style.color = '#94A3B8'}>
+            {showAllDone ? '↑ Hide older done tasks' : `↓ Show ${hiddenDoneCount} older done tasks`}
+          </button>
         )}
       </div>
     </div>

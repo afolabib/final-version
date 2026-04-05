@@ -14,8 +14,29 @@ export const onApprovalDecided = functions.firestore
     const before = change.before.data();
     const after = change.after.data();
 
-    // Only fire when status transitions to 'approved'
+    // Only fire when status transitions (approved OR rejected)
     if (before.status === after.status) return null;
+    if (after.status !== 'approved' && after.status !== 'rejected') return null;
+
+    // For needs_input rejections, cancel the stuck task
+    if (after.status === 'rejected' && after.type === 'needs_input') {
+      const { taskId } = (after.payload || {}) as { taskId?: string };
+      if (taskId) {
+        const taskSnap = await db.collection('tasks').doc(taskId).get();
+        if (taskSnap.exists) {
+          const task = taskSnap.data()!;
+          await taskSnap.ref.update({
+            status: 'cancelled',
+            outputSummary: `${task.outputSummary || ''}\n\nFounder could not provide required input. Task cancelled.`.trim(),
+            updatedAt: serverTimestamp(),
+          });
+          await logActivity(after.companyId, after.decidedByUserId, 'approval.needs_input_skipped', context.params.approvalId,
+            `Task "${task.title}" cancelled — founder couldn't provide required input`);
+        }
+      }
+      return null;
+    }
+
     if (after.status !== 'approved') return null;
 
     const { approvalId } = context.params;
@@ -87,6 +108,49 @@ export const onApprovalDecided = functions.firestore
           }
           await logActivity(companyId, decidedByUserId, 'approval.strategy_change', approvalId,
             `Strategy change approved: ${payload.description || 'company strategy updated'}`);
+          break;
+        }
+
+        // ── needs_input: founder answered — relay to agent via task context ────
+        case 'needs_input': {
+          const { taskId } = payload;
+          const founderAnswer = after.decisionNote || '';
+          if (!taskId || !founderAnswer) break;
+
+          const taskRef = db.collection('tasks').doc(taskId);
+          const taskSnap = await taskRef.get();
+          if (!taskSnap.exists) break;
+
+          const task = taskSnap.data()!;
+          // Append founder's answer to the task description so agent has full context
+          const updatedDesc = `${task.description || ''}\n\n---\n**Founder's response (${new Date().toLocaleDateString()}):** ${founderAnswer}\n\nPlease use the above information to complete this task.`.trim();
+          await taskRef.update({
+            status: 'todo',
+            description: updatedDesc,
+            blockedReason: '',
+            founderResponse: founderAnswer,
+            updatedAt: serverTimestamp(),
+          });
+          await logActivity(companyId, decidedByUserId, 'approval.needs_input_resolved', approvalId,
+            `Founder answered agent's question — task "${task.title}" reset to retry`);
+          console.log(`needs_input resolved for task ${taskId} — founder said: "${founderAnswer.slice(0, 80)}"`);
+          break;
+        }
+
+        // ── needs_input rejected: founder can't help — log and cancel task ──
+        case 'needs_input_rejected': {
+          const { taskId } = payload;
+          if (!taskId) break;
+          const taskSnap = await db.collection('tasks').doc(taskId).get();
+          if (!taskSnap.exists) break;
+          const task = taskSnap.data()!;
+          await db.collection('tasks').doc(taskId).update({
+            status: 'cancelled',
+            outputSummary: `${task.outputSummary || ''}\n\nFounder could not provide the required input. Task cancelled.`.trim(),
+            updatedAt: serverTimestamp(),
+          });
+          await logActivity(companyId, decidedByUserId, 'approval.needs_input_skipped', approvalId,
+            `Task "${task.title}" cancelled — founder couldn't provide required input`);
           break;
         }
 

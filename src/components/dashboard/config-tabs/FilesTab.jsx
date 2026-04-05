@@ -3,6 +3,7 @@ import { FileText, Save, Loader2, CheckCircle2, Lock, ChevronRight } from 'lucid
 import { doc, getDoc, updateDoc, collection, query, where, limit, getDocs, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '@/lib/firebaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { getAgentSystemPrompt, getAgentHeartbeat } from '@/lib/agentTemplates';
 
 // ── File definitions ──────────────────────────────────────────────────────────
 function getFiles(agent, company, user, memoryLines) {
@@ -59,7 +60,7 @@ function getFiles(agent, company, user, memoryLines) {
       field: 'systemPrompt',
       editable: true,
       target: 'agent',
-      content: agent?.systemPrompt || '',
+      content: getAgentSystemPrompt(agent, company?.name, company?.mission),
     },
     {
       name: 'IDENTITY.md',
@@ -73,7 +74,7 @@ function getFiles(agent, company, user, memoryLines) {
       field: 'heartbeatInstructions',
       editable: true,
       target: 'agent',
-      content: agent?.heartbeatInstructions || defaultHeartbeat(agent),
+      content: getAgentHeartbeat(agent),
     },
     {
       name: 'COMPANY.md',
@@ -95,73 +96,6 @@ function getFiles(agent, company, user, memoryLines) {
       content: memoryMd,
     },
   ];
-}
-
-function defaultHeartbeat(agent) {
-  const role = (agent?.role || '').toLowerCase();
-  const lines = [
-    `# HEARTBEAT.md — ${agent?.name || 'Agent'}`,
-    ``,
-    `## Pre-Flight (every heartbeat)`,
-    `1. Verify memory directory exists. Create today's daily note if missing.`,
-    ``,
-    `## Rule: Never Block — Always Ask`,
-    `If you need access, a decision, a credential, or any resource to proceed:`,
-    `- Use create_approval to request it from the founder`,
-    `- State exactly what you need, why, and what you'll do once you have it`,
-    `- Keep working on everything else while you wait`,
-    ``,
-    `## Execution Check`,
-  ];
-  if (role.includes('ceo') || role.includes('freemi')) {
-    lines.push(
-      `1. Read today's plan and check progress against each item.`,
-      `2. Identify what's blocked — unblock or escalate with a recommendation.`,
-      `3. If ahead of plan, pull the next priority forward.`,
-      `4. Log progress to today's daily note.`,
-      ``,
-      `## Nightly (~midnight)`,
-      `1. Pull revenue snapshot.`,
-      `2. Review day execution. What got done? What didn't? Why?`,
-      `3. Propose tomorrow's plan. Send summary to founder.`,
-    );
-  } else if (role.includes('sales')) {
-    lines.push(
-      `1. Check pipeline for stale leads (no contact in 3+ days) — follow up immediately.`,
-      `2. Draft outreach or follow-up sequences for warm prospects.`,
-      `3. Surface conversion blockers and propose a fix.`,
-      `4. Update pipeline status in the task board.`,
-    );
-  } else if (role.includes('marketing')) {
-    lines.push(
-      `1. Check content calendar — anything overdue or gap in schedule?`,
-      `2. Review performance on recent posts (clicks, opens, engagement).`,
-      `3. Identify one distribution gap or missed channel opportunity.`,
-      `4. Propose one concrete content or campaign action.`,
-    );
-  } else if (role.includes('support')) {
-    lines.push(
-      `1. Review all open tickets — prioritise by SLA risk.`,
-      `2. Flag any tickets older than 24h with no response.`,
-      `3. Identify recurring issue patterns for product feedback.`,
-      `4. Check for customers at churn risk and flag immediately.`,
-    );
-  } else if (role.includes('engineer') || role.includes('dev')) {
-    lines.push(
-      `1. Check deployment health — is production returning 200?`,
-      `2. Review blocked technical tasks and unblock or escalate.`,
-      `3. Flag infrastructure issues: high error rates, slow queries, SSL expiry.`,
-      `4. Check long-running jobs or build pipelines for stalls.`,
-    );
-  } else {
-    lines.push(
-      `1. Review pending work and identify blockers.`,
-      `2. Take one concrete action toward the current goal.`,
-      `3. Update memory with any durable facts or decisions.`,
-      `4. Surface one insight or opportunity the founder should know about.`,
-    );
-  }
-  return lines.join('\n');
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
