@@ -1018,6 +1018,123 @@ function DeleteConfirm({ company, onConfirm, onCancel }) {
   );
 }
 
+// ── Company detail panel ───────────────────────────────────────────────────────
+function CompanyDetail({ co, isActive, agents, onLaunch, onBack, onEdit }) {
+  const agentsForCo = isActive ? agents : [];
+  return (
+    <motion.div
+      key="detail"
+      initial={{ opacity: 0, x: 32 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 32 }}
+      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+      className="h-full overflow-y-auto px-5 py-7 max-w-2xl mx-auto">
+
+      {/* Back */}
+      <button onClick={onBack}
+        className="flex items-center gap-1.5 text-xs font-semibold mb-6 transition-colors"
+        style={{ color: '#94A3B8' }}
+        onMouseEnter={e => e.currentTarget.style.color = '#5B5FFF'}
+        onMouseLeave={e => e.currentTarget.style.color = '#94A3B8'}>
+        ← All companies
+      </button>
+
+      {/* Company header */}
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-black text-2xl flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg,#5B5FFF,#7C3AED)', boxShadow: '0 8px 24px rgba(91,95,255,0.30)' }}>
+            {co.name?.[0]?.toUpperCase() || 'F'}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-black" style={{ color: '#0A0F1E', letterSpacing: '-0.02em' }}>{co.name}</h1>
+              {isActive && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                  style={{ background: 'rgba(91,95,255,0.10)', color: '#5B5FFF' }}>Active</span>
+              )}
+            </div>
+            <p className="text-sm mt-0.5" style={{ color: '#94A3B8' }}>{co.industry || 'Company'}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={onEdit}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all"
+            style={{ color: '#64748B', background: 'rgba(91,95,255,0.05)', border: '1px solid rgba(91,95,255,0.10)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.10)'; e.currentTarget.style.color = '#5B5FFF'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.05)'; e.currentTarget.style.color = '#64748B'; }}>
+            <Pencil size={13} /> Edit
+          </button>
+          <button onClick={onLaunch}
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold text-white transition-all btn-press"
+            style={{ background: 'linear-gradient(135deg,#5B5FFF,#7C3AED)', boxShadow: '0 4px 16px rgba(91,95,255,0.35)' }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 6px 22px rgba(91,95,255,0.50)'}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,95,255,0.35)'}>
+            {isActive ? 'Open Dashboard →' : 'Launch →'}
+          </button>
+        </div>
+      </div>
+
+      {/* Mission */}
+      {co.mission && (
+        <div className="px-5 py-4 rounded-2xl mb-6"
+          style={{ background: 'rgba(91,95,255,0.04)', border: '1px solid rgba(91,95,255,0.09)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest mb-1.5" style={{ color: '#C7D0E8' }}>Mission</p>
+          <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>{co.mission}</p>
+        </div>
+      )}
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        {[
+          { label: 'Operators', value: agentsForCo.length || co.agentCount || 0, color: '#5B5FFF' },
+          { label: 'Industry', value: co.industry || '—', color: '#10B981', text: true },
+          { label: 'Website', value: co.website ? new URL(co.website.startsWith('http') ? co.website : `https://${co.website}`).hostname : '—', color: '#F59E0B', text: true },
+        ].map(s => (
+          <div key={s.label} className="px-4 py-3 rounded-2xl text-center"
+            style={{ background: 'white', border: '1px solid rgba(91,95,255,0.08)', boxShadow: '0 2px 8px rgba(91,95,255,0.04)' }}>
+            <p className={`font-black leading-none mb-0.5 ${s.text ? 'text-sm' : 'text-2xl'}`}
+              style={{ color: s.color }}>{s.value}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: '#94A3B8' }}>{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Org chart */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#C7D0E8' }}>Team</p>
+          {agentsForCo.length > 0 && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              style={{ background: 'rgba(91,95,255,0.07)', color: '#5B5FFF' }}>
+              {agentsForCo.length} operator{agentsForCo.length !== 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
+        {isActive ? (
+          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(91,95,255,0.08)', background: 'white', minHeight: 240 }}>
+            <OrgChartView embedded />
+          </div>
+        ) : (
+          <div className="rounded-2xl flex items-center justify-center py-10"
+            style={{ border: '1.5px dashed rgba(91,95,255,0.12)', background: 'rgba(91,95,255,0.02)' }}>
+            <div className="text-center">
+              <p className="text-sm font-semibold" style={{ color: '#94A3B8' }}>Launch workspace to see this team</p>
+              <button onClick={onLaunch}
+                className="mt-3 text-xs font-bold px-4 py-2 rounded-xl transition-all"
+                style={{ background: 'rgba(91,95,255,0.08)', color: '#5B5FFF' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.15)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(91,95,255,0.08)'}>
+                Launch →
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function CompaniesView() {
   const { company, allCompanies, agents, activeCompanyId, switchCompany, isBootstrapped } = useCompany();
@@ -1026,6 +1143,7 @@ export default function CompaniesView() {
   const [editingCo, setEditingCo] = useState(null);
   const [deletingCo, setDeletingCo] = useState(null);
 
+  const [selectedCo, setSelectedCo] = useState(null);
   const hasCompany = allCompanies.length > 0 && isBootstrapped;
 
   if (!hasCompany || addingNew) {
@@ -1041,10 +1159,28 @@ export default function CompaniesView() {
     );
   }
 
-  const handleOpen = (id) => {
+  const handleLaunch = (id) => {
     if (id !== activeCompanyId) switchCompany(id);
     navigate('/dashboard');
   };
+
+  // Show detail panel when a company is selected
+  if (selectedCo) {
+    const co = allCompanies.find(c => c.id === selectedCo) || selectedCo;
+    return (
+      <AnimatePresence mode="wait">
+        <CompanyDetail
+          key={co.id}
+          co={co}
+          isActive={co.id === activeCompanyId}
+          agents={agents}
+          onLaunch={() => handleLaunch(co.id)}
+          onBack={() => setSelectedCo(null)}
+          onEdit={() => { setSelectedCo(null); setEditingCo(co); }}
+        />
+      </AnimatePresence>
+    );
+  }
 
   return (
     <div className="h-full overflow-y-auto px-5 py-7 max-w-2xl mx-auto">
@@ -1094,35 +1230,19 @@ export default function CompaniesView() {
         </button>
       </div>
 
-      <div className="space-y-3 mb-10">
+      <div className="space-y-3">
         {allCompanies.map(co => (
           <CompanyCard
             key={co.id}
             co={co}
             isActive={co.id === activeCompanyId}
             agentCount={co.id === activeCompanyId ? agents.length : 0}
-            onOpen={() => handleOpen(co.id)}
+            onOpen={() => setSelectedCo(co.id)}
             onEdit={() => setEditingCo(co)}
             onDelete={() => setDeletingCo(co)}
           />
         ))}
       </div>
-
-      {/* Org chart */}
-      {agents.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-sm font-black tracking-wide uppercase" style={{ color: '#C7D0E8' }}>Your Team</h2>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-              style={{ background: 'rgba(91,95,255,0.07)', color: '#5B5FFF' }}>
-              {agents.length} operator{agents.length !== 1 ? 's' : ''}
-            </span>
-          </div>
-          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(91,95,255,0.08)', minHeight: 280 }}>
-            <OrgChartView embedded />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
