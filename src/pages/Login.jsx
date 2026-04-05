@@ -1,0 +1,235 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth';
+import { firebaseAuth } from '@/lib/firebaseClient';
+import { Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+
+export default function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw]     = useState(false);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState('');
+
+  const friendly = code => {
+    const map = {
+      'auth/user-not-found':    'No account found with that email.',
+      'auth/wrong-password':    'Incorrect password.',
+      'auth/invalid-email':     'Please enter a valid email.',
+      'auth/too-many-requests': 'Too many attempts. Try again later.',
+      'auth/invalid-credential':'Incorrect email or password.',
+    };
+    return map[code] || 'Something went wrong. Please try again.';
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(firebaseAuth, email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(friendly(err.code));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(firebaseAuth, provider);
+      navigate('/dashboard');
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') setError(friendly(err.code));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col"
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
+
+      {/* Subtle ambient blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full opacity-25"
+          style={{ background: 'radial-gradient(circle, rgba(91,95,255,0.18) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full opacity-15"
+          style={{ background: 'radial-gradient(circle, rgba(91,95,255,0.10) 0%, transparent 70%)' }} />
+      </div>
+
+      {/* Nav */}
+      <nav className="relative z-10 flex items-center justify-between px-8 py-5">
+        <Link to="/" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)', boxShadow: '0 4px 14px rgba(124,58,237,0.35)' }}>
+            <div className="w-3 h-3 rounded-full bg-white opacity-95" />
+          </div>
+          <span className="font-black text-lg tracking-tight" style={{ color: '#0A0F1E' }}>Freemi</span>
+        </Link>
+        <Link to="/signup"
+          className="text-sm font-medium transition-colors"
+          style={{ color: '#64748B' }}
+          onMouseEnter={e => e.currentTarget.style.color = '#0A0F1E'}
+          onMouseLeave={e => e.currentTarget.style.color = '#64748B'}>
+          No account?{' '}
+          <span className="font-bold" style={{ color: '#5B5FFF' }}>Sign up →</span>
+        </Link>
+      </nav>
+
+      {/* Card */}
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-[420px]">
+
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-black mb-2" style={{ color: '#0A0F1E', letterSpacing: '-0.03em' }}>
+              Welcome back
+            </h1>
+            <p className="text-sm" style={{ color: '#64748B' }}>Sign in to your workspace</p>
+          </div>
+
+          {/* Card */}
+          <div className="rounded-2xl p-8"
+            style={{
+              background: 'rgba(255,255,255,0.90)',
+              border: '1px solid rgba(91,95,255,0.10)',
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 8px 40px rgba(91,95,255,0.10), 0 1px 0 rgba(255,255,255,0.8) inset',
+            }}>
+
+            {/* Google */}
+            <button
+              onClick={handleGoogle}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-semibold transition-all mb-5"
+              style={{
+                background: '#fff',
+                border: '1.5px solid rgba(91,95,255,0.15)',
+                color: '#374151',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(91,95,255,0.35)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(91,95,255,0.10)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(91,95,255,0.15)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }}>
+              <svg width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.2 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C33.9 6.5 29.2 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/>
+                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.3 18.9 12 24 12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C33.9 6.5 29.2 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/>
+                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3.3-11.3-8L6 33.2C9.4 39.6 16.3 44 24 44z"/>
+                <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C41.2 35.1 44 30 44 24c0-1.3-.1-2.7-.4-4z"/>
+              </svg>
+              Continue with Google
+            </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 mb-5">
+              <div className="flex-1 h-px" style={{ background: 'rgba(91,95,255,0.10)' }} />
+              <span className="text-xs font-medium" style={{ color: '#94A3B8' }}>or</span>
+              <div className="flex-1 h-px" style={{ background: 'rgba(91,95,255,0.10)' }} />
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: '#374151' }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  required
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
+                  style={{
+                    background: '#F8FAFF',
+                    border: '1.5px solid rgba(91,95,255,0.12)',
+                    color: '#0A0F1E',
+                  }}
+                  onFocus={e => e.target.style.borderColor = '#5B5FFF'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(91,95,255,0.12)'}
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold" style={{ color: '#374151' }}>Password</label>
+                  <Link to="/forgot-password"
+                    className="text-xs font-semibold transition-colors"
+                    style={{ color: '#5B5FFF' }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#4338CA'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#5B5FFF'}>
+                    Forgot?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPw ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="w-full px-4 py-3 pr-11 rounded-xl text-sm outline-none transition-all"
+                    style={{
+                      background: '#F8FAFF',
+                      border: '1.5px solid rgba(91,95,255,0.12)',
+                      color: '#0A0F1E',
+                    }}
+                    onFocus={e => e.target.style.borderColor = '#5B5FFF'}
+                    onBlur={e => e.target.style.borderColor = 'rgba(91,95,255,0.12)'}
+                  />
+                  <button type="button" onClick={() => setShowPw(s => !s)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                    style={{ color: '#94A3B8' }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#5B5FFF'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#94A3B8'}>
+                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="px-4 py-3 rounded-xl text-sm font-medium"
+                  style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.18)', color: '#DC2626' }}>
+                  {error}
+                </div>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all mt-2"
+                style={{
+                  background: loading ? 'rgba(91,95,255,0.6)' : 'linear-gradient(135deg, #5B5FFF, #7C3AED)',
+                  color: '#fff',
+                  boxShadow: loading ? 'none' : '0 4px 18px rgba(124,58,237,0.35)',
+                }}
+                onMouseEnter={e => { if (!loading) e.currentTarget.style.boxShadow = '0 6px 24px rgba(124,58,237,0.50)'; }}
+                onMouseLeave={e => { if (!loading) e.currentTarget.style.boxShadow = '0 4px 18px rgba(124,58,237,0.35)'; }}>
+                {loading ? <Loader2 size={16} className="animate-spin" /> : <>Sign in <ArrowRight size={15} /></>}
+              </button>
+            </form>
+          </div>
+
+          <p className="text-center text-xs mt-5" style={{ color: '#94A3B8' }}>
+            By signing in you agree to our{' '}
+            <a href="#" style={{ color: '#5B5FFF' }}>Terms</a>{' '}and{' '}
+            <a href="#" style={{ color: '#5B5FFF' }}>Privacy Policy</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

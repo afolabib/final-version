@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setAdminClaims = exports.stripeWebhook = exports.deleteInstance = exports.verifyInstanceHealth = exports.provisionInstance = exports.createCheckout = exports.createOnboardingSession = void 0;
+exports.readWebsite = exports.chatProxy = exports.reprovisionAgent = exports.onAgentCreated = exports.onApprovalDecided = exports.onTaskAssigned = exports.archiveProject = exports.getProjects = exports.updateProject = exports.createProject = exports.getSessions = exports.completeSession = exports.logSessionTask = exports.resumeSession = exports.pauseSession = exports.createSession = exports.setAdminClaims = exports.stripeWebhook = exports.deleteInstance = exports.verifyInstanceHealth = exports.provisionInstance = exports.createCheckout = exports.createOnboardingSession = void 0;
 var createOnboardingSession_1 = require("./createOnboardingSession");
 Object.defineProperty(exports, "createOnboardingSession", { enumerable: true, get: function () { return createOnboardingSession_1.createOnboardingSession; } });
 var createCheckout_1 = require("./createCheckout");
@@ -13,3 +13,29 @@ var stripeWebhook_1 = require("./stripeWebhook");
 Object.defineProperty(exports, "stripeWebhook", { enumerable: true, get: function () { return stripeWebhook_1.stripeWebhook; } });
 var adminClaims_1 = require("./adminClaims");
 Object.defineProperty(exports, "setAdminClaims", { enumerable: true, get: function () { return adminClaims_1.setAdminClaims; } });
+var sessionManager_1 = require("./sessionManager");
+Object.defineProperty(exports, "createSession", { enumerable: true, get: function () { return sessionManager_1.createSession; } });
+Object.defineProperty(exports, "pauseSession", { enumerable: true, get: function () { return sessionManager_1.pauseSession; } });
+Object.defineProperty(exports, "resumeSession", { enumerable: true, get: function () { return sessionManager_1.resumeSession; } });
+Object.defineProperty(exports, "logSessionTask", { enumerable: true, get: function () { return sessionManager_1.logSessionTask; } });
+Object.defineProperty(exports, "completeSession", { enumerable: true, get: function () { return sessionManager_1.completeSession; } });
+Object.defineProperty(exports, "getSessions", { enumerable: true, get: function () { return sessionManager_1.getSessions; } });
+var projectManager_1 = require("./projectManager");
+Object.defineProperty(exports, "createProject", { enumerable: true, get: function () { return projectManager_1.createProject; } });
+Object.defineProperty(exports, "updateProject", { enumerable: true, get: function () { return projectManager_1.updateProject; } });
+Object.defineProperty(exports, "getProjects", { enumerable: true, get: function () { return projectManager_1.getProjects; } });
+Object.defineProperty(exports, "archiveProject", { enumerable: true, get: function () { return projectManager_1.archiveProject; } });
+// ── Agent execution pipeline ──────────────────────────────────────────────────
+var agentExecutor_1 = require("./agentExecutor");
+Object.defineProperty(exports, "onTaskAssigned", { enumerable: true, get: function () { return agentExecutor_1.onTaskAssigned; } });
+var approvalExecutor_1 = require("./approvalExecutor");
+Object.defineProperty(exports, "onApprovalDecided", { enumerable: true, get: function () { return approvalExecutor_1.onApprovalDecided; } });
+var provisionAgent_1 = require("./provisionAgent");
+Object.defineProperty(exports, "onAgentCreated", { enumerable: true, get: function () { return provisionAgent_1.onAgentCreated; } });
+Object.defineProperty(exports, "reprovisionAgent", { enumerable: true, get: function () { return provisionAgent_1.reprovisionAgent; } });
+// ── MiniMax proxy (keeps API key server-side) ─────────────────────────────────
+var minimaxProxy_1 = require("./minimaxProxy");
+Object.defineProperty(exports, "chatProxy", { enumerable: true, get: function () { return minimaxProxy_1.chatProxy; } });
+// ── Onboarding helpers ────────────────────────────────────────────────────────
+var readWebsite_1 = require("./readWebsite");
+Object.defineProperty(exports, "readWebsite", { enumerable: true, get: function () { return readWebsite_1.readWebsite; } });
