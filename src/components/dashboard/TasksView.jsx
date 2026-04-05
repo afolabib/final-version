@@ -447,12 +447,12 @@ export default function TasksView() {
   const recentDoneCount = tasks.filter(t => t.status === TASK_STATUS.DONE && (t.completedAt?.seconds || t.updatedAt?.seconds || 0) * 1000 >= sevenDaysAgo).length;
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* Header */}
       <div className="flex items-center justify-between px-8 py-5 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: '#0A0A1A' }}>Tasks</h1>
+          <h1 className="heading-serif text-2xl font-bold" style={{ color: '#0A0F1E' }}>Tasks</h1>
           <p className="text-sm mt-0.5" style={{ color: '#64748B' }}>
             {tasks.length} total · {doneCount} done
           </p>

@@ -322,7 +322,7 @@ export default function FreemiCommandCenter() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden"
-      style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* Speaking to bar */}
       <div className="flex-shrink-0 px-8 py-2.5 flex items-center gap-3"

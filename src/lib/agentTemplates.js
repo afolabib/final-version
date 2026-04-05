@@ -446,15 +446,15 @@ If you need access, credentials, or a financial decision:
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function roleKey(agent) {
-  const r = (agent?.role || '').toLowerCase();
-  if (r.includes('ceo') || r.includes('freemi')) return 'ceo';
-  if (r.includes('sales')) return 'sales';
-  if (r.includes('market')) return 'marketing';
-  if (r.includes('support')) return 'support';
-  if (r.includes('engineer') || r.includes('dev')) return 'engineer';
-  if (r.includes('research')) return 'researcher';
-  if (r.includes('ops') || r.includes('operat')) return 'ops';
-  if (r.includes('financ')) return 'finance';
+  const r = (agent?.role || agent?.jobTitle || '').toLowerCase().replace(/_/g, ' ');
+  if (r.includes('ceo') || r.includes('freemi') || r.includes('chief exec')) return 'ceo';
+  if (r.includes('sales') || r.includes('sdr') || r.includes('lead gen') || r.includes('business dev')) return 'sales';
+  if (r.includes('market') || r.includes('content') || r.includes('growth') || r.includes('brand') || r.includes('writer') || r.includes('creator') || r.includes('social')) return 'marketing';
+  if (r.includes('support') || r.includes('success') || r.includes('helpdesk') || r.includes('customer')) return 'support';
+  if (r.includes('engineer') || r.includes('dev') || r.includes('code') || r.includes('software') || r.includes('web build')) return 'engineer';
+  if (r.includes('research') || r.includes('analyst') || r.includes('data') || r.includes('insight')) return 'researcher';
+  if (r.includes('ops') || r.includes('operat') || r.includes('process') || r.includes('project') || r.includes('coordinator')) return 'ops';
+  if (r.includes('financ') || r.includes('account') || r.includes('budget') || r.includes('billing')) return 'finance';
   return null;
 }
 

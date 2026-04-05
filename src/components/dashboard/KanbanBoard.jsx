@@ -294,7 +294,7 @@ export default function KanbanBoard() {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* Header */}
       <div className="px-8 py-5 flex-shrink-0">

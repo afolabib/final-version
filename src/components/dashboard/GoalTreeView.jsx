@@ -153,13 +153,13 @@ export default function GoalTreeView() {
   const blocked = goals.filter(g => g.status === 'blocked').length;
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* Header */}
       <div className="px-8 py-5 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#0A0A1A' }}>Goals</h1>
+            <h1 className="heading-serif text-2xl font-bold" style={{ color: '#0A0F1E' }}>Goals</h1>
             {company?.mission && (
               <p className="text-sm mt-1 max-w-lg" style={{ color: '#64748B' }}>
                 🏔️ <span className="font-medium">Mission:</span> {company.mission}

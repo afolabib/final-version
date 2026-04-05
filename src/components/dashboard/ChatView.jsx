@@ -707,7 +707,7 @@ function SessionSidebar({ sessions, activeSessionId, onSelect, onNew, agents, co
 export default function ChatView() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { agents: companyAgents, activeCompanyId } = useCompany();
+  const { agents: companyAgents, activeCompanyId, company } = useCompany();
 
   const AGENTS = useMemo(() => {
     if (companyAgents && companyAgents.length > 0) {
@@ -717,6 +717,10 @@ export default function ChatView() {
         role: a.jobTitle || a.role || 'AI Agent',
         color: PALETTE[i % PALETTE.length].color,
         gradient: PALETTE[i % PALETTE.length].gradient,
+        // preserve full agent data for system prompt
+        systemPrompt: a.systemPrompt || '',
+        heartbeatInstructions: a.heartbeatInstructions || '',
+        _raw: a,
       }));
     }
     return FALLBACK_AGENTS;
@@ -817,11 +821,20 @@ export default function ChatView() {
         content: m.content,
       }));
 
+      // Build system prompt from agent template + company context
+      const { getAgentSystemPrompt } = await import('@/lib/agentTemplates');
+      const systemPrompt = getAgentSystemPrompt(
+        activeAgent._raw || activeAgent,
+        company?.name,
+        company?.mission
+      );
+
       const result = await chatProxyFn({
-        agentId:   activeAgent.id,
-        companyId: activeCompanyId,
-        agentName: activeAgent.name,
-        agentRole: activeAgent.role,
+        agentId:      activeAgent.id,
+        companyId:    activeCompanyId,
+        agentName:    activeAgent.name,
+        agentRole:    activeAgent.role,
+        systemPrompt,
         messages: [...history, { role: 'user', content: msg }],
       });
 
@@ -875,7 +888,7 @@ export default function ChatView() {
 
   return (
     <div className="h-full flex overflow-hidden"
-      style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* ── Sessions sidebar ── */}
       <SessionSidebar

@@ -148,7 +148,7 @@ export default function InstancesView() {
       };
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
       <div className="flex items-center justify-between px-4 md:px-8 py-4 flex-shrink-0"
         style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid #E8EAFF' }}>
         <div className="flex items-center gap-4">

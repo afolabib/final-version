@@ -263,7 +263,7 @@ export default function ApprovalsView() {
   const { pendingApprovals, activeCompanyId } = useCompany();
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
       <div className="flex items-center justify-between px-8 py-5 flex-shrink-0">
         <div>
           <h1 className="heading-serif text-3xl font-bold" style={{ color: '#0A0F1E', letterSpacing: '-0.02em' }}>Approvals</h1>

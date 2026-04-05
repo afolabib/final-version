@@ -4,8 +4,17 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import DashboardSidebar from './dashboard/DashboardSidebar';
 import FloatingFreemiChat from './dashboard/FloatingFreemiChat';
+import InteractiveGrid from './InteractiveGrid';
 import { CompanyProvider, useCompany } from '@/contexts/CompanyContext';
 import ErrorBoundary from './ErrorBoundary';
+
+const BG = 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)';
+
+const ORBS = [
+  { size: 500, x: '5%',  y: '10%', color: 'rgba(91,95,255,0.07)', delay: 0 },
+  { size: 350, x: '70%', y: '5%',  color: 'rgba(91,95,255,0.05)', delay: 0.4 },
+  { size: 280, x: '55%', y: '65%', color: 'rgba(91,95,255,0.04)', delay: 0.8 },
+];
 
 function DashboardContent() {
   const location = useLocation();
@@ -30,7 +39,7 @@ function DashboardContent() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      <div className="flex h-screen items-center justify-center" style={{ background: BG }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 rounded-2xl flex items-center justify-center ambient-pulse"
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #2563EB)', boxShadow: '0 4px 20px rgba(91,95,255,0.4)' }}>
@@ -43,10 +52,24 @@ function DashboardContent() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ fontFamily: 'var(--font-body)', background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+    <div className="flex h-screen overflow-hidden relative" style={{ fontFamily: 'var(--font-body)', background: BG }}>
+
+      {/* Homepage-style ambient grid */}
+      <InteractiveGrid />
+
+      {/* Floating gradient orbs */}
+      {ORBS.map((orb, i) => (
+        <motion.div key={i}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 2.5, delay: orb.delay, ease: 'easeOut' }}
+          className="fixed rounded-full blur-3xl pointer-events-none"
+          style={{ width: orb.size, height: orb.size, left: orb.x, top: orb.y, background: orb.color, zIndex: 0 }}
+        />
+      ))}
 
       {/* Desktop sidebar */}
-      <div className="hidden md:block flex-shrink-0">
+      <div className="hidden md:block flex-shrink-0 relative z-10">
         <DashboardSidebar active={active} onNav={handleNav} />
       </div>
 
@@ -68,7 +91,7 @@ function DashboardContent() {
       </AnimatePresence>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <main className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
         {/* Mobile topbar */}
         <div className="md:hidden flex items-center justify-between px-4 py-3 flex-shrink-0"
           style={{ background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(91,95,255,0.07)' }}>

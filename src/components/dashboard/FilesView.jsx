@@ -209,14 +209,14 @@ export default function FilesView() {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden"
-      style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       <div className="flex-1 overflow-y-auto px-8 py-7">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#0A0A1A' }}>Files</h1>
+            <h1 className="heading-serif text-2xl font-bold" style={{ color: '#0A0F1E' }}>Files</h1>
             <p className="text-sm mt-0.5" style={{ color: '#64748B' }}>
               {docs.length} document{docs.length !== 1 ? 's' : ''} saved by your agents
             </p>

@@ -1,120 +1,117 @@
 import { useState } from 'react';
-import { Check, Palette } from 'lucide-react';
+import { Check, Loader2, CheckCircle2 } from 'lucide-react';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { firestore } from '@/lib/firebaseClient';
 
-const agentColors = [
-  { name: 'Gold', color: '#D4A855' },
-  { name: 'Coral', color: '#E06B6B' },
-  { name: 'Cyan', color: '#56B5B5' },
-  { name: 'Violet', color: '#9B7ED8' },
-  { name: 'Prismatic', color: '#D87EAF' },
-  { name: 'Aurora', color: '#E0608C' },
-  { name: 'Ocean', color: '#5B7FE6' },
-  { name: 'Emerald', color: '#3DBB78' },
-  { name: 'Sunset', color: '#E88B4D' },
-  { name: 'Gray', color: '#6B7280' },
+const AGENT_COLORS = [
+  { name: 'Indigo',   color: '#5B5FFF' },
+  { name: 'Emerald',  color: '#10B981' },
+  { name: 'Sky',      color: '#0984E3' },
+  { name: 'Rose',     color: '#E17055' },
+  { name: 'Violet',   color: '#8B5CF6' },
+  { name: 'Pink',     color: '#EC4899' },
+  { name: 'Amber',    color: '#F59E0B' },
+  { name: 'Teal',     color: '#00B894' },
+  { name: 'Slate',    color: '#64748B' },
 ];
 
-export default function SettingsTab() {
-  const [selectedColor, setSelectedColor] = useState('Gray');
-  const [theme, setTheme] = useState('dark');
-  const [productUpdates, setProductUpdates] = useState(true);
-  const [taskEmails, setTaskEmails] = useState(false);
+export default function SettingsTab({ agent, companyId }) {
+  const [name,       setName]       = useState(agent?.name || '');
+  const [jobTitle,   setJobTitle]   = useState(agent?.jobTitle || agent?.role || '');
+  const [color,      setColor]      = useState(agent?.color || '#5B5FFF');
+  const [saving,     setSaving]     = useState(false);
+  const [saved,      setSaved]      = useState(false);
+
+  const isDirty = name !== (agent?.name || '') || jobTitle !== (agent?.jobTitle || agent?.role || '') || color !== (agent?.color || '#5B5FFF');
+
+  async function handleSave() {
+    if (!agent?.id || !isDirty) return;
+    setSaving(true);
+    try {
+      await updateDoc(doc(firestore, 'agents', agent.id), {
+        name,
+        jobTitle,
+        color,
+        updatedAt: serverTimestamp(),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (e) {
+      console.error('SettingsTab save error:', e);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div>
-      <h2 className="text-2xl font-extrabold tracking-tight mb-1" style={{ color: '#0A0A1A', letterSpacing: '-0.02em' }}>Settings</h2>
-      <p className="text-sm mb-8" style={{ color: '#9CA3AF' }}>General settings and appearance.</p>
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="heading-serif text-2xl font-bold tracking-tight" style={{ color: '#0A0F1E' }}>Settings</h2>
+        <button
+          onClick={handleSave}
+          disabled={saving || !isDirty}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
+          style={{
+            background: saved ? 'rgba(16,185,129,0.1)' : isDirty ? '#4A6CF7' : '#F4F5FC',
+            color: saved ? '#10B981' : isDirty ? '#fff' : '#C5C9E0',
+            cursor: isDirty ? 'pointer' : 'default',
+          }}>
+          {saving ? <Loader2 size={11} className="animate-spin" /> : saved ? <CheckCircle2 size={11} /> : null}
+          {saving ? 'Saving…' : saved ? 'Saved' : 'Save changes'}
+        </button>
+      </div>
+      <p className="text-sm mb-8" style={{ color: '#9CA3AF' }}>Edit this agent's name, role, and appearance.</p>
 
-      {/* Appearance Section */}
+      {/* Identity */}
       <div className="mb-8">
-        <h3 className="text-sm font-bold mb-4" style={{ color: '#374151' }}>Appearance</h3>
+        <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#9CA3AF' }}>Identity</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs font-semibold mb-1.5 block" style={{ color: '#6B7280' }}>Agent name</label>
+            <input
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+              style={{ background: '#F8FAFF', border: '1px solid rgba(74,108,247,0.15)', color: '#0A0F1E' }}
+              onFocus={e => e.target.style.borderColor = 'rgba(74,108,247,0.4)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(74,108,247,0.15)'}
+              placeholder="e.g. Alex, Nova, Rex…"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold mb-1.5 block" style={{ color: '#6B7280' }}>Job title / role</label>
+            <input
+              value={jobTitle}
+              onChange={e => setJobTitle(e.target.value)}
+              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+              style={{ background: '#F8FAFF', border: '1px solid rgba(74,108,247,0.15)', color: '#0A0F1E' }}
+              onFocus={e => e.target.style.borderColor = 'rgba(74,108,247,0.4)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(74,108,247,0.15)'}
+              placeholder="e.g. Sales Operator, Content Strategist…"
+            />
+          </div>
+        </div>
+      </div>
 
-        {/* Agent Color */}
-        <p className="text-xs font-semibold mb-3" style={{ color: '#6B7280' }}>Agent Color</p>
-        <div className="flex flex-wrap gap-3 mb-6">
-          {agentColors.map(c => (
-            <button key={c.name} onClick={() => setSelectedColor(c.name)} className="flex flex-col items-center gap-1.5 group">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative"
+      {/* Color */}
+      <div className="mb-8">
+        <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#9CA3AF' }}>Agent color</h3>
+        <div className="flex flex-wrap gap-3">
+          {AGENT_COLORS.map(c => (
+            <button key={c.name} onClick={() => setColor(c.color)} className="flex flex-col items-center gap-1.5">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
                 style={{
                   background: `linear-gradient(145deg, ${c.color}, ${c.color}CC)`,
-                  boxShadow: selectedColor === c.name ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${c.color}, 0 4px 16px ${c.color}40` : `0 4px 12px ${c.color}25`,
-                  transform: selectedColor === c.name ? 'scale(1.05)' : 'scale(1)',
+                  boxShadow: color === c.color ? `0 0 0 2px #fff, 0 0 0 4px ${c.color}, 0 4px 12px ${c.color}40` : `0 3px 8px ${c.color}25`,
+                  transform: color === c.color ? 'scale(1.12)' : 'scale(1)',
                 }}>
-                {selectedColor === c.name && <Check size={18} strokeWidth={2.5} style={{ color: '#fff' }} />}
+                {color === c.color && <Check size={14} strokeWidth={2.5} style={{ color: '#fff' }} />}
               </div>
-              <span className="text-[10px] font-medium" style={{ color: selectedColor === c.name ? '#374151' : '#9CA3AF' }}>{c.name}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Theme selector */}
-        <div className="flex gap-3 mb-8">
-          {[
-            { id: 'light', label: 'Light' },
-            { id: 'dark', label: 'Dark' },
-          ].map(t => (
-            <button key={t.id} onClick={() => setTheme(t.id)} className="flex flex-col items-center gap-2">
-              <div className="w-24 h-16 rounded-2xl flex items-center justify-center relative overflow-hidden transition-all duration-200"
-                style={{
-                  background: t.id === 'light' ? '#F8FAFC' : '#1E293B',
-                  border: theme === t.id ? '2px solid #4A6CF7' : '2px solid #E8EAFF',
-                  boxShadow: theme === t.id ? '0 4px 16px rgba(74,108,247,0.15)' : 'none',
-                }}>
-                <div className="flex flex-col gap-1">
-                  <div className="w-12 h-1.5 rounded-full" style={{ background: t.id === 'light' ? '#CBD5E1' : '#475569' }} />
-                  <div className="w-8 h-1.5 rounded-full" style={{ background: t.id === 'light' ? '#94A3B8' : '#334155' }} />
-                </div>
-                {theme === t.id && (
-                  <div className="absolute bottom-1 right-1 w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ background: '#4A6CF7' }}>
-                    <Check size={10} strokeWidth={3} style={{ color: '#fff' }} />
-                  </div>
-                )}
-              </div>
-              <span className="text-xs font-medium" style={{ color: theme === t.id ? '#374151' : '#9CA3AF' }}>{t.label}</span>
+              <span className="text-[10px] font-medium" style={{ color: color === c.color ? '#374151' : '#9CA3AF' }}>{c.name}</span>
             </button>
           ))}
         </div>
       </div>
-
-      {/* Divider */}
-      <div className="h-px mb-8" style={{ background: '#E8EAFF' }} />
-
-      {/* Communication Preferences */}
-      <h3 className="text-sm font-bold mb-5" style={{ color: '#374151' }}>Communication preferences</h3>
-
-      <ToggleRow
-        title="Receive product updates"
-        desc="Receive early access to feature releases and success stories to optimize your workflow."
-        checked={productUpdates}
-        onChange={() => setProductUpdates(!productUpdates)}
-      />
-      <ToggleRow
-        title="Email me when my queued task starts"
-        desc="When enabled, we'll send you a timely email once your task finishes queuing and begins processing."
-        checked={taskEmails}
-        onChange={() => setTaskEmails(!taskEmails)}
-      />
-    </div>
-  );
-}
-
-function ToggleRow({ title, desc, checked, onChange }) {
-  return (
-    <div className="flex items-start justify-between gap-6 mb-5">
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold mb-0.5" style={{ color: '#374151' }}>{title}</p>
-        <p className="text-xs leading-relaxed" style={{ color: '#9CA3AF' }}>{desc}</p>
-      </div>
-      <button onClick={onChange} className="flex-shrink-0 mt-0.5"
-        style={{ width: 44, height: 24, borderRadius: 12, background: checked ? '#4A6CF7' : '#E8EAFF', transition: 'background 200ms', position: 'relative', border: checked ? 'none' : '1px solid #D1D5E8' }}>
-        <div style={{
-          width: 18, height: 18, borderRadius: 9, background: '#fff',
-          position: 'absolute', top: 3, left: checked ? 23 : 3,
-          transition: 'left 200ms ease-out',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-        }} />
-      </button>
     </div>
   );
 }

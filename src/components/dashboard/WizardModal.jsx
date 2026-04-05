@@ -301,7 +301,7 @@ function DeployView({ agent, initialChannel = 'web', onBack, onDeploy }) {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-bold mb-1.5 block" style={{ color: '#374151' }}>Telegram username</label>
-                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)', border: '1px solid #E8EAFF' }}>
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)', border: '1px solid #E8EAFF' }}>
                     <span className="text-sm" style={{ color: '#9CA3AF' }}>@</span>
                     <input value={username} onChange={e => setUsername(e.target.value)} placeholder="your_username"
                       className="flex-1 text-sm bg-transparent outline-none" style={{ color: '#374151' }} />
@@ -309,7 +309,7 @@ function DeployView({ agent, initialChannel = 'web', onBack, onDeploy }) {
                 </div>
                 <div>
                   <label className="text-xs font-bold mb-1.5 block" style={{ color: '#374151' }}>Bot token</label>
-                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)', border: '1px solid #E8EAFF' }}>
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)', border: '1px solid #E8EAFF' }}>
                     <input value={token} onChange={e => setToken(e.target.value)} type={showToken ? 'text' : 'password'} placeholder="123456789:ABCdef..."
                       className="flex-1 text-sm bg-transparent outline-none font-mono" style={{ color: '#374151' }} />
                     <button onClick={() => setShowToken(s => !s)} style={{ color: '#9CA3AF' }}>
@@ -515,7 +515,7 @@ export default function WizardModal({ agent, onClose }) {
                       placeholder={current.opts?.length ? 'Type a custom answer...' : 'Describe what you want...'}
                       className="w-full px-5 py-3.5 rounded-2xl text-sm outline-none transition-all duration-200 font-medium"
                       style={{
-                        background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)',
+                        background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)',
                         border: '1px solid #E8EAFF',
                         color: '#374151',
                       }}

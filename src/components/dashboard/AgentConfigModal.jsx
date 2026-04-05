@@ -24,7 +24,7 @@ const configTabs = [
 
 function TabContent({ tab, agent, companyId }) {
   switch (tab) {
-    case 'settings': return <SettingsTab />;
+    case 'settings': return <SettingsTab agent={agent} companyId={companyId} />;
     case 'channels': return <ChannelsTab />;
     case 'ai-model': return <AIModelTab />;
     case 'integrations': return <IntegrationsTab />;

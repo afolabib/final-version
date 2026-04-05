@@ -58,7 +58,7 @@ export default function RoutinesView() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden"
-      style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-8">
 

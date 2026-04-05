@@ -62,10 +62,13 @@ export default function FloatingFreemiChat() {
     historyRef.current = [...history, { role: 'user', content: msg }];
 
     try {
+      const { getAgentSystemPrompt } = await import('@/lib/agentTemplates');
+      const systemPrompt = getAgentSystemPrompt({ role: 'ceo', name: 'Freemi' }, user?.displayName || 'the founder', '');
       const result = await chatProxyFn({
         agentName: 'Freemi',
         agentRole: 'ceo',
         companyId: activeCompanyId || '',
+        systemPrompt,
         messages: historyRef.current,
       });
       const reply = result.data?.reply || "I'm having trouble responding right now. Try again.";

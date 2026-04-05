@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Zap, MessageSquare, CheckCircle2, Activity, Plus, ChevronRight, ArrowUpRight } from 'lucide-react';
+import { Sparkles, Zap, MessageSquare, CheckCircle2, Activity, Plus, ChevronRight, ArrowUpRight, Archive, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCompany } from '@/contexts/CompanyContext';
-import { AGENT_STATUS, ROLE_COLORS } from '@/lib/agentService';
+import { useAuth } from '@/lib/AuthContext';
+import { AGENT_STATUS, ROLE_COLORS, reserveAgent, reactivateAgent } from '@/lib/agentService';
 import AgentConfigModal from './AgentConfigModal';
 
 // ── Presence / status config ──────────────────────────────────────────────────
@@ -43,6 +44,13 @@ const STATUS_CONFIG = {
     bg: 'rgba(139,92,246,0.08)',
     border: 'rgba(139,92,246,0.2)',
     pulse: true,
+  },
+  [AGENT_STATUS.RESERVE]: {
+    label: 'Reserve',
+    color: '#94A3B8',
+    bg: 'rgba(148,163,184,0.06)',
+    border: 'rgba(148,163,184,0.15)',
+    pulse: false,
   },
 };
 
@@ -103,7 +111,7 @@ function agentStats(agent, index) {
 
 // ── Agent card ────────────────────────────────────────────────────────────────
 
-function AgentCard({ agent, index, onView }) {
+function AgentCard({ agent, index, onView, onReserve }) {
   const [hovered, setHovered] = useState(false);
   const color = ROLE_COLORS[agent.role] || '#5B5FFF';
   const emoji = getRoleEmoji(agent);
@@ -210,17 +218,28 @@ function AgentCard({ agent, index, onView }) {
           ))}
         </div>
 
-        {/* View button */}
-        <button
-          className="mt-auto w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all"
-          style={{
-            background: hovered ? 'rgba(91,95,255,0.07)' : 'rgba(91,95,255,0.04)',
-            color: '#5B5FFF',
-            border: '1px solid rgba(91,95,255,0.12)',
-          }}>
-          View operator
-          <ArrowUpRight size={11} />
-        </button>
+        {/* Action buttons */}
+        <div className="mt-auto flex gap-2">
+          <button
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all"
+            style={{
+              background: hovered ? 'rgba(91,95,255,0.07)' : 'rgba(91,95,255,0.04)',
+              color: '#5B5FFF',
+              border: '1px solid rgba(91,95,255,0.12)',
+            }}>
+            Configure
+            <ArrowUpRight size={11} />
+          </button>
+          <button
+            onClick={e => { e.stopPropagation(); onReserve && onReserve(); }}
+            title="Move to reserve — stops heartbeats"
+            className="flex items-center justify-center w-9 rounded-xl text-xs transition-all"
+            style={{ background: 'rgba(148,163,184,0.08)', color: '#94A3B8', border: '1px solid rgba(148,163,184,0.15)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(148,163,184,0.15)'; e.currentTarget.style.color = '#64748B'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(148,163,184,0.08)'; e.currentTarget.style.color = '#94A3B8'; }}>
+            <Archive size={12} />
+          </button>
+        </div>
       </div>
     </motion.div>
   );
@@ -264,14 +283,18 @@ function DeployCard({ onClick }) {
 
 export default function AgentsView({ onDeploy }) {
   const navigate = useNavigate();
-  const { agents } = useCompany();
+  const { agents, activeCompanyId } = useCompany();
+  const { user } = useAuth();
   const [configAgent, setConfigAgent] = useState(null);
-  const visibleAgents = (agents || []).filter(a => a.status !== AGENT_STATUS.TERMINATED);
-  const activeCount = visibleAgents.filter(a => a.status === AGENT_STATUS.ACTIVE).length;
+  const allVisible = (agents || []).filter(a => a.status !== AGENT_STATUS.TERMINATED);
+  const activeAgents  = allVisible.filter(a => a.status !== AGENT_STATUS.RESERVE);
+  const reserveAgents = allVisible.filter(a => a.status === AGENT_STATUS.RESERVE);
+  const visibleAgents = activeAgents; // kept for backwards compat in JSX below
+  const activeCount = activeAgents.filter(a => a.status === AGENT_STATUS.ACTIVE).length;
 
   return (
     <div className="h-full flex flex-col overflow-y-auto px-6 md:px-8 py-6 md:py-8"
-      style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* Page header */}
       <motion.div
@@ -337,19 +360,67 @@ export default function AgentsView({ onDeploy }) {
         </motion.div>
       )}
 
-      {/* Agents grid */}
-      {visibleAgents.length > 0 && (
+      {/* Active agents grid */}
+      {activeAgents.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {visibleAgents.map((agent, i) => (
+          {activeAgents.map((agent, i) => (
             <AgentCard
               key={agent.id}
               agent={agent}
               index={i}
               onView={() => setConfigAgent(agent)}
+              onReserve={() => reserveAgent(activeCompanyId, user?.uid, agent.id, 'Moved to reserve')}
             />
           ))}
           <DeployCard onClick={onDeploy} />
         </div>
+      )}
+
+      {/* Reserve pool */}
+      {reserveAgents.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Archive size={14} style={{ color: '#94A3B8' }} />
+            <h2 className="text-sm font-bold" style={{ color: '#64748B' }}>Reserve pool</h2>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(148,163,184,0.1)', color: '#94A3B8' }}>
+              {reserveAgents.length} agent{reserveAgents.length !== 1 ? 's' : ''} · not running
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {reserveAgents.map((agent, i) => {
+              const color = ROLE_COLORS[agent.role] || '#94A3B8';
+              return (
+                <motion.div key={agent.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="flex items-center gap-3 p-4 rounded-2xl"
+                  style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(148,163,184,0.15)' }}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
+                    style={{ background: `${color}10`, border: `1px solid ${color}20` }}>
+                    {agent.emoji || '🤖'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold truncate" style={{ color: '#64748B' }}>{agent.name}</p>
+                    <p className="text-[10px] truncate" style={{ color: '#94A3B8' }}>{agent.jobTitle || agent.role || 'Agent'}</p>
+                  </div>
+                  <button
+                    onClick={() => reactivateAgent(activeCompanyId, user?.uid, agent.id)}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all"
+                    style={{ background: 'rgba(91,95,255,0.06)', color: '#5B5FFF', border: '1px solid rgba(91,95,255,0.12)' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.12)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(91,95,255,0.06)'}>
+                    <RotateCcw size={10} /> Reactivate
+                  </button>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
       )}
 
       <AnimatePresence>

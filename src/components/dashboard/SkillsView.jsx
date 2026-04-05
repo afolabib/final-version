@@ -39,7 +39,7 @@ export default function SkillsView() {
 
   return (
     <div className="h-full flex flex-col overflow-y-auto px-4 md:px-8 py-6 md:py-8"
-      style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* Header */}
       <div className="mb-6">

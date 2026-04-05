@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Bell, Search, CheckCheck, Zap, Mail, MessageSquare, FileText, AlertCircle, TrendingUp, Bot, CheckCircle2 } from 'lucide-react';
+import { Bell, Search, CheckCheck, Zap, Mail, MessageSquare, FileText, AlertCircle, TrendingUp, Bot, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, query, where, orderBy, limit, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '@/lib/firebaseClient';
 import { useCompany } from '@/contexts/CompanyContext';
 
 // Map activity_log event types → inbox display
+// noUnread: true = never counts toward unread badge (low-signal noise)
 const EVENT_META = {
   'task.completed':           { type: 'task',    icon: Zap,           color: '#F59E0B', bg: 'rgba(245,158,11,0.08)',   label: 'Task Done' },
-  'task.created':             { type: 'task',    icon: Zap,           color: '#5B5FFF', bg: 'rgba(91,95,255,0.08)',    label: 'Task Created' },
+  'task.created':             { type: 'task',    icon: Zap,           color: '#5B5FFF', bg: 'rgba(91,95,255,0.08)',    label: 'Task Created',  noUnread: true },
+  'task.needs_review':        { type: 'alert',   icon: AlertTriangle, color: '#F59E0B', bg: 'rgba(245,158,11,0.08)',   label: 'Needs Review' },
+  'task.failed':              { type: 'alert',   icon: AlertCircle,   color: '#EF4444', bg: 'rgba(239,68,68,0.08)',    label: 'Task Failed',   noUnread: true },
   'approval.requested':       { type: 'alert',   icon: AlertCircle,   color: '#EF4444', bg: 'rgba(239,68,68,0.08)',    label: 'Needs Approval' },
   'approval.approved':        { type: 'task',    icon: CheckCircle2,  color: '#10B981', bg: 'rgba(16,185,129,0.08)',   label: 'Approved' },
   'approval.rejected':        { type: 'alert',   icon: AlertCircle,   color: '#EF4444', bg: 'rgba(239,68,68,0.08)',    label: 'Rejected' },
@@ -16,10 +19,11 @@ const EVENT_META = {
   'goal.created':             { type: 'report',  icon: TrendingUp,    color: '#10B981', bg: 'rgba(16,185,129,0.08)',   label: 'Goal Set' },
   'goal.updated':             { type: 'report',  icon: TrendingUp,    color: '#10B981', bg: 'rgba(16,185,129,0.08)',   label: 'Goal Updated' },
   'document.created':         { type: 'file',    icon: FileText,      color: '#8B5CF6', bg: 'rgba(139,92,246,0.08)',   label: 'File Saved' },
-  'agent.heartbeat':          { type: 'message', icon: Bot,           color: '#0984E3', bg: 'rgba(9,132,227,0.08)',    label: 'Agent Update' },
+  'agent.heartbeat':          { type: 'message', icon: Bot,           color: '#0984E3', bg: 'rgba(9,132,227,0.08)',    label: 'Agent Update',  noUnread: true },
+  'agent.heartbeat.error':    { type: 'alert',   icon: AlertCircle,   color: '#EF4444', bg: 'rgba(239,68,68,0.08)',    label: 'Agent Error' },
   'agent.created':            { type: 'message', icon: Bot,           color: '#5B5FFF', bg: 'rgba(91,95,255,0.08)',    label: 'Agent Deployed' },
   'chat.message':             { type: 'message', icon: MessageSquare, color: '#5B5FFF', bg: 'rgba(91,95,255,0.08)',    label: 'Message' },
-  'default':                  { type: 'message', icon: Bot,           color: '#94A3B8', bg: 'rgba(148,163,184,0.08)',  label: 'Activity' },
+  'default':                  { type: 'message', icon: Bot,           color: '#94A3B8', bg: 'rgba(148,163,184,0.08)',  label: 'Activity',      noUnread: true },
 };
 
 function getMeta(event) {
@@ -64,7 +68,8 @@ export default function InboxView() {
 
   const markRead = id => setReadIds(prev => new Set([...prev, id]));
   const markAllRead = () => setReadIds(new Set(items.map(i => i.id)));
-  const unreadCount = items.filter(i => !readIds.has(i.id)).length;
+  // Only high-signal events count as unread
+  const unreadCount = items.filter(i => !readIds.has(i.id) && !getMeta(i.event).noUnread).length;
 
   const visible = items.filter(item => {
     const meta = getMeta(item.event);
@@ -78,7 +83,7 @@ export default function InboxView() {
 
   return (
     <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8"
-      style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
 
         {/* Header */}
@@ -94,7 +99,7 @@ export default function InboxView() {
               )}
             </div>
             <div>
-              <h1 className="text-2xl font-bold" style={{ color: '#0A0A1A' }}>Inbox</h1>
+              <h1 className="heading-serif text-2xl font-bold" style={{ color: '#0A0F1E' }}>Inbox</h1>
               <p className="text-xs" style={{ color: '#94A3B8' }}>
                 {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
               </p>
@@ -163,14 +168,12 @@ export default function InboxView() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.2, delay: i * 0.03 }}
                     onClick={() => markRead(item.id)}
-                    className="flex items-start gap-4 p-4 rounded-2xl cursor-pointer transition-all"
+                    className="flex items-start gap-4 p-4 rounded-2xl cursor-pointer card-hover"
                     style={{
                       background: isRead ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.95)',
                       border: isRead ? '1px solid rgba(0,0,0,0.05)' : '1px solid rgba(91,95,255,0.1)',
                       boxShadow: isRead ? 'none' : '0 2px 12px rgba(91,95,255,0.06)',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,95,255,0.1)'}
-                    onMouseLeave={e => e.currentTarget.style.boxShadow = isRead ? 'none' : '0 2px 12px rgba(91,95,255,0.06)'}>
+                    }}>
 
                     <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={{ background: meta.bg }}>

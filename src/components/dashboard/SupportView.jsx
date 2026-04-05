@@ -73,7 +73,7 @@ export default function SupportView() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-10" style={{ background: 'linear-gradient(160deg, #EEF2FF 0%, #F0F7FF 45%, #FAFCFF 100%)' }}>
+    <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-10" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-10">
         <div className="inline-block mb-4">

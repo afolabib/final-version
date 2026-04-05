@@ -24,6 +24,7 @@ export const AGENT_STATUS = {
   PAUSED: 'paused',
   ERROR: 'error',
   PENDING_APPROVAL: 'pending_approval',
+  RESERVE: 'reserve',   // task/project done — agent is benched, no heartbeats
   TERMINATED: 'terminated',
 };
 
@@ -191,6 +192,30 @@ export async function resumeAgent(agentId) {
     pausedAt: null,
     updatedAt: serverTimestamp(),
   });
+}
+
+export async function reserveAgent(companyId, userId, agentId, reason = 'task completed') {
+  const snap = await getDoc(doc(firestore, COL, agentId));
+  const name = snap.data()?.name || 'Agent';
+  await updateDoc(doc(firestore, COL, agentId), {
+    status: AGENT_STATUS.RESERVE,
+    reservedAt: serverTimestamp(),
+    reserveReason: reason,
+    updatedAt: serverTimestamp(),
+  });
+  await logActivity(companyId, userId, 'agent', 'agent.reserved', agentId, `${name} moved to reserve. ${reason}`);
+}
+
+export async function reactivateAgent(companyId, userId, agentId) {
+  const snap = await getDoc(doc(firestore, COL, agentId));
+  const name = snap.data()?.name || 'Agent';
+  await updateDoc(doc(firestore, COL, agentId), {
+    status: AGENT_STATUS.SLEEPING,
+    reservedAt: null,
+    reserveReason: null,
+    updatedAt: serverTimestamp(),
+  });
+  await logActivity(companyId, userId, 'agent', 'agent.reactivated', agentId, `${name} reactivated from reserve.`);
 }
 
 export function subscribeToAgents(companyId, cb) {
