@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, X, Bot, Circle, Clock, AlertTriangle, CheckCircle2, Ban, Layers } from 'lucide-react';
+import { Plus, X, Bot, Circle, Clock, AlertTriangle, CheckCircle2, Ban, Layers, ChevronRight } from 'lucide-react';
 import { useCompany } from '@/contexts/CompanyContext';
 import { useAuth } from '@/lib/AuthContext';
 import { createTask, updateTask, TASK_STATUS } from '@/lib/taskService';
 
-// ── Column config ─────────────────────────────────────────────────────────────
+// ── Column config (active columns only — Done is in the log) ─────────────────
 const COLUMNS = [
   {
     id: TASK_STATUS.TODO,
@@ -33,15 +33,6 @@ const COLUMNS = [
     bg: 'rgba(245,158,11,0.07)',
     border: 'rgba(245,158,11,0.20)',
     dotColor: '#F59E0B',
-  },
-  {
-    id: TASK_STATUS.DONE,
-    label: 'Done',
-    icon: CheckCircle2,
-    color: '#10B981',
-    bg: 'rgba(16,185,129,0.07)',
-    border: 'rgba(16,185,129,0.18)',
-    dotColor: '#10B981',
   },
   {
     id: TASK_STATUS.BLOCKED,
@@ -113,6 +104,7 @@ function AddTaskCard({ companyId, userId, status, onDone, onCancel }) {
 
 // ── Task card (plain div — motion wrapper is in Column) ───────────────────────
 function TaskCard({ task, agents, isDragging, onDragStart, onDragEnd }) {
+  const [expanded, setExpanded] = useState(false);
   const assignedAgent = agents.find(a => a.id === task.assignedAgentId);
   const priColor = PRIORITY_COLORS[task.priority] || '#94A3B8';
   const goalName = task._goalTitle;
@@ -122,11 +114,12 @@ function TaskCard({ task, agents, isDragging, onDragStart, onDragEnd }) {
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onClick={() => setExpanded(e => !e)}
       className="rounded-2xl p-3.5 mb-2.5 cursor-grab active:cursor-grabbing select-none transition-all"
       style={{
         background: '#fff',
-        border: '1px solid rgba(0,0,0,0.07)',
-        boxShadow: isDragging ? '0 16px 48px rgba(91,95,255,0.18)' : '0 2px 8px rgba(0,0,0,0.05)',
+        border: expanded ? '1px solid rgba(91,95,255,0.20)' : '1px solid rgba(0,0,0,0.07)',
+        boxShadow: isDragging ? '0 16px 48px rgba(91,95,255,0.18)' : expanded ? '0 6px 24px rgba(91,95,255,0.10)' : '0 2px 8px rgba(0,0,0,0.05)',
         opacity: isDragging ? 0.5 : 1,
         transform: isDragging ? 'scale(1.02)' : 'scale(1)',
       }}>
@@ -139,11 +132,50 @@ function TaskCard({ task, agents, isDragging, onDragStart, onDragEnd }) {
           {goalName}
         </p>
       )}
-      {task.outputSummary && (
+
+      {/* Collapsed: show preview of output if exists */}
+      {!expanded && task.outputSummary && (
         <p className="text-[11px] leading-relaxed mb-2 line-clamp-2" style={{ color: '#64748B' }}>
           {task.outputSummary}
         </p>
       )}
+
+      {/* Expanded: show full details */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden">
+            {task.description && (
+              <div className="mb-3 pt-2" style={{ borderTop: '1px solid rgba(91,95,255,0.07)' }}>
+                <p className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: '#C7D0E8' }}>Description</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#374151' }}>{task.description}</p>
+              </div>
+            )}
+            {task.outputSummary && (
+              <div className="mb-3 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.12)' }}>
+                <p className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: '#10B981' }}>Agent Output</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#374151' }}>{task.outputSummary}</p>
+              </div>
+            )}
+            {task.output && task.output !== task.outputSummary && (
+              <div className="mb-3 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(91,95,255,0.04)', border: '1px solid rgba(91,95,255,0.09)' }}>
+                <p className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: '#5B5FFF' }}>Full Output</p>
+                <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: '#374151' }}>{task.output}</p>
+              </div>
+            )}
+            {task.dueDate && (
+              <p className="text-[10px] font-semibold mb-2" style={{ color: '#94A3B8' }}>
+                Due: {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="flex items-center justify-between mt-1">
         <div className="flex items-center gap-1.5">
           {task.priority && task.priority !== 'medium' && (
@@ -153,11 +185,14 @@ function TaskCard({ task, agents, isDragging, onDragStart, onDragEnd }) {
             </span>
           )}
         </div>
-        {assignedAgent && (
-          <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: '#94A3B8' }}>
-            <Bot size={9} />{assignedAgent.name}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {assignedAgent && (
+            <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: '#94A3B8' }}>
+              <Bot size={9} />{assignedAgent.name}
+            </span>
+          )}
+          <span className="text-[9px]" style={{ color: '#CBD5E1' }}>{expanded ? '▲' : '▼'}</span>
+        </div>
       </div>
     </div>
   );
@@ -266,11 +301,115 @@ function Column({ col, tasks, agents, goals, companyId, userId, onTaskMove, drag
   );
 }
 
+// ── Completed log panel ───────────────────────────────────────────────────────
+function CompletedLog({ tasks, agents, goals, onClose }) {
+  function timeAgo(ts) {
+    if (!ts) return '—';
+    const date = ts?.toDate ? ts.toDate() : new Date(ts);
+    const mins = Math.round((Date.now() - date.getTime()) / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    if (mins < 1440) return `${Math.round(mins / 60)}h ago`;
+    return `${Math.round(mins / 1440)}d ago`;
+  }
+
+  return (
+    <>
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        className="fixed inset-0 z-30"
+        style={{ background: 'rgba(10,15,30,0.25)', backdropFilter: 'blur(4px)' }}
+        onClick={onClose}
+      />
+
+      {/* Panel */}
+      <motion.div
+        initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 right-0 bottom-0 z-40 flex flex-col"
+        style={{ width: 380, background: 'rgba(255,255,255,0.99)', borderLeft: '1px solid rgba(91,95,255,0.10)', boxShadow: '-16px 0 48px rgba(91,95,255,0.10)' }}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 flex-shrink-0"
+          style={{ borderBottom: '1px solid rgba(91,95,255,0.08)' }}>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(16,185,129,0.10)' }}>
+              <CheckCircle2 size={14} style={{ color: '#10B981' }} />
+            </div>
+            <div>
+              <p className="font-bold text-sm" style={{ color: '#0A0F1E' }}>Completed</p>
+              <p className="text-[10px]" style={{ color: '#94A3B8' }}>{tasks.length} task{tasks.length !== 1 ? 's' : ''} done</p>
+            </div>
+          </div>
+          <button onClick={onClose}
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+            style={{ color: '#94A3B8' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+            <X size={14} />
+          </button>
+        </div>
+
+        {/* List */}
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
+          {tasks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-40 gap-2">
+              <CheckCircle2 size={24} style={{ color: '#CBD5E1' }} />
+              <p className="text-sm font-medium" style={{ color: '#CBD5E1' }}>No completed tasks yet</p>
+            </div>
+          ) : (
+            tasks.map((task, i) => {
+              const agent = agents.find(a => a.id === task.assignedAgentId);
+              const goal = goals.find(g => g.id === task.goalId);
+              return (
+                <motion.div
+                  key={task.id}
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.03, duration: 0.2 }}
+                  className="flex items-start gap-3 p-3.5 rounded-2xl"
+                  style={{ background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.12)' }}>
+                  <CheckCircle2 size={14} style={{ color: '#10B981', flexShrink: 0, marginTop: 2 }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold leading-snug line-through" style={{ color: '#64748B' }}>
+                      {task.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+                      {goal && (
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                          style={{ background: 'rgba(91,95,255,0.08)', color: '#5B5FFF' }}>
+                          {goal.title}
+                        </span>
+                      )}
+                      {agent && (
+                        <span className="text-[10px] font-semibold" style={{ color: '#94A3B8' }}>
+                          <Bot size={9} className="inline mr-0.5" />{agent.name}
+                        </span>
+                      )}
+                      {task.updatedAt && (
+                        <span className="text-[10px]" style={{ color: '#CBD5E1' }}>
+                          {timeAgo(task.updatedAt)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })
+          )}
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
 // ── Main Kanban Board ─────────────────────────────────────────────────────────
 export default function KanbanBoard() {
   const { tasks, agents, goals, activeCompanyId } = useCompany();
   const { user } = useAuth();
   const [draggingTaskId, setDraggingTaskId] = useState(null);
+  const [showLog, setShowLog] = useState(false);
   const userId = user?.uid || 'user';
 
   // Listen for drag events from TaskCard
@@ -308,23 +447,33 @@ export default function KanbanBoard() {
             </p>
           </div>
 
-          {/* Quick stats */}
-          {totalTasks > 0 && (
-            <div className="flex items-center gap-2">
-              {COLUMNS.map(col => {
-                const count = tasks.filter(t => t.status === col.id).length;
-                if (count === 0) return null;
-                const ColIcon = col.icon;
-                return (
-                  <div key={col.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
-                    style={{ background: col.bg, border: `1px solid ${col.border}` }}>
-                    <ColIcon size={11} style={{ color: col.color }} />
-                    <span className="text-xs font-black" style={{ color: col.color }}>{count}</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          {/* Quick stats + completed log button */}
+          <div className="flex items-center gap-2">
+            {COLUMNS.map(col => {
+              const count = tasks.filter(t => t.status === col.id).length;
+              if (count === 0) return null;
+              const ColIcon = col.icon;
+              return (
+                <div key={col.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
+                  style={{ background: col.bg, border: `1px solid ${col.border}` }}>
+                  <ColIcon size={11} style={{ color: col.color }} />
+                  <span className="text-xs font-black" style={{ color: col.color }}>{count}</span>
+                </div>
+              );
+            })}
+            {totalDone > 0 && (
+              <button
+                onClick={() => setShowLog(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all"
+                style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.18)' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.13)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(16,185,129,0.07)'}>
+                <CheckCircle2 size={11} style={{ color: '#10B981' }} />
+                <span className="text-xs font-black" style={{ color: '#10B981' }}>{totalDone} done</span>
+                <ChevronRight size={10} style={{ color: '#10B981' }} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Overall progress bar */}
@@ -383,6 +532,18 @@ export default function KanbanBoard() {
           </div>
         )}
       </div>
+
+      {/* Completed log slide-over */}
+      <AnimatePresence>
+        {showLog && (
+          <CompletedLog
+            tasks={tasks.filter(t => t.status === TASK_STATUS.DONE)}
+            agents={agents}
+            goals={goals}
+            onClose={() => setShowLog(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
