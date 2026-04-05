@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import DashboardSidebar from './dashboard/DashboardSidebar';
 import FloatingFreemiChat from './dashboard/FloatingFreemiChat';
+import CommandPalette from './dashboard/CommandPalette';
 import InteractiveGrid from './InteractiveGrid';
 import { CompanyProvider, useCompany } from '@/contexts/CompanyContext';
 import ErrorBoundary from './ErrorBoundary';
@@ -20,6 +21,19 @@ function DashboardContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // ⌘K / Ctrl+K to open palette
+  useEffect(() => {
+    const handler = e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setPaletteOpen(o => !o);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
   const { isBootstrapped, loading } = useCompany();
 
   const active = location.pathname.replace('/dashboard', '').replace('/', '') || 'home';
@@ -124,6 +138,9 @@ function DashboardContent() {
 
       {/* Floating Freemi chat — visible on every dashboard page */}
       <FloatingFreemiChat />
+
+      {/* Global command palette ⌘K */}
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </div>
   );
 }
