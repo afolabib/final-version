@@ -234,7 +234,7 @@ function OrgNode({ agent, onFire, onPause, onResume, onHireUnder, onConfigure, o
 }
 
 // ─── Main view ────────────────────────────────────────────────────────────────
-export default function OrgChartView() {
+export default function OrgChartView({ embedded = false }) {
   const { agents, activeCompanyId } = useCompany();
   const [hireOpen, setHireOpen] = useState(false);
   const [hireReportsTo, setHireReportsTo] = useState(null);
@@ -285,27 +285,30 @@ export default function OrgChartView() {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
+    <div className={embedded ? 'flex flex-col' : 'h-full flex flex-col'}
+      style={embedded ? {} : { background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
-      {/* Header */}
-      <div className="flex items-center justify-between px-8 py-5 flex-shrink-0">
-        <div>
-          <h1 className="heading-serif text-3xl font-bold" style={{ color: '#0A0F1E' }}>Team</h1>
-          <p className="text-sm mt-1 font-medium" style={{ color: '#64748B' }}>
-            {agents.length} operator{agents.length !== 1 ? 's' : ''} · drag cards to reassign reporting lines
-          </p>
+      {/* Header — hidden when embedded */}
+      {!embedded && (
+        <div className="flex items-center justify-between px-8 py-5 flex-shrink-0">
+          <div>
+            <h1 className="heading-serif text-3xl font-bold" style={{ color: '#0A0F1E' }}>Team</h1>
+            <p className="text-sm mt-1 font-medium" style={{ color: '#64748B' }}>
+              {agents.length} operator{agents.length !== 1 ? 's' : ''} · drag cards to reassign reporting lines
+            </p>
+          </div>
+          <button
+            onClick={() => { setHireReportsTo(null); setHireOpen(true); }}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all"
+            style={{ background: 'linear-gradient(135deg,#5B5FFF,#6B63FF)', color: '#fff', boxShadow: '0 4px 14px rgba(91,95,255,0.35)' }}>
+            <Plus size={16} />
+            Hire Agent
+          </button>
         </div>
-        <button
-          onClick={() => { setHireReportsTo(null); setHireOpen(true); }}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all"
-          style={{ background: 'linear-gradient(135deg,#5B5FFF,#6B63FF)', color: '#fff', boxShadow: '0 4px 14px rgba(91,95,255,0.35)' }}>
-          <Plus size={16} />
-          Hire Agent
-        </button>
-      </div>
+      )}
 
       {/* Chart */}
-      <div className="flex-1 overflow-auto p-8"
+      <div className={embedded ? 'overflow-auto p-6' : 'flex-1 overflow-auto p-8'}
         onDragOver={e => e.preventDefault()}
         onDrop={() => { setDragId(null); setDragOverId(null); }}>
         {tree.length === 0 ? (

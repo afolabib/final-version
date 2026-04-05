@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import OrgChartView from './OrgChartView';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Check, Loader2, Building2, Users,
@@ -1093,7 +1094,7 @@ export default function CompaniesView() {
         </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 mb-10">
         {allCompanies.map(co => (
           <CompanyCard
             key={co.id}
@@ -1106,6 +1107,22 @@ export default function CompaniesView() {
           />
         ))}
       </div>
+
+      {/* Org chart */}
+      {agents.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-sm font-black tracking-wide uppercase" style={{ color: '#C7D0E8' }}>Your Team</h2>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              style={{ background: 'rgba(91,95,255,0.07)', color: '#5B5FFF' }}>
+              {agents.length} operator{agents.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(91,95,255,0.08)', minHeight: 280 }}>
+            <OrgChartView embedded />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
