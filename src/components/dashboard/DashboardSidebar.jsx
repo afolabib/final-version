@@ -348,9 +348,8 @@ export default function DashboardSidebar({ active, onNav }) {
 
         {/* Workspace */}
         <NavBtn icon={Home}          label="Home"         id="home"         active={active} onClick={onNav} />
-<NavBtn icon={Building2}   label="Companies"    id="companies"    active={active} onClick={onNav} />
-        <NavBtn icon={Briefcase}   label="Agents"       id="agents"       active={active} onClick={onNav} />
-        <NavBtn icon={Inbox}       label="Inbox"        id="inbox"        active={active} onClick={onNav} badgeCount={approvalCount} />
+        <NavBtn icon={Building2}    label="Companies"    id="companies"    active={active} onClick={onNav} />
+        <NavBtn icon={Inbox}        label="Inbox"        id="inbox"        active={active} onClick={onNav} badgeCount={approvalCount} />
         <NavBtn icon={Layers}      label="Projects"     id="projects"     active={active} onClick={onNav} badgeCount={openTaskCount} bellBadge />
         <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} badge="Beta" />
         <NavBtn icon={Target}      label="Taskboard"    id="goals"        active={active} onClick={onNav} />

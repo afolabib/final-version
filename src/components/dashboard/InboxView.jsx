@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Bell, Search, CheckCheck, Zap, Mail, MessageSquare, FileText, AlertCircle, TrendingUp, Bot, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Bell, Search, CheckCheck, Zap, Mail, MessageSquare, FileText, AlertCircle, TrendingUp, Bot, CheckCircle2, AlertTriangle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, query, where, orderBy, limit, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '@/lib/firebaseClient';
@@ -49,6 +49,7 @@ export default function InboxView() {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [readIds, setReadIds] = useState(new Set());
+  const [dismissedIds, setDismissedIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,10 +69,15 @@ export default function InboxView() {
 
   const markRead = id => setReadIds(prev => new Set([...prev, id]));
   const markAllRead = () => setReadIds(new Set(items.map(i => i.id)));
+  const dismiss = id => { setDismissedIds(prev => new Set([...prev, id])); setReadIds(prev => new Set([...prev, id])); };
+  const clearRead = () => setDismissedIds(prev => new Set([...prev, ...[...readIds]]));
+
   // Only high-signal events count as unread
-  const unreadCount = items.filter(i => !readIds.has(i.id) && !getMeta(i.event).noUnread).length;
+  const unreadCount = items.filter(i => !dismissedIds.has(i.id) && !readIds.has(i.id) && !getMeta(i.event).noUnread).length;
+  const readCount = items.filter(i => !dismissedIds.has(i.id) && readIds.has(i.id)).length;
 
   const visible = items.filter(item => {
+    if (dismissedIds.has(item.id)) return false;
     const meta = getMeta(item.event);
     if (filter === 'Unread'  && readIds.has(item.id)) return false;
     if (filter === 'Tasks'   && meta.type !== 'task') return false;
@@ -105,13 +111,26 @@ export default function InboxView() {
               </p>
             </div>
           </div>
-          {unreadCount > 0 && (
-            <button onClick={markAllRead}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
-              style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.07)', border: '1px solid rgba(91,95,255,0.15)' }}>
-              <CheckCheck size={12} /> Mark all read
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {unreadCount > 0 && (
+              <button onClick={markAllRead}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
+                style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.07)', border: '1px solid rgba(91,95,255,0.15)' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(91,95,255,0.13)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(91,95,255,0.07)'}>
+                <CheckCheck size={12} /> Mark all read
+              </button>
+            )}
+            {readCount > 0 && (
+              <button onClick={clearRead}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
+                style={{ color: '#94A3B8', background: 'rgba(148,163,184,0.08)', border: '1px solid rgba(148,163,184,0.15)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(148,163,184,0.15)'; e.currentTarget.style.color = '#64748B'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(148,163,184,0.08)'; e.currentTarget.style.color = '#94A3B8'; }}>
+                <X size={12} /> Clear read ({readCount})
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Search + Filters */}
@@ -168,7 +187,7 @@ export default function InboxView() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.2, delay: i * 0.03 }}
                     onClick={() => markRead(item.id)}
-                    className="flex items-start gap-4 p-4 rounded-2xl cursor-pointer card-hover"
+                    className="group flex items-start gap-4 p-4 rounded-2xl cursor-pointer card-hover"
                     style={{
                       background: isRead ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.95)',
                       border: isRead ? '1px solid rgba(0,0,0,0.05)' : '1px solid rgba(91,95,255,0.1)',
@@ -199,9 +218,19 @@ export default function InboxView() {
                       )}
                     </div>
 
-                    <span className="text-[11px] flex-shrink-0 mt-0.5" style={{ color: '#94A3B8' }}>
-                      {timeAgo(item.createdAt)}
-                    </span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="text-[11px]" style={{ color: '#94A3B8' }}>
+                        {timeAgo(item.createdAt)}
+                      </span>
+                      <button
+                        onClick={e => { e.stopPropagation(); dismiss(item.id); }}
+                        className="w-5 h-5 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ color: '#CBD5E1' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(148,163,184,0.15)'; e.currentTarget.style.color = '#94A3B8'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#CBD5E1'; }}>
+                        <X size={11} />
+                      </button>
+                    </div>
                   </motion.div>
                 );
               })}
