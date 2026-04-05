@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { CheckCircle, XCircle, Clock, Users, DollarSign, Zap, Shield, CheckCircle2, Inbox } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Users, DollarSign, Zap, Shield, CheckCircle2, Inbox, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCompany } from '@/contexts/CompanyContext';
 import { approveRequest, rejectRequest } from '@/lib/approvalService';
 import { useAuth } from '@/lib/AuthContext';
 
 const TYPE_META = {
+  needs_input:      { icon: HelpCircle,  label: 'Needs Input',       color: '#8B5CF6', bg: 'rgba(139,92,246,0.08)' },
   hire_agent:       { icon: Users,       label: 'Hire Agent',        color: '#5B5FFF', bg: 'rgba(91,95,255,0.08)' },
   fire_agent:       { icon: XCircle,     label: 'Terminate Agent',   color: '#EF4444', bg: 'rgba(239,68,68,0.08)' },
   budget_override:  { icon: DollarSign,  label: 'Budget Override',   color: '#F59E0B', bg: 'rgba(245,158,11,0.08)' },

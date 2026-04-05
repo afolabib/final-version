@@ -8,7 +8,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompany } from '@/contexts/CompanyContext';
-import { ROLE_COLORS, AGENT_STATUS } from '@/lib/agentService';
+import { ROLE_COLORS, AGENT_STATUS, getRoleEmoji } from '@/lib/agentService';
 
 // ── Status dot ────────────────────────────────────────────────────────────────
 function StatusDot({ status }) {
@@ -114,7 +114,7 @@ function SectionLabel({ label }) {
 // ── Agent row ─────────────────────────────────────────────────────────────────
 function AgentRow({ agent, onClick }) {
   const color = ROLE_COLORS[agent.role] || '#5B5FFF';
-  const initial = agent.name?.[0]?.toUpperCase() || '?';
+  const emoji = getRoleEmoji(agent);
   const navigate = useNavigate();
   const handleClick = () => {
     navigate(`/dashboard/chat?agent=${encodeURIComponent(agent.name)}`);
@@ -128,9 +128,9 @@ function AgentRow({ agent, onClick }) {
       onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.04)'; e.currentTarget.style.color = '#5B5FFF'; }}
       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
     >
-      <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-        style={{ background: color, boxShadow: `0 2px 6px ${color}35` }}>
-        {initial}
+      <div className="w-6 h-6 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
+        style={{ background: `${color}18`, border: `1px solid ${color}30` }}>
+        {emoji}
       </div>
       <span className="flex-1 text-left text-xs font-medium truncate">{agent.name}</span>
       <StatusDot status={agent.status} />

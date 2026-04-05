@@ -9,6 +9,7 @@ import { logActivity } from './activityService';
 const COL = 'approvals';
 
 export const APPROVAL_TYPES = {
+  NEEDS_INPUT: 'needs_input',
   HIRE_AGENT: 'hire_agent',
   FIRE_AGENT: 'fire_agent',
   BUDGET_OVERRIDE: 'budget_override',

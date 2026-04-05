@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Plus, Trash2, Pause, Play, Settings } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { useCompany } from '@/contexts/CompanyContext';
-import { AGENT_STATUS, ROLE_COLORS, fireAgent, pauseAgent, resumeAgent, buildOrgTree, updateAgent } from '@/lib/agentService';
+import { AGENT_STATUS, ROLE_COLORS, getRoleEmoji, fireAgent, pauseAgent, resumeAgent, buildOrgTree, updateAgent } from '@/lib/agentService';
 import { localUpdateAgent } from '@/lib/localDB';
 import { isDemoMode } from '@/lib/firebaseClient';
 import AgentHireModal from './AgentHireModal';
@@ -78,7 +78,7 @@ function AgentCard({ agent, isRoot, onFire, onPause, onResume, onHireUnder, onCo
       <div className="flex items-center gap-2 mb-2">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
           style={{ background: `${roleColor}22` }}>
-          {agent.avatar || (agent.isCEO ? '🧠' : '🤖')}
+          {getRoleEmoji(agent)}
         </div>
         <div className="min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">

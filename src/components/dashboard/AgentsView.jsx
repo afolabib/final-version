@@ -46,6 +46,29 @@ const STATUS_CONFIG = {
   },
 };
 
+// ── Emoji per role ────────────────────────────────────────────────────────────
+
+const ROLE_EMOJI = {
+  ceo:        '🧠',
+  sales:      '🤝',
+  support:    '🎧',
+  marketing:  '📣',
+  operations: '⚙️',
+  finance:    '📊',
+  engineering:'💻',
+  research:   '🔬',
+  hr:         '👥',
+  legal:      '⚖️',
+  product:    '🎯',
+  design:     '🎨',
+  default:    '🤖',
+};
+
+function getRoleEmoji(agent) {
+  const role = agent.role?.toLowerCase() || 'default';
+  return ROLE_EMOJI[role] || ROLE_EMOJI.default;
+}
+
 // ── Activity descriptors per role ─────────────────────────────────────────────
 
 const ROLE_ACTIVITY = {
@@ -83,7 +106,7 @@ function agentStats(agent, index) {
 function AgentCard({ agent, index, onView }) {
   const [hovered, setHovered] = useState(false);
   const color = ROLE_COLORS[agent.role] || '#5B5FFF';
-  const initial = agent.name?.[0]?.toUpperCase() || '?';
+  const emoji = getRoleEmoji(agent);
   const cfg = STATUS_CONFIG[agent.status] || STATUS_CONFIG[AGENT_STATUS.PAUSED];
   const activity = getActivity(agent);
   const stats = agentStats(agent, index);
@@ -116,12 +139,13 @@ function AgentCard({ agent, index, onView }) {
           <div className="flex items-center gap-3">
             {/* Avatar */}
             <div className="relative">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
                 style={{
-                  background: `linear-gradient(135deg, ${color}, ${color}bb)`,
-                  boxShadow: `0 4px 12px ${color}35`,
+                  background: `linear-gradient(135deg, ${color}18, ${color}10)`,
+                  border: `1px solid ${color}30`,
+                  boxShadow: `0 4px 12px ${color}20`,
                 }}>
-                {initial}
+                {emoji}
               </div>
               {/* Presence dot */}
               <span className="absolute -bottom-0.5 -right-0.5 flex"

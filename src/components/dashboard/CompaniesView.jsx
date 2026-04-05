@@ -968,12 +968,62 @@ function CompanyCard({ co, isActive, agentCount, onOpen, onEdit, onDelete }) {
   );
 }
 
+// ── Delete confirm modal ───────────────────────────────────────────────────────
+function DeleteConfirm({ company, onConfirm, onCancel }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(10,10,26,0.45)', backdropFilter: 'blur(6px)' }}
+      onClick={onCancel}>
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 8, scale: 0.97 }}
+        transition={{ duration: 0.18 }}
+        className="rounded-2xl overflow-hidden w-full max-w-sm"
+        style={{ background: '#fff', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}
+        onClick={e => e.stopPropagation()}>
+        <div className="p-6">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+            style={{ background: 'rgba(239,68,68,0.08)' }}>
+            <Trash2 size={18} style={{ color: '#EF4444' }} />
+          </div>
+          <p className="text-sm font-bold mb-1" style={{ color: '#0A0A1A' }}>
+            Delete "{company.name}"?
+          </p>
+          <p className="text-xs leading-relaxed" style={{ color: '#64748B' }}>
+            This workspace and all its data will be permanently removed. This cannot be undone.
+          </p>
+        </div>
+        <div className="flex gap-2 px-6 pb-5">
+          <button onClick={onCancel}
+            className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+            style={{ background: 'rgba(0,0,0,0.05)', color: '#374151' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.09)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}>
+            Cancel
+          </button>
+          <button onClick={onConfirm}
+            className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all"
+            style={{ background: '#EF4444' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#DC2626'}
+            onMouseLeave={e => e.currentTarget.style.background = '#EF4444'}>
+            Delete
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function CompaniesView() {
   const { company, allCompanies, agents, activeCompanyId, switchCompany, isBootstrapped } = useCompany();
   const navigate = useNavigate();
   const [addingNew, setAddingNew] = useState(false);
   const [editingCo, setEditingCo] = useState(null);
+  const [deletingCo, setDeletingCo] = useState(null);
 
   const hasCompany = allCompanies.length > 0 && isBootstrapped;
 
@@ -1014,6 +1064,19 @@ export default function CompaniesView() {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {deletingCo && (
+          <DeleteConfirm
+            company={deletingCo}
+            onConfirm={() => {
+              deleteDoc(doc(firestore, 'companies', deletingCo.id)).catch(console.error);
+              setDeletingCo(null);
+            }}
+            onCancel={() => setDeletingCo(null)}
+          />
+        )}
+      </AnimatePresence>
+
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-black" style={{ color: '#0A0F1E', letterSpacing: '-0.02em' }}>Companies</h1>
@@ -1039,11 +1102,7 @@ export default function CompaniesView() {
             agentCount={co.id === activeCompanyId ? agents.length : 0}
             onOpen={() => handleOpen(co.id)}
             onEdit={() => setEditingCo(co)}
-            onDelete={() => {
-              if (window.confirm(`Delete "${co.name}"? This cannot be undone.`)) {
-                deleteDoc(doc(firestore, 'companies', co.id)).catch(console.error);
-              }
-            }}
+            onDelete={() => setDeletingCo(co)}
           />
         ))}
       </div>

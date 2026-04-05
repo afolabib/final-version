@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, CheckCircle2, Circle, Clock, AlertTriangle, X, Copy, CheckCheck, Trash2, ChevronDown, ShieldAlert } from 'lucide-react';
+import { Plus, Search, CheckCircle2, Circle, Clock, AlertTriangle, X, Copy, CheckCheck, Trash2, ChevronDown, ShieldAlert, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { firestore } from '@/lib/firebaseClient';
 import { useCompany } from '@/contexts/CompanyContext';
 import { useAuth } from '@/lib/AuthContext';
 import { subscribeTasks, createTask, updateTask, deleteTask, TASK_STATUS, TASK_PRIORITY } from '@/lib/taskService';
@@ -61,6 +63,29 @@ function TaskDetailPopup({ task, agents, companyId, userId, onClose, onDelete })
     navigator.clipboard.writeText(task.outputSummary);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  }
+
+  async function escalateToApprovals() {
+    setSaving(true);
+    await addDoc(collection(firestore, 'approvals'), {
+      companyId,
+      requestingActorId: task.assignedAgentId || 'system',
+      requestedByAgentId: task.assignedAgentId || null,
+      type: 'needs_input',
+      title: `Unblocked needed: "${task.title}"`,
+      description: task.blockedReason
+        || task.outputSummary
+        || `The task "${task.title}" was marked as blocked. Please provide what is needed so this can be completed.`,
+      payload: { taskId: task.id },
+      status: 'pending',
+      decidedByUserId: null,
+      decidedAt: null,
+      decisionNote: '',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }).catch(() => {});
+    await save({ status: TASK_STATUS.TODO, blockedReason: '' });
+    setSaving(false);
   }
 
   const priColor = PRIORITY_COLORS[priority] || '#94A3B8';
@@ -181,13 +206,31 @@ function TaskDetailPopup({ task, agents, companyId, userId, onClose, onDelete })
 
           {/* Blocked reason banner */}
           {status === TASK_STATUS.BLOCKED && (
-            <div className="flex items-start gap-3 px-4 py-3 rounded-xl"
-              style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)' }}>
-              <ShieldAlert size={14} style={{ color: '#EF4444', flexShrink: 0, marginTop: 1 }} />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold mb-0.5" style={{ color: '#EF4444' }}>Blocked</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#64748B' }}>
-                  {task.blockedReason || 'The agent flagged this task as blocked. Check the agent output below for details, or reassign and set back to To Do to retry.'}
+            <div className="rounded-xl overflow-hidden"
+              style={{ border: '1px solid rgba(239,68,68,0.2)' }}>
+              <div className="flex items-start gap-3 px-4 py-3"
+                style={{ background: 'rgba(239,68,68,0.05)' }}>
+                <ShieldAlert size={14} style={{ color: '#EF4444', flexShrink: 0, marginTop: 1 }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold mb-0.5" style={{ color: '#EF4444' }}>Blocked</p>
+                  <p className="text-xs leading-relaxed" style={{ color: '#64748B' }}>
+                    {task.blockedReason || 'The agent hit a blocker on this task.'}
+                  </p>
+                </div>
+              </div>
+              <div className="px-4 py-2.5" style={{ borderTop: '1px solid rgba(239,68,68,0.12)', background: 'rgba(255,255,255,0.8)' }}>
+                <button
+                  onClick={escalateToApprovals}
+                  disabled={saving}
+                  className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                  style={{ background: 'rgba(139,92,246,0.1)', color: '#8B5CF6', border: '1px solid rgba(139,92,246,0.2)' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.18)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(139,92,246,0.1)'}>
+                  <ArrowUpRight size={12} />
+                  Escalate to Approvals
+                </button>
+                <p className="text-[10px] mt-1.5" style={{ color: '#94A3B8' }}>
+                  Creates an approval request and resets the task to To Do
                 </p>
               </div>
             </div>

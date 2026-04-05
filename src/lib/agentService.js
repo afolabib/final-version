@@ -37,6 +37,30 @@ export const ROLE_COLORS = {
   custom: '#74B9FF',
 };
 
+export const ROLE_EMOJI = {
+  ceo:        '🧠',
+  sales:      '🤝',
+  support:    '🎧',
+  marketing:  '📣',
+  engineer:   '💻',
+  engineering:'💻',
+  operations: '⚙️',
+  finance:    '📊',
+  research:   '🔬',
+  researcher: '🔬',
+  hr:         '👥',
+  legal:      '⚖️',
+  product:    '🎯',
+  design:     '🎨',
+  custom:     '🤖',
+};
+
+export function getRoleEmoji(agent) {
+  if (agent?.avatar) return agent.avatar;
+  const role = agent?.role?.toLowerCase() || '';
+  return ROLE_EMOJI[role] || '🤖';
+}
+
 export async function createAgent(companyId, userId, agentData) {
   const {
     name, role, reportsTo = null, systemPrompt = '',
