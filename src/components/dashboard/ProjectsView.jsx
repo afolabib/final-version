@@ -456,6 +456,7 @@ function AddProjectPanel({ companyId, userId, onDone, onCancel }) {
         description: description.trim(),
         priority,
         emoji,
+        isProject: true,
       });
       const validTasks = taskInputs.filter(t => t.trim());
       await Promise.all(
@@ -704,8 +705,11 @@ export default function ProjectsView() {
     return true; // 'all'
   }
 
-  const activeGoals = goals.filter(g => g.status !== 'cancelled' && g.status !== 'completed');
-  const doneGoals   = goals.filter(g => g.status === 'completed');
+  // Projects = goals explicitly marked isProject:true, OR (backwards compat) goals that have linked tasks
+  const taskGoalIds = new Set(tasks.map(t => t.goalId).filter(Boolean));
+  const isProjectGoal = g => g.isProject === true || (g.isProject === undefined && taskGoalIds.has(g.id));
+  const activeGoals = goals.filter(g => isProjectGoal(g) && g.status !== 'cancelled' && g.status !== 'completed');
+  const doneGoals   = goals.filter(g => isProjectGoal(g) && g.status === 'completed');
 
   const tasksFor = goalId => tasks.filter(t => t.goalId === goalId && filterTask(t));
   const backlog   = tasks.filter(t => !t.goalId && filterTask(t));
@@ -805,7 +809,7 @@ export default function ProjectsView() {
             </div>
             <p className="text-base font-bold" style={{ color: '#0A0F1E' }}>No projects yet</p>
             <p className="text-sm font-medium text-center max-w-xs" style={{ color: '#94A3B8', lineHeight: 1.6 }}>
-              Create a project to organize tasks and track progress toward a goal.
+              Projects are for bigger initiatives — "Build a website", "Launch campaign". One-off tasks live on the task board.
             </p>
             <button
               onClick={() => setAddingProject(true)}
