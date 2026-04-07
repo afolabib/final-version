@@ -6,6 +6,7 @@ import SolutionsHero from '../components/solutions/SolutionsHero';
 import SolutionsAgentGrid from '../components/solutions/SolutionsAgentGrid';
 import SolutionsShowcase from '../components/solutions/SolutionsShowcase';
 import SolutionsHowItWorks from '../components/solutions/SolutionsHowItWorks';
+import SolutionsEmbed from '../components/solutions/SolutionsEmbed';
 import SolutionsComparison from '../components/solutions/SolutionsComparison';
 import SolutionsUseCases from '../components/solutions/SolutionsUseCases';
 import SolutionsTestimonials from '../components/solutions/SolutionsTestimonials';
@@ -265,6 +266,7 @@ export default function Solutions() {
         <SolutionsAgentGrid agents={agents} selected={selected} onSelect={setSelected} />
         <SolutionsShowcase agent={selected} />
         <SolutionsHowItWorks />
+        <SolutionsEmbed />
         <SolutionsComparison />
         <SolutionsUseCases />
         <SolutionsTestimonials />

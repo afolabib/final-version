@@ -18,6 +18,7 @@ import DashboardTasks from './pages/dashboard/Tasks';
 import DashboardProjects from './pages/dashboard/Projects';
 import DashboardAutomations from './pages/dashboard/Automations';
 import DashboardIntegrations from './pages/dashboard/Integrations';
+import DashboardWidget from './pages/dashboard/Widget';
 import DashboardSkills from './pages/dashboard/Skills';
 import DashboardSettings from './pages/dashboard/Settings';
 import DashboardSupport from './pages/dashboard/Support';
@@ -39,6 +40,7 @@ import AdminInstances from './pages/admin/Instances';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import DashboardCompanies from './pages/dashboard/Companies';
 import Blog from './pages/Blog';
 import About from './pages/About';
@@ -100,7 +102,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/meet-sam" element={<MeetSam />} />
-      <Route path="/dashboard" element={<DashboardLayout />}>
+      <Route path="/dashboard" element={<RequireAuth><DashboardLayout /></RequireAuth>}>
         <Route path="picker" element={<DashboardPicker />} />
         <Route path="wizard" element={<DashboardWizard />} />
         <Route index element={<DashboardHome />} />
@@ -112,6 +114,7 @@ const AuthenticatedApp = () => {
         <Route path="projects" element={<DashboardProjects />} />
         <Route path="automations" element={<DashboardAutomations />} />
         <Route path="integrations" element={<DashboardIntegrations />} />
+        <Route path="widget" element={<DashboardWidget />} />
         <Route path="skills" element={<DashboardSkills />} />
         <Route path="settings" element={<DashboardSettings />} />
         <Route path="support" element={<DashboardSupport />} />
@@ -129,8 +132,9 @@ const AuthenticatedApp = () => {
         <Route index element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="instances" element={<ProtectedAdminRoute><AdminInstances /></ProtectedAdminRoute>} />
       </Route>
-      <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/login" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
       <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
+      <Route path="/forgot-password" element={<RedirectIfAuth><ForgotPassword /></RedirectIfAuth>} />
       <Route path="/chat" element={<Navigate to="/dashboard/chat" replace />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/about" element={<About />} />

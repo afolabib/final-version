@@ -14,6 +14,9 @@ export { onAgentCreated, reprovisionAgent } from './provisionAgent';
 // ── MiniMax proxy (keeps API key server-side) ─────────────────────────────────
 export { chatProxy } from './minimaxProxy';
 
+// ── FreemiWidget public chat endpoint ─────────────────────────────────────────
+export { widgetChat } from './widgetChat';
+
 // ── Autonomous heartbeat (ported from Paperclip) ──────────────────────────────
 export { scheduledHeartbeat, triggerAgentHeartbeat, onAgentMessageTrigger } from './heartbeatRunner';
 

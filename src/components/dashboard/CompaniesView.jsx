@@ -660,7 +660,7 @@ Pick the roles that best fit the MISSION. If the mission is about media/content,
                 value={websiteUrl}
                 onChange={e => { setWebsiteUrl(e.target.value); setWebsiteError(''); }}
                 onKeyDown={e => e.key === 'Enter' && websiteUrl.trim() && handleReadWebsite()}
-                placeholder="https://yourcompany.com"
+                placeholder="yourcompany.com"
                 className="w-full pl-10 pr-4 py-4 rounded-2xl text-sm font-medium outline-none transition-all"
                 style={{ background: 'white', border: '2px solid rgba(91,95,255,0.20)', color: '#0A0F1E', boxShadow: '0 4px 16px rgba(91,95,255,0.08)' }}
                 onFocus={e => e.target.style.borderColor = '#5B5FFF'}

@@ -3,7 +3,7 @@ import {
   Home, Briefcase, Inbox, FolderOpen, Layers,
   Zap, Plug, Wrench, Settings, CreditCard, HelpCircle,
   LogOut, ChevronDown, Plus, Bell, MessageSquare,
-  Building2
+  Building2, Code2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -357,6 +357,7 @@ export default function DashboardSidebar({ active, onNav }) {
         <SectionLabel label="Configure" />
         <NavBtn icon={Zap}         label="Automations"  id="automations"  active={active} onClick={onNav} badge="Beta" />
         <NavBtn icon={Plug}        label="Integrations" id="integrations" active={active} onClick={onNav} />
+        <NavBtn icon={Code2}       label="Widget"       id="widget"       active={active} onClick={onNav} badge="New" />
         <NavBtn icon={Wrench}      label="Skills"       id="skills"       active={active} onClick={onNav} />
         <NavBtn icon={Settings}    label="Settings"     id="settings"     active={active} onClick={onNav} />
         <NavBtn icon={CreditCard}  label="Credits"      id="credits"      active={active} onClick={onNav} />
