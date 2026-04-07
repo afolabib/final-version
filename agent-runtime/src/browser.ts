@@ -76,7 +76,7 @@ export async function closeBrowser(): Promise<void> {
 
 const STATE_FILE = '/data/browser-state.json';
 
-async function loadStorageState(): Promise<Parameters<BrowserContext['newPage']>[0] extends undefined ? undefined : Parameters<BrowserContext['addCookies']>[0] | undefined> {
+async function loadStorageState(): Promise<any> {
   try {
     const fs = await import('fs/promises');
     const raw = await fs.readFile(STATE_FILE, 'utf8');

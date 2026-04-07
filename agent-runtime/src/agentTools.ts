@@ -890,7 +890,7 @@ export async function executeAgentTool(
         const params = (args.params as Record<string, unknown>) || {};
         try {
           const entity = await composio.getEntity(companyId);
-          const result = await entity.execute(action, params);
+          const result = await (entity as any).execute(action, params);
           await logActivity(companyId, agentId, 'integration.called', action, `Called ${action} via integration`);
           return JSON.stringify({ success: true, action, result });
         } catch (err: unknown) {
@@ -922,8 +922,9 @@ export async function executeAgentTool(
         if (!composio) return JSON.stringify({ error: 'Composio not configured.' });
         try {
           const app = String(args.app).toLowerCase();
-          const actions = await composio.actions.list({ apps: [app], limit: 20 });
-          return JSON.stringify({ app, actions: (actions as Array<{ name: string; description: string }>).map(a => ({ name: a.name, description: a.description })) });
+          const actions = await (composio.actions as any).list({ apps: app, limit: 20 });
+          const list = Array.isArray(actions) ? actions : (actions?.items ?? []);
+          return JSON.stringify({ app, actions: list.map((a: any) => ({ name: a.name, description: a.description })) });
         } catch (err) {
           return JSON.stringify({ error: (err as Error).message });
         }
