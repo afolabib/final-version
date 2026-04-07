@@ -10,28 +10,29 @@ COPY src/ ./src/
 RUN npm run build
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Stage 2 — Runtime: agent brain + full desktop screen stack
+# Stage 2 — Runtime
 #
-# Architecture:
-#   supervisord manages:
-#     • Xvfb        — virtual display :99 (1280×800 24-bit)
-#     • Openbox     — window manager (proper window decorations)
-#     • x11vnc      — captures :99, serves VNC on localhost:5900
-#     • websockify  — proxies VNC to WebSocket on localhost:6080
-#     • nginx       — public port 80:
-#                        /screen/  → noVNC viewer  (6080)
-#                        /         → agent runtime (8080)
-#     • agent       — Freemi Node.js runtime (heartbeats, tasks, tools)
+# Uses the official Microsoft Playwright image as the base.
+# It ships with:
+#   • Ubuntu 22.04 (Jammy) — stable package names, no Bookworm t64 renames
+#   • Node.js 20
+#   • Playwright Chromium pre-installed + all system deps
 #
-# The agent's Playwright browser launches headful on DISPLAY=:99 so every
-# page navigation, click and form fill is visible live via the Screen panel.
+# We layer on top:
+#   • Xvfb          — virtual display :99
+#   • Openbox       — window manager (visible window frames)
+#   • x11vnc        — VNC server capturing :99 → localhost:5900
+#   • noVNC         — WebSocket → browser VNC viewer
+#   • nginx         — /screen/ → noVNC (6080), / → agent runtime (8080)
+#   • supervisord   — manages all processes
+#   • xterm         — terminal showing live agent logs on the desktop
 # ─────────────────────────────────────────────────────────────────────────────
-FROM node:20-bookworm AS runtime
+FROM mcr.microsoft.com/playwright:v1.44.0-jammy AS runtime
 
-# ── System packages ───────────────────────────────────────────────────────────
-# Install desktop + VNC stack. Chrome system deps are handled by
-# `playwright install-deps` below — no need to list them manually
-# (avoids Debian Bookworm t64 rename issues like libasound2 → libasound2t64).
+# Silence interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ── Desktop + VNC + reverse proxy stack ──────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb \
     x11vnc \
@@ -42,51 +43,41 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     supervisor \
     xterm \
     fonts-liberation \
-    fonts-noto \
     scrot \
     xdotool \
     curl \
     procps \
-    ca-certificates \
-    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-# ── Node deps (production) ────────────────────────────────────────────────────
+# ── App ───────────────────────────────────────────────────────────────────────
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --omit=dev
+# Playwright is already installed in the base image; skip its install scripts
+RUN npm install --omit=dev --ignore-scripts
 
-# ── Playwright + managed Chromium ─────────────────────────────────────────────
-# `install chromium --with-deps` downloads the browser binary AND installs
-# all system dependencies in one step (handles Bookworm package renames).
-RUN npm install playwright
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN npx playwright install chromium --with-deps
-
-# ── Copy compiled runtime ─────────────────────────────────────────────────────
 COPY --from=builder /app/dist ./dist
 
-# ── Runtime config files ──────────────────────────────────────────────────────
+# ── Config files ──────────────────────────────────────────────────────────────
 COPY supervisord.conf /etc/supervisor/conf.d/freemi.conf
 COPY nginx.conf       /etc/nginx/nginx.conf
 COPY start.sh         /start.sh
 RUN chmod +x /start.sh
 
-# Openbox config dir
 RUN mkdir -p /root/.config/openbox
 COPY openbox-autostart /root/.config/openbox/autostart
 RUN chmod +x /root/.config/openbox/autostart
 
-# noVNC: serve vnc.html as default index
+# noVNC default page
 RUN ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html 2>/dev/null || true
 
-# ── Persistent volume for agent workspace + logs ──────────────────────────────
+# ── Environment ───────────────────────────────────────────────────────────────
 VOLUME /data
 
-# ── Environment ───────────────────────────────────────────────────────────────
 ENV NODE_ENV=production \
     DISPLAY=:99 \
-    PORT=8080
+    PORT=8080 \
+    # Point to playwright's managed browser (already in the base image)
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 EXPOSE 80
 
