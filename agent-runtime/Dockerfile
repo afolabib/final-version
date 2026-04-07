@@ -29,48 +29,26 @@ RUN npm run build
 FROM node:20-bookworm AS runtime
 
 # ── System packages ───────────────────────────────────────────────────────────
+# Install desktop + VNC stack. Chrome system deps are handled by
+# `playwright install-deps` below — no need to list them manually
+# (avoids Debian Bookworm t64 rename issues like libasound2 → libasound2t64).
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Virtual display
     xvfb \
-    # VNC server
     x11vnc \
-    # Window manager
     openbox \
-    obconf \
-    # noVNC WebSocket proxy
     novnc \
     websockify \
-    # Web server / reverse proxy
     nginx \
-    # Process supervisor
     supervisor \
-    # Terminal (visible in screen for live log streaming)
     xterm \
-    # Fonts
     fonts-liberation \
     fonts-noto \
-    fonts-noto-cjk \
-    # Chrome system deps (Playwright will install its own Chrome binary)
-    libnss3 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libxkbcommon0 \
-    libasound2 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    # Screenshot + input utilities
     scrot \
     xdotool \
-    # Misc
     curl \
     procps \
+    ca-certificates \
+    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Node deps (production) ────────────────────────────────────────────────────
@@ -79,11 +57,11 @@ COPY package*.json ./
 RUN npm install --omit=dev
 
 # ── Playwright + managed Chromium ─────────────────────────────────────────────
-# We install playwright and let it manage its own Chromium build.
-# This avoids version-mismatch issues with system chromium.
+# `install chromium --with-deps` downloads the browser binary AND installs
+# all system dependencies in one step (handles Bookworm package renames).
 RUN npm install playwright
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN npx playwright install chromium && npx playwright install-deps chromium
+RUN npx playwright install chromium --with-deps
 
 # ── Copy compiled runtime ─────────────────────────────────────────────────────
 COPY --from=builder /app/dist ./dist
