@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage 1 — TypeScript build
 # ─────────────────────────────────────────────────────────────────────────────
-FROM node:20-bookworm-slim AS builder
+FROM node:20-bullseye-slim AS builder
 
 WORKDIR /app
 COPY package*.json tsconfig.json ./
@@ -12,27 +12,16 @@ RUN npm run build
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage 2 — Runtime
 #
-# Uses the official Microsoft Playwright image as the base.
-# It ships with:
-#   • Ubuntu 22.04 (Jammy) — stable package names, no Bookworm t64 renames
-#   • Node.js 20
-#   • Playwright Chromium pre-installed + all system deps
-#
-# We layer on top:
-#   • Xvfb          — virtual display :99
-#   • Openbox       — window manager (visible window frames)
-#   • x11vnc        — VNC server capturing :99 → localhost:5900
-#   • noVNC         — WebSocket → browser VNC viewer
-#   • nginx         — /screen/ → noVNC (6080), / → agent runtime (8080)
-#   • supervisord   — manages all processes
-#   • xterm         — terminal showing live agent logs on the desktop
+# Debian 11 Bullseye — stable package names, no Bookworm t64 renames.
+# Desktop stack: Xvfb + Openbox + x11vnc + noVNC + nginx + supervisord
+# Browser:       Playwright Chromium (managed, correct version)
+# Agent:         Freemi Node.js runtime
 # ─────────────────────────────────────────────────────────────────────────────
-FROM mcr.microsoft.com/playwright:v1.44.0-jammy AS runtime
+FROM node:20-bullseye
 
-# Silence interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ── Desktop + VNC + reverse proxy stack ──────────────────────────────────────
+# ── Desktop + VNC stack ───────────────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb \
     x11vnc \
@@ -49,11 +38,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
     && rm -rf /var/lib/apt/lists/*
 
-# ── App ───────────────────────────────────────────────────────────────────────
+# ── App deps ──────────────────────────────────────────────────────────────────
 WORKDIR /app
 COPY package*.json ./
-# Playwright is already installed in the base image; skip its install scripts
-RUN npm install --omit=dev --ignore-scripts
+RUN npm install --omit=dev
+
+# ── Playwright Chromium ───────────────────────────────────────────────────────
+# Install chromium + all its system deps in one step.
+# --with-deps runs apt internally and handles all Bullseye deps automatically.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN npx playwright install chromium --with-deps
 
 COPY --from=builder /app/dist ./dist
 
@@ -67,7 +61,6 @@ RUN mkdir -p /root/.config/openbox
 COPY openbox-autostart /root/.config/openbox/autostart
 RUN chmod +x /root/.config/openbox/autostart
 
-# noVNC default page
 RUN ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html 2>/dev/null || true
 
 # ── Environment ───────────────────────────────────────────────────────────────
@@ -75,9 +68,7 @@ VOLUME /data
 
 ENV NODE_ENV=production \
     DISPLAY=:99 \
-    PORT=8080 \
-    # Point to playwright's managed browser (already in the base image)
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+    PORT=8080
 
 EXPOSE 80
 
