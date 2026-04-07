@@ -10,6 +10,9 @@ import {
   Eye, BarChart2, Activity
 } from 'lucide-react';
 import { useCompany } from '@/contexts/CompanyContext';
+import { firestore, functions as firebaseFunctions } from '@/lib/firebaseClient';
+import { collection, query, where, onSnapshot, doc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 
 // ── Step type registry ────────────────────────────────────────────────────────
 
@@ -782,12 +785,23 @@ const MOCK_RUNS = {
   'wf-002': { lastRun: '18 min ago', runs: 7, success: 7, status: 'ok' },
 };
 
-function WorkflowCard({ wf, onEdit, onToggle, onDelete }) {
+function WorkflowCard({ wf, onEdit, onToggle, onDelete, onRun }) {
+  const [running, setRunning] = useState(false);
   const trigger = wf.steps?.[0];
   const triggerType = typeById(trigger?.type);
   const TriggerIcon = triggerType?.icon || Zap;
   const actionCount = (wf.steps?.length || 1) - 1;
   const run = MOCK_RUNS[wf.id];
+  const lastRun = wf.lastRunAt?.toDate?.() || (wf.lastRunAt?.seconds ? new Date(wf.lastRunAt.seconds * 1000) : null);
+  const lastRunLabel = lastRun ? lastRun.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+
+  async function handleRun(e) {
+    e.stopPropagation();
+    if (running) return;
+    setRunning(true);
+    await onRun(wf.id).catch(() => {});
+    setRunning(false);
+  }
 
   return (
     <motion.div
@@ -845,6 +859,12 @@ function WorkflowCard({ wf, onEdit, onToggle, onDelete }) {
 
         {/* Actions */}
         <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
+          <button onClick={handleRun}
+            className="p-1.5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)' }}
+            title="Run now">
+            {running ? <RefreshCw size={13} className="animate-spin" /> : <Play size={13} />}
+          </button>
           <button onClick={() => onToggle(wf.id)}>
             {wf.active
               ? <ToggleRight size={24} style={{ color: '#5B5FFF' }} />
@@ -861,22 +881,24 @@ function WorkflowCard({ wf, onEdit, onToggle, onDelete }) {
       </div>
 
       {/* Stats row */}
-      {run && (
+      {lastRunLabel && (
         <div className="flex items-center gap-4 px-5 py-2.5"
           style={{ borderTop: '1px solid rgba(0,0,0,0.04)', background: 'rgba(248,250,255,0.6)' }}>
           <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: run.status === 'ok' ? '#10B981' : '#EF4444' }} />
-            <span className="text-[10px] font-semibold" style={{ color: '#64748B' }}>Last run {run.lastRun}</span>
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#10B981' }} />
+            <span className="text-[10px] font-semibold" style={{ color: '#64748B' }}>Last run {lastRunLabel}</span>
           </div>
-          <span style={{ color: '#E2E8F0', fontSize: 10 }}>·</span>
-          <div className="flex items-center gap-1">
-            <Activity size={10} style={{ color: '#94A3B8' }} />
-            <span className="text-[10px] font-semibold" style={{ color: '#64748B' }}>{run.runs} runs</span>
-          </div>
-          <span style={{ color: '#E2E8F0', fontSize: 10 }}>·</span>
-          <span className="text-[10px] font-semibold" style={{ color: '#10B981' }}>
-            {Math.round((run.success / run.runs) * 100)}% success
-          </span>
+          {wf.nextRunAt && (() => {
+            const next = wf.nextRunAt?.toDate?.() || (wf.nextRunAt?.seconds ? new Date(wf.nextRunAt.seconds * 1000) : null);
+            return next ? (
+              <>
+                <span style={{ color: '#E2E8F0', fontSize: 10 }}>·</span>
+                <span className="text-[10px] font-semibold" style={{ color: '#94A3B8' }}>
+                  Next: {next.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </>
+            ) : null;
+          })()}
         </div>
       )}
     </motion.div>
@@ -938,15 +960,29 @@ function getRequiredIntegrations(steps) {
 
 // ── Connect view ──────────────────────────────────────────────────────────────
 function ConnectView({ required, onContinue, onBack, workflowName }) {
-  const [connected, setConnected] = useState({});
+  const { company } = useCompany();
+  const [connected, setConnected] = useState(() => {
+    // Pre-mark any already-connected integrations
+    const alreadyConnected = {};
+    required.forEach(i => {
+      if (company?.integrations?.[i.id]) alreadyConnected[i.id] = true;
+    });
+    return alreadyConnected;
+  });
   const [connecting, setConnecting] = useState({});
 
-  function handleConnect(id) {
-    setConnecting(prev => ({ ...prev, [id]: true }));
+  function handleConnect(integration) {
+    // Open Integrations page in a new tab focused on this app
+    window.open(`/dashboard/integrations?connect=${integration.id}`, '_blank');
+    // Poll Firestore via a simple timeout — real state comes from company.integrations
+    setConnecting(prev => ({ ...prev, [integration.id]: true }));
     setTimeout(() => {
-      setConnecting(prev => ({ ...prev, [id]: false }));
-      setConnected(prev => ({ ...prev, [id]: true }));
-    }, 1600);
+      setConnecting(prev => ({ ...prev, [integration.id]: false }));
+      // Check if actually connected now
+      if (company?.integrations?.[integration.id]) {
+        setConnected(prev => ({ ...prev, [integration.id]: true }));
+      }
+    }, 3000);
   }
 
   const connectedCount = required.filter(i => connected[i.id]).length;
@@ -999,11 +1035,11 @@ function ConnectView({ required, onContinue, onBack, workflowName }) {
             </motion.div>
 
             <h2 className="heading-serif text-2xl font-bold mb-2" style={{ color: '#0A0F1E', letterSpacing: '-0.02em' }}>
-              One last step
+              Connect {required.length === 1 ? 'one app' : `${required.length} apps`}
             </h2>
             <p className="text-sm font-medium leading-relaxed" style={{ color: '#64748B' }}>
-              <span className="font-bold" style={{ color: '#5B5FFF' }}>"{workflowName}"</span> needs access to{' '}
-              {required.length === 1 ? 'this app' : `these ${required.length} apps`} to run
+              <span className="font-bold" style={{ color: '#5B5FFF' }}>"{workflowName}"</span> needs these to run.
+              {' '}Already connected? They'll be ticked automatically.
             </p>
           </div>
 
@@ -1089,7 +1125,7 @@ function ConnectView({ required, onContinue, onBack, workflowName }) {
                     </div>
                   ) : (
                     <button
-                      onClick={() => handleConnect(integration.id)}
+                      onClick={() => handleConnect(integration)}
                       disabled={isConnecting}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold flex-shrink-0 transition-all"
                       style={{
@@ -1181,8 +1217,9 @@ const STARTER_WORKFLOWS = [
 
 // ── Main view ─────────────────────────────────────────────────────────────────
 export default function AutomationsView() {
-  const { agents: companyAgents } = useCompany();
-  const [workflows, setWorkflows] = useState(STARTER_WORKFLOWS);
+  const { agents: companyAgents, activeCompanyId: companyId } = useCompany();
+  const [workflows, setWorkflows] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [view, setView] = useState('list'); // 'create' | 'connect' | 'building' | 'editor' | 'list'
   const [desc, setDesc] = useState('');
   const [focused, setFocused] = useState(false);
@@ -1191,6 +1228,19 @@ export default function AutomationsView() {
   const [pendingRequired, setPendingRequired] = useState([]);
   const [editingWorkflow, setEditingWorkflow] = useState(null);
   const textareaRef = useRef();
+
+  // ── Load automations from Firestore ─────────────────────────────────────────
+  useEffect(() => {
+    if (!companyId) return;
+    const q = query(collection(firestore, 'routines'), where('companyId', '==', companyId));
+    const unsub = onSnapshot(q, snap => {
+      const wfs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setWorkflows(wfs.length > 0 ? wfs : STARTER_WORKFLOWS);
+      setLoading(false);
+      setView(wfs.length > 0 ? 'list' : 'create');
+    }, () => { setLoading(false); setView('create'); });
+    return unsub;
+  }, [companyId]);
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -1227,11 +1277,23 @@ export default function AutomationsView() {
     setEditingWorkflow(pendingWorkflow);
   }
 
-  function handleSave(wf) {
-    setWorkflows(prev => {
-      const exists = prev.find(w => w.id === wf.id);
-      return exists ? prev.map(w => w.id === wf.id ? wf : w) : [wf, ...prev];
-    });
+  async function handleSave(wf) {
+    if (companyId) {
+      const ref = doc(firestore, 'routines',wf.id);
+      await setDoc(ref, {
+        ...wf,
+        companyId,
+        updatedAt: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        lastRunAt: null,
+        nextRunAt: null,
+      }, { merge: true }).catch(() => {});
+    } else {
+      setWorkflows(prev => {
+        const exists = prev.find(w => w.id === wf.id);
+        return exists ? prev.map(w => w.id === wf.id ? wf : w) : [wf, ...prev];
+      });
+    }
     setEditingWorkflow(null);
     setPendingWorkflow(null);
     setView('list');
@@ -1243,8 +1305,28 @@ export default function AutomationsView() {
     setView(workflows.length > 0 ? 'list' : 'create');
   }
 
-  function handleToggle(id) { setWorkflows(prev => prev.map(w => w.id === id ? { ...w, active: !w.active } : w)); }
-  function handleDelete(id) { setWorkflows(prev => prev.filter(w => w.id !== id)); }
+  async function handleRun(routineId) {
+    const triggerFn = httpsCallable(firebaseFunctions, 'triggerRoutine');
+    await triggerFn({ routineId });
+  }
+
+  function handleToggle(id) {
+    const wf = workflows.find(w => w.id === id);
+    if (!wf) return;
+    if (companyId) {
+      updateDoc(doc(firestore, 'routines',id), { active: !wf.active, updatedAt: serverTimestamp() }).catch(() => {});
+    } else {
+      setWorkflows(prev => prev.map(w => w.id === id ? { ...w, active: !w.active } : w));
+    }
+  }
+
+  function handleDelete(id) {
+    if (companyId) {
+      deleteDoc(doc(firestore, 'routines',id)).catch(() => {});
+    } else {
+      setWorkflows(prev => prev.filter(w => w.id !== id));
+    }
+  }
 
   const bg = { background: 'linear-gradient(160deg,#EEF2FF 0%,#F0F7FF 45%,#FAFCFF 100%)' };
 
@@ -1300,7 +1382,7 @@ export default function AutomationsView() {
             {workflows.map(wf => (
               <WorkflowCard key={wf.id} wf={wf}
                 onEdit={wf => { setEditingWorkflow(wf); setView('editor'); }}
-                onToggle={handleToggle} onDelete={handleDelete} />
+                onToggle={handleToggle} onDelete={handleDelete} onRun={handleRun} />
             ))}
           </AnimatePresence>
         </div>

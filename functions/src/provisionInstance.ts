@@ -10,10 +10,18 @@ const FLY_APP_NAME = process.env.FLY_APP_NAME || 'maagic-operators';
 const FLY_REGION = process.env.FLY_REGION || 'iad';
 const FLY_PUBLIC_HOSTNAME = process.env.FLY_PUBLIC_HOSTNAME || `${FLY_APP_NAME}.fly.dev`;
 const FLY_APP_HOSTNAME = FLY_PUBLIC_HOSTNAME.replace(/^https?:\/\//, '').replace(/\/$/, '');
-const OPENCLAW_GATEWAY_PORT = Number(process.env.OPENCLAW_GATEWAY_PORT || 18789);
+// nginx listens on 80 and proxies to agent runtime (8080) and noVNC (6080)
+const AGENT_RUNTIME_PORT = 80;
+const OPENCLAW_GATEWAY_PORT = AGENT_RUNTIME_PORT; // kept for backward compat in env vars
 const OPENCLAW_STATE_DIR = process.env.OPENCLAW_STATE_DIR || '/data';
-const FLY_MACHINE_MEMORY_MB = Number(process.env.FLY_MACHINE_MEMORY_MB || 4096);
-const NODE_MAX_OLD_SPACE_MB = Number(process.env.NODE_MAX_OLD_SPACE_MB || 3072);
+// Custom agent-runtime image — built by GitHub Actions on push to main
+// Registry: ghcr.io/afolabib/agent-runtime:latest
+// To make it pullable by Fly.io: go to github.com/afolabib → Packages →
+//   agent-runtime → Package settings → Change visibility → Public
+const AGENT_RUNTIME_IMAGE = process.env.AGENT_RUNTIME_IMAGE || 'ghcr.io/afolabib/agent-runtime:latest';
+// Desktop stack (Xvfb + Chromium + noVNC) needs 6GB+; default 8GB for headroom
+const FLY_MACHINE_MEMORY_MB = Number(process.env.FLY_MACHINE_MEMORY_MB || 8192);
+const NODE_MAX_OLD_SPACE_MB = Number(process.env.NODE_MAX_OLD_SPACE_MB || 4096);
 const FLY_SHARED_CPU_MEMORY_CAP_MB = 2048;
 const OPENCLAW_GATEWAY_TOKEN_LENGTH_BYTES = 32;
 const HEALTH_VERIFY_TIMEOUT_MS = 4500;
@@ -272,6 +280,19 @@ function buildOpenClawStartupCommand(): string[] {
     'config.gateway.controlUi=config.gateway.controlUi||{};',
     'config.gateway.controlUi.allowedOrigins=[nextOrigin];',
     'fs.writeFileSync(file, JSON.stringify(config, null, 2));',
+    // Seed Felix workspace files from FELIX_WORKSPACE_JSON env var
+    'if(process.env.FELIX_WORKSPACE_JSON){',
+    '  try{',
+    '    const files=JSON.parse(Buffer.from(process.env.FELIX_WORKSPACE_JSON,"base64").toString("utf8"));',
+    `    const wsDir=require("path").join(process.env.OPENCLAW_STATE_DIR||"/data","workspace");`,
+    '    fs.mkdirSync(wsDir,{recursive:true});',
+    '    for(const f of files){',
+    '      const safe=f.path.replace(/[^a-zA-Z0-9._-]/g,"");',
+    '      if(safe)fs.writeFileSync(require("path").join(wsDir,safe),f.content,"utf8");',
+    '    }',
+    '    console.log("[openclaw] Felix workspace seeded:",files.length,"files");',
+    '  }catch(e){console.error("[openclaw] Felix seed failed:",e.message);}',
+    '}',
   ].join('');
   const gatewayCommand = [
     'exec',
@@ -629,27 +650,25 @@ function buildFlyMachineConfig(params: {
   const { volumeId, containerEnv, metadata } = params;
 
   return {
-    image: 'ghcr.io/openclaw/openclaw:latest',
+    image: AGENT_RUNTIME_IMAGE,
     guest: buildSharedFlyGuestConfig(),
-    init: {
-      cmd: buildOpenClawStartupCommand(),
-    },
+    // start.sh is the Docker CMD — no init override needed
     env: containerEnv,
     services: [
       {
         ports: [{ port: 80, handlers: ['http'] }, { port: 443, handlers: ['tls', 'http'] }],
         protocol: 'tcp',
-        internal_port: OPENCLAW_GATEWAY_PORT,
+        internal_port: AGENT_RUNTIME_PORT,
       },
     ],
     checks: {
       http: {
         type: 'http',
-        port: OPENCLAW_GATEWAY_PORT,
-        path: '/healthz',
+        port: AGENT_RUNTIME_PORT,
+        path: '/health',
         interval: '30s',
         timeout: '10s',
-        grace_period: '30s',
+        grace_period: '60s',  // longer grace: supervisord + Xvfb + nginx need time to start
       },
     },
     mounts: [{ volume: volumeId, path: OPENCLAW_STATE_DIR }],
@@ -869,6 +888,11 @@ export const provisionInstance = functions.https.onCall(async (data, context) =>
     });
     const generatedWorkspace = generateOpenClawWorkspace(deploymentProfile);
 
+    // Seed Felix workspace files into container env so startup script can write them to disk
+    if (generatedWorkspace.files.length > 0) {
+      containerEnv.FELIX_WORKSPACE_JSON = Buffer.from(JSON.stringify(generatedWorkspace.files)).toString('base64');
+    }
+
     await logProvisioningEvent({
       type: 'deployment_profile_generated',
       status: 'info',
@@ -1042,6 +1066,79 @@ export const provisionInstance = functions.https.onCall(async (data, context) =>
     throw new functions.https.HttpsError('internal', errorMessage);
   }
 });
+
+// ── Reprovision: update an existing machine to the latest image ───────────────
+// Call this after pushing a new agent-runtime image to GHCR to update a
+// running instance without losing its /data volume or Firestore record.
+export const reprovisionInstance = functions
+  .runWith({ timeoutSeconds: 120 })
+  .https.onCall(async (data: { instanceId: string }, context) => {
+    const userId = context.auth?.uid;
+    if (!userId) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+    if (!FLY_API_TOKEN) throw new functions.https.HttpsError('failed-precondition', 'FLY_API_TOKEN not set');
+
+    const { instanceId } = data;
+    if (!instanceId) throw new functions.https.HttpsError('invalid-argument', 'instanceId required');
+
+    // Load instance and verify ownership
+    const snap = await db.collection('instances').doc(instanceId).get();
+    if (!snap.exists) throw new functions.https.HttpsError('not-found', 'Instance not found');
+    const instance = snap.data()!;
+    if (instance.userId !== userId) throw new functions.https.HttpsError('permission-denied', 'Not your instance');
+
+    const machineId = instance.machineId as string | null;
+    if (!machineId) throw new functions.https.HttpsError('failed-precondition', 'No machine ID on instance');
+
+    // Build updated machine config with the latest image + same env
+    const containerEnv = instance.deploymentProfile?.runtime?.env || {};
+    const updatedConfig = {
+      image: AGENT_RUNTIME_IMAGE,
+      guest: buildSharedFlyGuestConfig(),
+      env: containerEnv,
+      services: [{
+        ports: [{ port: 80, handlers: ['http'] }, { port: 443, handlers: ['tls', 'http'] }],
+        protocol: 'tcp',
+        internal_port: AGENT_RUNTIME_PORT,
+      }],
+      checks: {
+        http: {
+          type: 'http',
+          port: AGENT_RUNTIME_PORT,
+          path: '/health',
+          interval: '30s',
+          timeout: '10s',
+          grace_period: '60s',
+        },
+      },
+    };
+
+    // Update machine config (stops + restarts the machine with new image)
+    const updateRes = await fetch(`${FLY_API_BASE}/v1/apps/${FLY_APP_NAME}/machines/${machineId}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${FLY_API_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ config: updatedConfig }),
+    });
+    if (!updateRes.ok) {
+      const txt = await updateRes.text();
+      throw new functions.https.HttpsError('internal', `Fly update failed: ${txt}`);
+    }
+
+    // Restart to apply new image
+    await fetch(`${FLY_API_BASE}/v1/apps/${FLY_APP_NAME}/machines/${machineId}/restart`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${FLY_API_TOKEN}` },
+    });
+
+    // Mark as reprovisioning in Firestore
+    await db.collection('instances').doc(instanceId).update({
+      status: 'active_unverified',
+      reprovisionedAt: serverTimestamp(),
+      reprovisionedImage: AGENT_RUNTIME_IMAGE,
+      updatedAt: serverTimestamp(),
+    });
+
+    return { success: true, machineId, image: AGENT_RUNTIME_IMAGE };
+  });
 
 export const verifyInstanceHealth = functions.https.onCall(async (data, context) => {
   if (!FLY_API_TOKEN) throw new functions.https.HttpsError('failed-precondition', 'FLY_API_TOKEN is not configured');

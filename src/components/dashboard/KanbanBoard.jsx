@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, X, Bot, Circle, Clock, AlertTriangle, CheckCircle2, Ban, Layers, ChevronRight } from 'lucide-react';
 import { useCompany } from '@/contexts/CompanyContext';
@@ -102,99 +103,183 @@ function AddTaskCard({ companyId, userId, status, onDone, onCancel }) {
   );
 }
 
+// ── Task detail modal ─────────────────────────────────────────────────────────
+function TaskDetailModal({ task, agents = [], goals = [], onClose }) {
+  const assignedAgent = agents.find(a => a.id === task.assignedAgentId);
+  const goal = goals.find(g => g.id === task.goalId);
+  const priColor = PRIORITY_COLORS[task.priority] || '#94A3B8';
+
+  const STATUS_COLORS = {
+    todo: '#94A3B8', in_progress: '#5B5FFF', needs_review: '#F59E0B',
+    done: '#10B981', blocked: '#EF4444',
+  };
+  const statusColor = STATUS_COLORS[task.status] || '#94A3B8';
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        className="fixed inset-0 z-40"
+        style={{ background: 'rgba(10,15,30,0.40)', backdropFilter: 'blur(6px)' }}
+        onClick={onClose}
+      />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 12 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full flex flex-col pointer-events-auto"
+        style={{ maxWidth: 520, maxHeight: '85vh', background: '#fff', borderRadius: 24, boxShadow: '0 32px 80px rgba(91,95,255,0.18), 0 8px 32px rgba(0,0,0,0.10)', border: '1px solid rgba(91,95,255,0.10)' }}>
+
+        {/* Header */}
+        <div className="flex items-start justify-between px-6 pt-5 pb-4 flex-shrink-0"
+          style={{ borderBottom: '1px solid rgba(91,95,255,0.07)' }}>
+          <div className="flex-1 min-w-0 pr-4">
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              {task.priority && (
+                <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full"
+                  style={{ background: `${priColor}15`, color: priColor }}>{task.priority}</span>
+              )}
+              <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full"
+                style={{ background: `${statusColor}12`, color: statusColor }}>
+                {task.status?.replace('_', ' ') || 'todo'}
+              </span>
+              {goal && (
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: 'rgba(91,95,255,0.08)', color: '#5B5FFF' }}>{goal.title}</span>
+              )}
+            </div>
+            <h2 className="text-base font-bold leading-snug" style={{ color: '#0A0F1E' }}>{task.title}</h2>
+          </div>
+          <button onClick={onClose}
+            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors"
+            style={{ color: '#94A3B8' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+            <X size={15} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+
+          {/* Assigned agent */}
+          {assignedAgent && (
+            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl"
+              style={{ background: 'rgba(91,95,255,0.04)', border: '1px solid rgba(91,95,255,0.09)' }}>
+              <Bot size={14} style={{ color: '#5B5FFF', flexShrink: 0 }} />
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: '#C7D0E8' }}>Assigned to</p>
+                <p className="text-sm font-bold" style={{ color: '#0A0F1E' }}>{assignedAgent.name}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Description */}
+          {task.description && (
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-widest mb-2" style={{ color: '#C7D0E8' }}>Description</p>
+              <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>{task.description}</p>
+            </div>
+          )}
+
+          {/* Agent output summary */}
+          {task.outputSummary && (
+            <div className="px-4 py-3.5 rounded-2xl" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.14)' }}>
+              <p className="text-[9px] font-black uppercase tracking-widest mb-1.5" style={{ color: '#10B981' }}>Agent Output</p>
+              <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>{task.outputSummary}</p>
+            </div>
+          )}
+
+          {/* Full output */}
+          {task.output && task.output !== task.outputSummary && (
+            <div className="px-4 py-3.5 rounded-2xl" style={{ background: 'rgba(91,95,255,0.03)', border: '1px solid rgba(91,95,255,0.09)' }}>
+              <p className="text-[9px] font-black uppercase tracking-widest mb-1.5" style={{ color: '#5B5FFF' }}>Full Output</p>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: '#374151' }}>{task.output}</p>
+            </div>
+          )}
+
+          {/* Due date */}
+          {task.dueDate && (
+            <p className="text-xs font-semibold" style={{ color: '#94A3B8' }}>
+              Due: {new Date(task.dueDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+            </p>
+          )}
+        </div>
+      </motion.div>
+      </div>
+    </>
+  );
+}
+
 // ── Task card (plain div — motion wrapper is in Column) ───────────────────────
-function TaskCard({ task, agents, isDragging, onDragStart, onDragEnd }) {
-  const [expanded, setExpanded] = useState(false);
+function TaskCard({ task, agents = [], goals = [], isDragging, onDragStart, onDragEnd }) {
+  const [showDetail, setShowDetail] = useState(false);
   const assignedAgent = agents.find(a => a.id === task.assignedAgentId);
   const priColor = PRIORITY_COLORS[task.priority] || '#94A3B8';
   const goalName = task._goalTitle;
 
   return (
-    <div
-      draggable
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      onClick={() => setExpanded(e => !e)}
-      className="rounded-2xl p-3.5 mb-2.5 cursor-grab active:cursor-grabbing select-none transition-all"
-      style={{
-        background: '#fff',
-        border: expanded ? '1px solid rgba(91,95,255,0.20)' : '1px solid rgba(0,0,0,0.07)',
-        boxShadow: isDragging ? '0 16px 48px rgba(91,95,255,0.18)' : expanded ? '0 6px 24px rgba(91,95,255,0.10)' : '0 2px 8px rgba(0,0,0,0.05)',
-        opacity: isDragging ? 0.5 : 1,
-        transform: isDragging ? 'scale(1.02)' : 'scale(1)',
-      }}>
-      <p className="text-sm font-semibold leading-snug mb-2" style={{ color: '#0A0F1E' }}>
-        {task.title}
-      </p>
-      {goalName && (
-        <p className="text-[10px] font-semibold mb-2 px-2 py-0.5 rounded-full inline-block"
-          style={{ background: 'rgba(91,95,255,0.08)', color: '#5B5FFF' }}>
-          {goalName}
+    <>
+      <div
+        draggable
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onClick={() => setShowDetail(true)}
+        className="rounded-2xl p-3.5 mb-2.5 cursor-pointer select-none transition-all"
+        style={{
+          background: '#fff',
+          border: '1px solid rgba(0,0,0,0.07)',
+          boxShadow: isDragging ? '0 16px 48px rgba(91,95,255,0.18)' : '0 2px 8px rgba(0,0,0,0.05)',
+          opacity: isDragging ? 0.5 : 1,
+          transform: isDragging ? 'scale(1.02)' : 'scale(1)',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(91,95,255,0.18)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,95,255,0.10)'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.07)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)'; }}>
+        <p className="text-sm font-semibold leading-snug mb-2" style={{ color: '#0A0F1E' }}>
+          {task.title}
         </p>
-      )}
-
-      {/* Collapsed: show preview of output if exists */}
-      {!expanded && task.outputSummary && (
-        <p className="text-[11px] leading-relaxed mb-2 line-clamp-2" style={{ color: '#64748B' }}>
-          {task.outputSummary}
-        </p>
-      )}
-
-      {/* Expanded: show full details */}
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden">
-            {task.description && (
-              <div className="mb-3 pt-2" style={{ borderTop: '1px solid rgba(91,95,255,0.07)' }}>
-                <p className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: '#C7D0E8' }}>Description</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#374151' }}>{task.description}</p>
-              </div>
-            )}
-            {task.outputSummary && (
-              <div className="mb-3 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.12)' }}>
-                <p className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: '#10B981' }}>Agent Output</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#374151' }}>{task.outputSummary}</p>
-              </div>
-            )}
-            {task.output && task.output !== task.outputSummary && (
-              <div className="mb-3 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(91,95,255,0.04)', border: '1px solid rgba(91,95,255,0.09)' }}>
-                <p className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: '#5B5FFF' }}>Full Output</p>
-                <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: '#374151' }}>{task.output}</p>
-              </div>
-            )}
-            {task.dueDate && (
-              <p className="text-[10px] font-semibold mb-2" style={{ color: '#94A3B8' }}>
-                Due: {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              </p>
-            )}
-          </motion.div>
+        {goalName && (
+          <p className="text-[10px] font-semibold mb-2 px-2 py-0.5 rounded-full inline-block"
+            style={{ background: 'rgba(91,95,255,0.08)', color: '#5B5FFF' }}>
+            {goalName}
+          </p>
         )}
-      </AnimatePresence>
-
-      <div className="flex items-center justify-between mt-1">
-        <div className="flex items-center gap-1.5">
-          {task.priority && task.priority !== 'medium' && (
-            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded"
-              style={{ background: `${priColor}15`, color: priColor }}>
-              {task.priority}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
+        {task.outputSummary && (
+          <p className="text-[11px] leading-relaxed mb-2 line-clamp-2" style={{ color: '#64748B' }}>
+            {task.outputSummary}
+          </p>
+        )}
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-1.5">
+            {task.priority && task.priority !== 'medium' && (
+              <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded"
+                style={{ background: `${priColor}15`, color: priColor }}>
+                {task.priority}
+              </span>
+            )}
+          </div>
           {assignedAgent && (
             <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: '#94A3B8' }}>
               <Bot size={9} />{assignedAgent.name}
             </span>
           )}
-          <span className="text-[9px]" style={{ color: '#CBD5E1' }}>{expanded ? '▲' : '▼'}</span>
         </div>
       </div>
-    </div>
+
+      {showDetail && createPortal(
+        <AnimatePresence>
+          <TaskDetailModal
+            task={{ ...task, _goalTitle: goalName }}
+            agents={agents}
+            goals={goals}
+            onClose={() => setShowDetail(false)}
+          />
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 }
 
@@ -302,7 +387,7 @@ function Column({ col, tasks, agents, goals, companyId, userId, onTaskMove, drag
 }
 
 // ── Completed log panel ───────────────────────────────────────────────────────
-function CompletedLog({ tasks, agents, goals, onClose }) {
+function CompletedLog({ tasks, agents = [], goals = [], onClose }) {
   function timeAgo(ts) {
     if (!ts) return '—';
     const date = ts?.toDate ? ts.toDate() : new Date(ts);
@@ -516,19 +601,24 @@ export default function KanbanBoard() {
           </motion.div>
         ) : (
           <div className="flex gap-4 h-full" style={{ width: 'max-content' }}>
-            {COLUMNS.map(col => (
-              <Column
-                key={col.id}
-                col={col}
-                tasks={tasks.filter(t => t.status === col.id)}
-                agents={agents}
-                goals={goals}
-                companyId={activeCompanyId}
-                userId={userId}
-                onTaskMove={handleTaskMove}
-                draggingTaskId={draggingTaskId}
-              />
-            ))}
+            {COLUMNS.map(col => {
+              const colTasks = tasks.filter(t => t.status === col.id);
+              // Hide empty blocked column to save space (needs_review always visible)
+              if (col.id === 'blocked' && colTasks.length === 0) return null;
+              return (
+                <Column
+                  key={col.id}
+                  col={col}
+                  tasks={colTasks}
+                  agents={agents}
+                  goals={goals}
+                  companyId={activeCompanyId}
+                  userId={userId}
+                  onTaskMove={handleTaskMove}
+                  draggingTaskId={draggingTaskId}
+                />
+              );
+            })}
           </div>
         )}
       </div>

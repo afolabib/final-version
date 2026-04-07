@@ -10,11 +10,11 @@ import * as functions from 'firebase-functions';
 import fetch from 'node-fetch';
 import { db, serverTimestamp } from './firebase';
 import { TOOL_DEFINITIONS, executeTool, type AgentAction } from './tools';
+import { routeModel, getModelChain } from './modelRouter';
 
 const cfg = functions.config();
-const MINIMAX_API_KEY = cfg.minimax?.api_key || process.env.MINIMAX_API_KEY || '';
-const MINIMAX_URL     = 'https://api.minimax.io/v1/text/chatcompletion_v2';
-const MODEL           = 'MiniMax-M2.5-highspeed';
+const OPENROUTER_API_KEY = cfg.openrouter?.api_key || process.env.OPENROUTER_API_KEY || '';
+const OPENROUTER_URL     = 'https://openrouter.ai/api/v1/chat/completions';
 
 const MAX_TOOL_ROUNDS = 6; // prevent infinite loops
 
@@ -44,8 +44,8 @@ export const chatProxy = functions.runWith({ timeoutSeconds: 120 }).https.onCall
   async (data: ChatRequest, context) => {
     const { agentId, companyId, agentName = 'Freemi', agentRole = 'AI Chief Executive', messages } = data;
 
-    if (!MINIMAX_API_KEY) {
-      throw new functions.https.HttpsError('failed-precondition', 'MiniMax API key not configured');
+    if (!OPENROUTER_API_KEY) {
+      throw new functions.https.HttpsError('failed-precondition', 'OPENROUTER_API_KEY not configured');
     }
     if (!Array.isArray(messages)) {
       throw new functions.https.HttpsError('invalid-argument', 'messages array required');
@@ -67,7 +67,24 @@ export const chatProxy = functions.runWith({ timeoutSeconds: 120 }).https.onCall
           const agent = agentSnap.data()!;
           resolvedCompanyId = agent.companyId;
           resolvedAgentId   = agentId;
-          agentSystemPrompt = agent.systemPrompt || '';
+
+          // Use Felix files if available (Paperclip-style structured prompt)
+          const felix = agent.felixFiles || {};
+          if (felix.SOUL || felix.IDENTITY) {
+            const parts = [
+              felix.SOUL     ? `# SOUL\n${felix.SOUL}`         : null,
+              felix.IDENTITY ? `# IDENTITY\n${felix.IDENTITY}` : null,
+            ].filter(Boolean);
+            agentSystemPrompt = parts.join('\n\n');
+          } else {
+            agentSystemPrompt = agent.systemPrompt || '';
+          }
+
+          // Append agent memory to prompt if it exists
+          const memory: string[] = agent.memory || [];
+          if (memory.length > 0) {
+            agentSystemPrompt += `\n\n## Your Memory\n${memory.slice(-15).map((m: string) => `- ${m}`).join('\n')}`;
+          }
         }
       } catch { /* non-fatal */ }
     }
@@ -188,35 +205,51 @@ You have access to tools that let you take REAL actions in this company:
       ...messages.slice(-12).map(m => ({ role: m.role, content: m.content })),
     ];
 
+    // ── Route to best model for this agent/task ──────────────────────────────
+    const lastUserMsg  = messages[messages.length - 1]?.content || '';
+    const primaryModel = routeModel({
+      agentRole:   agentRole,
+      trigger:     'chat',
+      messageHint: lastUserMsg.slice(0, 200),
+    });
+    const modelChain = getModelChain(primaryModel);
+    console.log(`[chatProxy] ${agentName} (${agentRole}) → ${primaryModel}`);
+
     // ── Tool-use loop ────────────────────────────────────────────────────────
     const actions: AgentAction[] = [];
     let totalTokensIn  = 0;
     let totalTokensOut = 0;
     let finalReply     = '';
+    let usedModel      = primaryModel;
 
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-      const res = await fetch(MINIMAX_URL, {
-        method:  'POST',
-        headers: {
-          'Content-Type':  'application/json',
-          Authorization:   `Bearer ${MINIMAX_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: conversationMessages,
-          tools: TOOL_DEFINITIONS,
-          tool_choice: 'auto',
-          max_completion_tokens: 1024,
-        }),
-      });
+      let res: any;
+      let json: any;
 
-      const json = await res.json() as any;
-
-      if (json.base_resp?.status_code && json.base_resp.status_code !== 0) {
-        throw new functions.https.HttpsError('internal', `MiniMax error: ${json.base_resp.status_msg}`);
+      for (const modelId of modelChain) {
+        res = await fetch(OPENROUTER_URL, {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            Authorization:   `Bearer ${OPENROUTER_API_KEY}`,
+            'HTTP-Referer':  'https://freemi.ai',
+            'X-Title':       'Freemi Chat',
+          },
+          body: JSON.stringify({
+            model:       modelId,
+            messages:    conversationMessages,
+            tools:       TOOL_DEFINITIONS,
+            tool_choice: 'auto',
+            max_tokens:  1024,
+          }),
+        });
+        json = await res.json() as any;
+        if (res.ok) { usedModel = modelId; break; }
+        console.warn(`[chatProxy] ${modelId} failed (${res.status}), trying fallback…`);
       }
+
       if (!res.ok) {
-        throw new functions.https.HttpsError('internal', `MiniMax HTTP ${res.status}`);
+        throw new functions.https.HttpsError('internal', `OpenRouter error: ${json?.error?.message || res.status}`);
       }
 
       totalTokensIn  += json.usage?.prompt_tokens     || 0;
@@ -261,12 +294,12 @@ You have access to tools that let you take REAL actions in this company:
 
     // Track cost
     if (resolvedCompanyId && resolvedCompanyId !== '') {
-      const costUsd = (totalTokensIn + totalTokensOut) * 0.0000004;
+      const costUsd = (totalTokensIn + totalTokensOut) * 0.000001; // ~$1/M blended
       await db.collection('cost_events').add({
         companyId:  resolvedCompanyId,
         agentId:    resolvedAgentId,
         source:     'chat',
-        model:      MODEL,
+        model:      usedModel,
         tokensIn:   totalTokensIn,
         tokensOut:  totalTokensOut,
         costUsd,

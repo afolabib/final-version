@@ -1,0 +1,17 @@
+#!/bin/bash
+# Openbox autostart — runs when the window manager session starts
+
+# Dark desktop background (Freemi brand colour)
+xsetroot -solid "#0f0f1a" &
+
+# Live log terminal — shows what the agent is doing in real time
+xterm \
+  -geometry 90x20+20+560 \
+  -title "Freemi Agent — Live" \
+  -bg "#0f0f1a" -fg "#a0aeff" \
+  -fa "Monospace" -fs 10 \
+  -e "tail -n 40 -f /data/logs/runtime.log 2>/dev/null || sleep infinity" &
+
+# Give the log terminal a moment, then set the window name for visibility
+sleep 1
+xdotool search --name "Freemi Agent" set_window --name "Freemi Agent — Live" 2>/dev/null || true

@@ -10,12 +10,13 @@ import {
 } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useCompany } from '@/contexts/CompanyContext';
+import { approveRequest, rejectRequest } from '@/lib/approvalService';
+import { useAuth } from '@/lib/AuthContext';
 import FreemiCharacter from '@/components/FreemiCharacter';
 import ChatInput from './ChatInput';
 import FilesTab from './config-tabs/FilesTab';
 import ReactMarkdown from 'react-markdown';
-import { httpsCallable } from 'firebase/functions';
-import { functions as firebaseFunctions } from '@/lib/firebaseClient';
+import { sendChatMessage } from '@/lib/chatDirect';
 
 // ── Fallback agent definitions ────────────────────────────────────────────────
 const FALLBACK_AGENTS = [
@@ -35,7 +36,6 @@ const PALETTE = [
   { color: '#FD79A8', gradient: 'linear-gradient(135deg,#FD79A8,#E84393)' },
 ];
 
-const chatProxyFn = httpsCallable(firebaseFunctions, 'chatProxy');
 
 const QUICK_CHIPS = [
   { emoji: '📊', text: 'Summarize today\'s activity' },
@@ -508,11 +508,86 @@ const ACTION_META = {
   save_document:   { emoji: '📄', label: 'Document saved',     route: '/dashboard/files' },
 };
 
-function ActionCards({ actions, navigate }) {
+function ApprovalActionCard({ action, navigate, companyId, userId, index }) {
+  const [status, setStatus] = useState(null); // null | 'loading_approve' | 'loading_reject' | 'approved' | 'rejected'
+
+  async function handleApprove(e) {
+    e.stopPropagation();
+    setStatus('loading_approve');
+    try {
+      await approveRequest(companyId, userId, action.id);
+      setStatus('approved');
+    } catch { setStatus(null); }
+  }
+
+  async function handleReject(e) {
+    e.stopPropagation();
+    setStatus('loading_reject');
+    try {
+      await rejectRequest(companyId, userId, action.id, 'Declined in chat.');
+      setStatus('rejected');
+    } catch { setStatus(null); }
+  }
+
+  if (status === 'approved' || status === 'rejected') {
+    return (
+      <motion.div
+        initial={{ opacity: 1 }} animate={{ opacity: 0.6 }}
+        className="flex items-center gap-3 px-4 py-3 rounded-2xl"
+        style={{ background: status === 'approved' ? 'rgba(16,185,129,0.06)' : 'rgba(239,68,68,0.04)', border: `1.5px solid ${status === 'approved' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.15)'}` }}>
+        <span className="text-lg">📋</span>
+        <p className="text-sm font-semibold flex-1" style={{ color: status === 'approved' ? '#059669' : '#DC2626' }}>
+          {status === 'approved' ? '✓ Approved' : '✗ Declined'} — {action.title}
+        </p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.07 }}
+      className="flex items-center gap-3 px-4 py-3 rounded-2xl"
+      style={{ background: 'rgba(91,95,255,0.04)', border: '1.5px solid rgba(91,95,255,0.18)' }}>
+      <span className="text-lg flex-shrink-0">📋</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-[11px] font-bold uppercase tracking-wide mb-0.5" style={{ color: '#5B5FFF' }}>Approval requested</p>
+        <p className="text-sm font-semibold truncate" style={{ color: '#0A0F1E' }}>{action.title}</p>
+      </div>
+      <div className="flex items-center gap-1.5 flex-shrink-0">
+        <button onClick={handleApprove} disabled={!!status}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
+          style={{ background: 'rgba(16,185,129,0.1)', color: '#059669', border: '1px solid rgba(16,185,129,0.2)' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.18)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(16,185,129,0.1)'}>
+          {status === 'loading_approve'
+            ? <RefreshCw size={11} className="animate-spin" />
+            : <><CheckCircle2 size={11} /> Done</>}
+        </button>
+        <button onClick={handleReject} disabled={!!status}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
+          style={{ background: 'rgba(239,68,68,0.07)', color: '#DC2626', border: '1px solid rgba(239,68,68,0.15)' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.14)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(239,68,68,0.07)'}>
+          {status === 'loading_reject'
+            ? <RefreshCw size={11} className="animate-spin" />
+            : <>✕ No</>}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+function ActionCards({ actions, navigate, companyId, userId }) {
   if (!actions?.length) return null;
   return (
     <div className="flex flex-col gap-2 mt-3 ml-11">
       {actions.map((action, i) => {
+        // Approval cards get inline approve/reject buttons
+        if (action.type === 'create_approval' || action.type === 'hire_agent') {
+          return <ApprovalActionCard key={i} action={action} navigate={navigate} companyId={companyId} userId={userId} index={i} />;
+        }
         const meta = ACTION_META[action.type] || { emoji: '✨', label: action.type, route: '/dashboard' };
         return (
           <motion.button key={i}
@@ -708,6 +783,8 @@ export default function ChatView() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { agents: companyAgents, activeCompanyId, company } = useCompany();
+  const { user } = useAuth();
+  const userId = user?.uid || user?.id || 'board';
 
   const AGENTS = useMemo(() => {
     if (companyAgents && companyAgents.length > 0) {
@@ -829,17 +906,17 @@ export default function ChatView() {
         company?.mission
       );
 
-      const result = await chatProxyFn({
-        agentId:      activeAgent.id,
-        companyId:    activeCompanyId,
-        agentName:    activeAgent.name,
-        agentRole:    activeAgent.role,
+      const result = await sendChatMessage({
+        agentId:   activeAgent.id,
+        companyId: activeCompanyId,
+        agentName: activeAgent.name,
+        agentRole: activeAgent.role,
         systemPrompt,
         messages: [...history, { role: 'user', content: msg }],
       });
 
-      const reply   = result.data?.reply   || "I'm having trouble responding right now. Please try again.";
-      const actions = result.data?.actions || [];
+      const reply   = result.reply   || "I'm having trouble responding right now. Please try again.";
+      const actions = result.actions || [];
 
       const agentMsg = { id: Date.now() + 1, role: 'agent', time: now(), content: reply, actions, streaming: true };
       setTyping(false);
@@ -988,7 +1065,7 @@ export default function ChatView() {
                 <div key={msg.id}>
                   <MessageBubble msg={msg} agent={activeAgent} />
                   {msg.role === 'agent' && msg.actions?.length > 0 && (
-                    <ActionCards actions={msg.actions} navigate={navigate} />
+                    <ActionCards actions={msg.actions} navigate={navigate} companyId={activeCompanyId} userId={userId} />
                   )}
                 </div>
               ))}
@@ -1053,8 +1130,78 @@ export default function ChatView() {
   );
 }
 
+const ROLE_ONBOARDING = {
+  ceo: `Before I start making decisions, I need to understand the situation:
+
+1. **What's your name?** I want to address you properly.
+2. **What's the #1 thing you need this company to achieve right now?**
+3. **What's our revenue target, and where are we today?**
+4. **Any constraints I should know upfront?** (budget limits, things you don't want me to do, tools you prefer)
+5. **How do you like updates?** Brief daily summary, or ping me as things happen?
+
+Once I know this, I'll get to work.`,
+
+  sales: `Before I start outreach, I need to understand the business:
+
+1. **Who is your ideal customer?** (industry, company size, title we're targeting)
+2. **What's the core problem we solve for them?**
+3. **What's our main offer and price point?**
+4. **Do we have any existing leads or a CRM connected?**
+5. **What outreach channels do you want me to use?** (email, LinkedIn, cold call)
+
+Give me this and I'll build the pipeline.`,
+
+  marketing: `Let me get oriented before I start producing content:
+
+1. **What's the brand voice?** (formal/casual, bold/understated, technical/plain-language)
+2. **Who are we trying to reach?** (ICP — job title, company type, pain points)
+3. **Which channels matter most?** (LinkedIn, Instagram, blog, email, X)
+4. **Any campaigns or launches coming up I should plan around?**
+5. **Are there competitors or examples of content you like?**
+
+Point me in the right direction and I'll take it from there.`,
+
+  support: `Before I start handling customer issues, help me get set up:
+
+1. **What's our main product or service?**
+2. **What are the most common issues customers contact you about?**
+3. **What's the tone you want in responses?** (formal, casual, empathetic)
+4. **Where do support requests come in?** (email, form, Zendesk, etc.)
+5. **What can I resolve myself vs. what needs your sign-off?**`,
+
+  engineer: `Before I start on technical work, I need some context:
+
+1. **What's the tech stack?** (languages, frameworks, infra)
+2. **What's the most important technical problem right now?**
+3. **Are there any no-go zones?** (systems I shouldn't touch, legacy code to avoid)
+4. **How do you handle deploys?** (CI/CD, manual, approval needed?)
+5. **Are there any specs or docs I should read first?**`,
+
+  default: `Before I get started, I need to understand what you need from me:
+
+1. **What's your name?** I want to address you properly.
+2. **What's the main thing you need me to focus on?**
+3. **What does success look like in my role here?**
+4. **Any tools, workflows, or constraints I should know about?**
+5. **How do you prefer to communicate?** (quick messages, daily summary, only when stuck)`
+};
+
 function greetingMsg(agent) {
-  return { id: 1, role: 'agent', time: now(), content: `Hey! I'm ${agent.name}, your ${agent.role}. How can I help you today?` };
+  const isBootstrapped = agent._raw?.bootstrapped;
+  const role = (agent._raw?.role || agent.role || '').toLowerCase().replace('ai chief executive', 'ceo');
+
+  if (!isBootstrapped) {
+    const onboarding = ROLE_ONBOARDING[role] || ROLE_ONBOARDING.default;
+    return {
+      id: 1, role: 'agent', time: now(),
+      content: `Hey — I'm **${agent.name}**, your ${agent.role}. I'm new here, so before I start acting, let me ask a few things.\n\n${onboarding}`,
+    };
+  }
+
+  return {
+    id: 1, role: 'agent', time: now(),
+    content: `Hey — I'm ${agent.name}. What do you need?`,
+  };
 }
 
 function now() {
