@@ -61,6 +61,16 @@ export default function SiteFooter() {
               </div>
             </div>
 
+            {/* Studio */}
+            <div>
+              <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Studio</h4>
+              <div className="space-y-2.5">
+                <Link to="/business" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Web Studio</Link>
+                <Link to="/business#portfolio" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Portfolio</Link>
+                <Link to="/business#pricing" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Build Pricing</Link>
+              </div>
+            </div>
+
             {/* Legal */}
             <div>
               <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Legal</h4>

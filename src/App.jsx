@@ -40,6 +40,7 @@ import IndustryHospitality from './pages/industries/Hospitality';
 import IndustryHealthcare from './pages/industries/Healthcare';
 import IndustryAgencies from './pages/industries/Agencies';
 import IndustryLogistics from './pages/industries/Logistics';
+import Business from './pages/Business';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -107,6 +108,7 @@ const AuthenticatedApp = () => {
       <Route path="/industries/healthcare" element={<IndustryHealthcare />} />
       <Route path="/industries/agencies" element={<IndustryAgencies />} />
       <Route path="/industries/logistics" element={<IndustryLogistics />} />
+      <Route path="/business" element={<Business />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
