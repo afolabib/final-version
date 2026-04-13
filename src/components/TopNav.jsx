@@ -41,7 +41,10 @@ export default function TopNav() {
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 2px 12px rgba(91,95,255,0.35)' }}>
             <div className="w-3 h-3 rounded-full bg-white/90" />
           </div>
-          <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
+            <span className="text-xs font-medium text-gray-500 tracking-tight">by Bidemi</span>
+          </div>
         </button>
 
         <nav className="hidden md:flex items-center gap-1">
