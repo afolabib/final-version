@@ -170,12 +170,12 @@ function ArticleCard({ article, index, featured }) {
             <div className="aspect-video md:aspect-auto relative overflow-hidden">
               <img src={article.image} alt={article.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(91,95,255,0.1), transparent)' }} />
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(123,97,255,0.1), transparent)' }} />
             </div>
             <div className="p-8 md:p-10 flex flex-col justify-center">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full"
-                  style={{ background: 'rgba(91,95,255,0.06)', color: '#5B5FFF', border: '1px solid rgba(91,95,255,0.1)' }}>
+                  style={{ background: 'rgba(123,97,255,0.06)', color: '#7B61FF', border: '1px solid rgba(123,97,255,0.1)' }}>
                   Featured
                 </span>
                 <span className="text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full"
@@ -185,7 +185,7 @@ function ArticleCard({ article, index, featured }) {
               </div>
               <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-3 transition-colors"
                 style={{ color: '#0F172A', letterSpacing: '-0.02em', lineHeight: 1.15 }}
-                onMouseEnter={e => e.currentTarget.style.color = '#5B5FFF'}
+                onMouseEnter={e => e.currentTarget.style.color = '#7B61FF'}
                 onMouseLeave={e => e.currentTarget.style.color = '#0F172A'}>
                 {article.title}
               </h2>
@@ -193,7 +193,7 @@ function ArticleCard({ article, index, featured }) {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-                    style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)' }}>
+                    style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)' }}>
                     {article.author[0]}
                   </div>
                   <span className="text-xs font-semibold" style={{ color: '#374151' }}>{article.author}</span>
@@ -231,7 +231,7 @@ function ArticleCard({ article, index, featured }) {
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute top-4 left-4">
               <span className="text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full"
-                style={{ background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(8px)', color: '#5B5FFF' }}>
+                style={{ background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(8px)', color: '#7B61FF' }}>
                 {article.category}
               </span>
             </div>
@@ -239,7 +239,7 @@ function ArticleCard({ article, index, featured }) {
           <div className="p-6 flex flex-col flex-1">
             <h3 className="text-lg font-extrabold tracking-tight mb-2 transition-colors"
               style={{ color: '#0F172A', letterSpacing: '-0.01em', lineHeight: 1.25 }}
-              onMouseEnter={e => e.currentTarget.style.color = '#5B5FFF'}
+              onMouseEnter={e => e.currentTarget.style.color = '#7B61FF'}
               onMouseLeave={e => e.currentTarget.style.color = '#0F172A'}>
               {article.title}
             </h3>
@@ -247,7 +247,7 @@ function ArticleCard({ article, index, featured }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
-                  style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)' }}>
+                  style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)' }}>
                   {article.author[0]}
                 </div>
                 <span className="text-xs font-semibold" style={{ color: '#374151' }}>{article.author}</span>
@@ -276,18 +276,18 @@ export default function Blog() {
   );
 
   return (
-    <div className="flex flex-col h-screen" style={{ background: 'linear-gradient(180deg, #F0F4FF 0%, #F8FAFF 40%, #FFFFFF 100%)' }}>
+    <div className="flex flex-col h-screen" style={{ background: 'linear-gradient(180deg, #F5F3FF 0%, #F8F9FE 30%, #EEF2FF 60%, #F0F7FF 100%)' }}>
       <TopNav />
 
       <div className="flex-1 overflow-y-auto">
         {/* Hero */}
         <div className="pt-32 pb-16 px-6 relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(91,95,255,0.06), transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle, rgba(123,97,255,0.06), transparent 70%)' }} />
           <div className="max-w-4xl mx-auto text-center relative">
             <motion.span initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
               className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
-              style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
+              style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.1)' }}>
               Blog
             </motion.span>
             <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.05 }}
@@ -311,10 +311,10 @@ export default function Blog() {
                 <button key={c} onClick={() => setActiveCat(c)}
                   className="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
                   style={{
-                    background: activeCat === c ? 'linear-gradient(135deg, #5B5FFF, #7C6CF7)' : 'rgba(255,255,255,0.8)',
+                    background: activeCat === c ? 'linear-gradient(135deg, #7B61FF, #6C4AE8)' : 'rgba(255,255,255,0.8)',
                     color: activeCat === c ? '#fff' : '#6B7280',
                     border: activeCat === c ? 'none' : '1px solid rgba(0,0,0,0.05)',
-                    boxShadow: activeCat === c ? '0 4px 12px rgba(91,95,255,0.25)' : '0 2px 8px rgba(0,0,0,0.02)',
+                    boxShadow: activeCat === c ? '0 4px 12px rgba(123,97,255,0.25)' : '0 2px 8px rgba(0,0,0,0.02)',
                   }}>
                   {c}
                 </button>
@@ -346,7 +346,7 @@ export default function Blog() {
           {filtered.length === 0 && (
             <div className="text-center py-20">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 float"
-                style={{ background: 'rgba(91,95,255,0.06)' }}>
+                style={{ background: 'rgba(123,97,255,0.06)' }}>
                 <Search size={22} style={{ color: '#CBD5E1' }} />
               </div>
               <p className="text-sm font-bold" style={{ color: '#374151' }}>No articles found</p>
