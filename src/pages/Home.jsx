@@ -19,7 +19,7 @@ import {
 import {
   SiWhatsapp, SiGmail, SiSlack, SiHubspot, SiSalesforce,
   SiGooglecalendar, SiStripe, SiCalendly, SiNotion, SiZapier,
-  SiMicrosoftteams, SiGooglesheets, SiMicrosoftoutlook
+  SiGooglesheets
 } from 'react-icons/si';
 
 /* ─── floating elements (studio-style) ────────────────── */
@@ -887,10 +887,10 @@ function IntegrationsSection() {
     { name: 'Calendly', Icon: SiCalendly, color: '#006BFF' },
     { name: 'Notion', Icon: SiNotion, color: '#000000' },
     { name: 'Zapier', Icon: SiZapier, color: '#FF4A00' },
-    { name: 'Microsoft Teams', Icon: SiMicrosoftteams, color: '#6264A7' },
+    { name: 'Microsoft Teams', Icon: null, color: '#6264A7', emoji: '👥' },
     { name: 'Pipedrive', Icon: null, color: '#1A1A1A', emoji: '🔵' },
     { name: 'Google Sheets', Icon: SiGooglesheets, color: '#34A853' },
-    { name: 'Outlook', Icon: SiMicrosoftoutlook, color: '#0078D4' },
+    { name: 'Outlook', Icon: null, color: '#0078D4', emoji: '📨' },
     { name: 'Make', Icon: null, color: '#6D00CC', emoji: '⚡' },
   ];
 
