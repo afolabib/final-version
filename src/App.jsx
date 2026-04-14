@@ -52,6 +52,7 @@ import Blog from './pages/Blog';
 import About from './pages/About';
 import BlogArticle from './pages/BlogArticle';
 import Solutions from './pages/Solutions';
+import SolutionPharmacy from './pages/solutions/Pharmacy';
 import IndustrySaaS from './pages/industries/SaaS';
 import IndustryECommerce from './pages/industries/ECommerce';
 import IndustryHospitality from './pages/industries/Hospitality';
@@ -198,6 +199,7 @@ const AuthenticatedApp = () => {
       <Route path="/about" element={<About />} />
       <Route path="/blog/:slug" element={<BlogArticle />} />
       <Route path="/solutions" element={<Solutions />} />
+      <Route path="/solutions/pharmacy" element={<SolutionPharmacy />} />
       <Route path="/industries/saas" element={<IndustrySaaS />} />
       <Route path="/industries/ecommerce" element={<IndustryECommerce />} />
       <Route path="/industries/hospitality" element={<IndustryHospitality />} />
