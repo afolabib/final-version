@@ -1,43 +1,41 @@
-import IndustryPage from '../../components/IndustryPage';
-
-const data = {
-  title: 'Agencies',
-  headline: 'Scale Client Delivery Without Scaling Headcount',
-  subtitle: 'Freemi operators handle client reporting, prospecting, project tracking, and internal ops — letting your agency take on more clients without hiring more people.',
-  color: '#F39C12',
-  operators: ['Nova', 'Ghost', 'Sam'],
-  stats: [
-    { value: '3x', label: 'More clients managed' },
-    { value: '15hrs', label: 'Saved per week' },
-    { value: '100%', label: 'Reports on time' },
-  ],
-  painPoints: [
-    { emoji: '📊', title: 'Client reports eat up Fridays', text: 'Your team spends an entire day every week pulling data from 5 platforms, building decks, and sending reports. It\'s the least favorite part of the job.' },
-    { emoji: '🏃', title: 'New business pipeline is inconsistent', text: 'When you\'re busy delivering, prospecting stops. When projects end, you scramble. The feast-or-famine cycle never breaks.' },
-    { emoji: '🔥', title: 'Projects slip without anyone noticing', text: 'Tasks go overdue, deadlines shift silently, and clients find out about delays before your PM does. It erodes trust slowly.' },
-    { emoji: '🧑‍🤝‍🧑', title: 'Hiring for growth is expensive and slow', text: 'Each new client needs more hands, but recruiting, onboarding, and training takes months. Meanwhile, your team burns out.' },
-  ],
-  characterQuote: 'I just compiled performance reports for all 12 of your clients, researched 50 new prospects, and flagged 2 projects that are at risk of missing deadlines. Your Monday morning is going to be smooth.',
-  benefits: [
-    { title: 'Automated Client Reporting', text: 'Nova pulls data from Google Analytics, ad platforms, and CRMs, builds clean reports, and delivers them on schedule. Your team reviews and approves instead of building from scratch.' },
-    { title: 'Always-On Prospecting', text: 'Ghost researches ideal prospects, enriches contacts, and Sam sends personalized outreach sequences. Your pipeline stays full even during your busiest delivery months.' },
-    { title: 'Proactive Project Tracking', text: 'Nova monitors task deadlines, flags at-risk deliverables, sends status updates to clients, and escalates blockers to PMs before they become problems.' },
-    { title: 'Scalable Operations', text: 'From invoicing and time tracking to resource allocation and vendor management — your back-office runs itself, freeing you to focus on creative strategy.' },
-  ],
-  workflows: [
-    { title: 'Data → Client Report → Delivered', description: 'Every Friday, Nova pulls metrics from Google Analytics, Meta Ads, and your CRM. A formatted report is generated, reviewed by your account manager, and sent to the client by 5pm.', tools: ['Google Analytics', 'Meta Ads', 'HubSpot', 'Email'] },
-    { title: 'ICP → Research → Outreach Sequence', description: 'Ghost identifies 50 companies matching your ICP weekly. Sam enriches contacts, personalizes messaging, and launches a 5-step email sequence. Interested replies get routed to your BD team.', tools: ['LinkedIn', 'Crunchbase', 'Gmail', 'Calendly'] },
-    { title: 'Task Overdue → PM Alert → Client Update', description: 'A task misses its deadline. Nova alerts the PM immediately, suggests a revised timeline, and drafts a proactive client update so the conversation happens before the client asks.', tools: ['Asana', 'Slack', 'Email', 'Calendar'] },
-    { title: 'New Client → Onboarding Complete', description: 'A new client signs. Nova sets up their project workspace, sends the onboarding questionnaire, schedules the kickoff call, and creates the initial task timeline — all within an hour.', tools: ['Asana', 'Google Drive', 'Calendly', 'Slack'] },
-  ],
-  testimonial: {
-    quote: 'We went from 8 clients to 22 in six months without hiring a single person. Freemi handles the operational load that used to require 3 full-time coordinators.',
-    name: 'David Kim',
-    role: 'Founder',
-    company: 'Momentum Digital (Growth Agency)',
-  },
-};
+import ProductPageLayout from '../../components/ProductPageLayout';
+import { Briefcase, Users, BarChart3, Clock, Zap, FileText, Calendar, Globe, Mail, MessageSquare, TrendingUp, Target, Palette, Code, Megaphone, PenTool } from 'lucide-react';
 
 export default function Agencies() {
-  return <IndustryPage data={data} />;
+  return (
+    <ProductPageLayout badge="Agencies" badgeIcon={Briefcase} accentColor="#7B61FF"
+      headline="Scale Client Delivery" headlineAccent="Without Scaling Headcount."
+      subtitle="AI agents that handle client communication, project updates, reporting, and lead generation — so your team focuses on creative work that actually matters."
+      seed={200}
+      stats={[{ value: '3×', label: 'Client capacity' }, { value: '60%', label: 'Less admin time' }, { value: '12hrs', label: 'Saved per week' }, { value: '24/7', label: 'Client support' }]}
+      testimonials={[
+        { quote: 'We doubled our client roster without hiring. AI handles status updates, meeting prep, and client queries automatically.', name: 'Alex Turner', role: 'Founder, Pixel & Co', gradient: 'linear-gradient(135deg, #7B61FF, #2F8FFF)' },
+        { quote: 'Client onboarding that used to take 3 days now takes 3 hours. AI gathers requirements, sets up projects, and sends welcome packs.', name: 'Sarah Lee', role: 'MD, Forge Creative', gradient: 'linear-gradient(135deg, #E84393, #7B61FF)' },
+        { quote: 'The weekly client reports write themselves now. AI pulls data from all our tools and sends polished updates every Friday.', name: 'James Chen', role: 'CEO, Launchpad Digital', gradient: 'linear-gradient(135deg, #27C087, #2F8FFF)' },
+      ]}
+      features={[
+        { icon: Users, title: 'Client communication', desc: 'AI handles status updates, meeting scheduling, and client queries. Responses are on-brand and instant.', color: '#7B61FF' },
+        { icon: BarChart3, title: 'Automated reporting', desc: 'Weekly and monthly client reports generated automatically from your project tools. Polished and sent on schedule.', color: '#2F8FFF' },
+        { icon: FileText, title: 'Client onboarding', desc: 'AI gathers requirements, sets up project spaces, sends welcome packs, and schedules kickoff calls.', color: '#27C087' },
+        { icon: TrendingUp, title: 'Lead generation', desc: 'AI qualifies inbound leads, sends case studies, books discovery calls, and updates your pipeline.', color: '#F59E0B' },
+        { icon: Calendar, title: 'Meeting management', desc: 'AI schedules across time zones, sends agendas, takes notes, and distributes action items.', color: '#E84393' },
+        { icon: Mail, title: 'Email management', desc: 'AI drafts responses, prioritises inbox, flags urgent items, and handles routine client correspondence.', color: '#0984E3' },
+      ]}
+      steps={[
+        { icon: Briefcase, title: 'Tell us about your agency', desc: 'Share your services, client types, and workflows. We configure AI agents for your specific needs.' },
+        { icon: Globe, title: 'AI handles the admin', desc: 'Client comms, reporting, scheduling, lead follow-up — all automated across your channels.' },
+        { icon: Zap, title: 'Your team does what they\'re best at', desc: 'Creative work, strategy, client relationships — while AI handles everything else.' },
+      ]}
+      useCases={[
+        { icon: Palette, title: 'Design Agencies', desc: 'Client feedback collection, revision tracking, asset delivery, and project status updates.' },
+        { icon: Code, title: 'Dev Agencies', desc: 'Sprint updates, deployment notifications, bug report triage, and client demo scheduling.' },
+        { icon: Megaphone, title: 'Marketing Agencies', desc: 'Campaign reporting, lead handoff, content approval workflows, and performance updates.' },
+        { icon: PenTool, title: 'Content Agencies', desc: 'Brief collection, editorial calendar management, review cycles, and publishing notifications.' },
+        { icon: Target, title: 'SEO & PPC', desc: 'Ranking reports, ad performance summaries, budget alerts, and client strategy calls.' },
+        { icon: TrendingUp, title: 'Consulting', desc: 'Proposal generation, meeting prep, research briefs, and engagement tracking.' },
+      ]}
+      ctaHeadline="More clients. Less overhead."
+      ctaSubtitle="AI agents that handle the admin so your team can focus on creative work."
+    />
+  );
 }

@@ -1,43 +1,41 @@
-import IndustryPage from '../../components/IndustryPage';
-
-const data = {
-  title: 'SaaS',
-  headline: 'Scale Your SaaS Without Scaling Your Team',
-  subtitle: 'Freemi operators qualify leads, onboard users, prevent churn, and handle tier-1 support — running 24/7 so your team can focus on building product, not managing busywork.',
-  color: '#5B5FFF',
-  operators: ['Sam', 'Rex', 'Pixel'],
-  stats: [
-    { value: '47%', label: 'More demos booked' },
-    { value: '< 2min', label: 'Avg lead response' },
-    { value: '34%', label: 'Churn reduction' },
-  ],
-  painPoints: [
-    { emoji: '😩', title: 'Leads go cold while you sleep', text: 'Inbound leads wait hours or days for a response. By the time your team follows up, they\'ve already moved on to a competitor.' },
-    { emoji: '🔥', title: 'Support tickets pile up', text: 'Your growing user base means a growing support queue. Simple questions bury your team, and complex issues get delayed.' },
-    { emoji: '📉', title: 'Churn sneaks up on you', text: 'Users disengage silently. Without proactive outreach, you only find out when they cancel — and by then it\'s too late.' },
-    { emoji: '⏳', title: 'Onboarding is manual & inconsistent', text: 'Every new user needs hand-holding. Your team repeats the same steps, and some users fall through the cracks entirely.' },
-  ],
-  characterQuote: 'I just booked 12 demos while your team was in a sprint planning meeting. Want me to prep the call briefs too?',
-  benefits: [
-    { title: 'Instant Lead Qualification', text: 'Every inbound lead is scored, enriched, and routed in under 60 seconds. Hot leads go straight to your reps with full context — company size, tech stack, buying signals.' },
-    { title: 'Self-Serve Onboarding at Scale', text: 'New signups get personalized welcome sequences, feature walkthroughs, and milestone check-ins. Adoption rates climb while your CS team focuses on enterprise accounts.' },
-    { title: 'Proactive Churn Prevention', text: 'Health scores are monitored in real-time. At-risk accounts get intervention sequences before they even think about canceling — saving revenue while you sleep.' },
-    { title: 'Tier-1 Support on Autopilot', text: 'Common questions are resolved instantly from your docs and knowledge base. Complex issues are escalated with full context so your engineers spend zero time on repetitive tickets.' },
-  ],
-  workflows: [
-    { title: 'Inbound Lead → Qualified Meeting', description: 'A visitor fills out your demo form. Sam instantly enriches the lead, scores it, sends a personalized email, and books a meeting on your rep\'s calendar — all within 90 seconds.', tools: ['HubSpot', 'Gmail', 'Calendly', 'LinkedIn'] },
-    { title: 'New Signup → Activated User', description: 'A user signs up for your trial. Pixel sends a welcome sequence, tracks feature adoption, nudges them toward key milestones, and flags disengaged users for your CS team.', tools: ['Intercom', 'Slack', 'Analytics', 'Email'] },
-    { title: 'Support Ticket → Resolution', description: 'A user submits a ticket. Rex categorizes it, searches your knowledge base, drafts a response, and either resolves it automatically or escalates with full context to the right engineer.', tools: ['Zendesk', 'Notion', 'Jira', 'Slack'] },
-    { title: 'At-Risk Account → Saved Customer', description: 'Pixel detects declining usage. An automated check-in email goes out, a QBR is scheduled, and your CS manager gets a brief with health trends and recommended actions.', tools: ['Gainsight', 'Salesforce', 'Calendly', 'Email'] },
-  ],
-  testimonial: {
-    quote: 'We deployed Sam and Rex on a Monday. By Friday, we had 3x more qualified demos and our ticket backlog was down 60%. It felt like hiring a whole team overnight.',
-    name: 'Sarah Chen',
-    role: 'Head of Growth',
-    company: 'Launchpad (Series A SaaS)',
-  },
-};
+import ProductPageLayout from '../../components/ProductPageLayout';
+import { Code, Users, TrendingUp, Clock, Zap, BarChart3, MessageSquare, Globe, Shield, Headphones, Mail, Target, Rocket, Bug, BookOpen, Cpu } from 'lucide-react';
 
 export default function SaaS() {
-  return <IndustryPage data={data} />;
+  return (
+    <ProductPageLayout badge="SaaS" badgeIcon={Code} accentColor="#0984E3"
+      headline="Scale Your SaaS" headlineAccent="Without Scaling Your Team."
+      subtitle="AI agents that handle customer onboarding, support tickets, churn prevention, and lead qualification — so your team focuses on building product."
+      seed={230}
+      stats={[{ value: '34%', label: 'Churn reduction' }, { value: '73%', label: 'Auto-resolved tickets' }, { value: '3×', label: 'Trial conversions' }, { value: '24/7', label: 'User support' }]}
+      testimonials={[
+        { quote: 'Trial-to-paid conversion went from 8% to 24% when AI started onboarding new users with personalised walkthroughs.', name: 'Jake Morrison', role: 'CEO, CloudSync', gradient: 'linear-gradient(135deg, #0984E3, #7B61FF)' },
+        { quote: 'Support tickets dropped 60%. The AI resolves most issues before they even become tickets. Users love it.', name: 'Maria Santos', role: 'CTO, DataFlow', gradient: 'linear-gradient(135deg, #27C087, #2F8FFF)' },
+        { quote: 'We detected 15 at-risk accounts last month and saved 12 of them with proactive AI outreach. That\'s €180k in saved ARR.', name: 'Tom Chen', role: 'VP Success, LaunchPad', gradient: 'linear-gradient(135deg, #E84393, #7B61FF)' },
+      ]}
+      features={[
+        { icon: Rocket, title: 'Automated onboarding', desc: 'AI guides new users through setup, sends walkthroughs, answers questions, and ensures activation milestones are hit.', color: '#0984E3' },
+        { icon: Headphones, title: 'Tier-1 support', desc: 'AI resolves common issues, searches your knowledge base, drafts responses, and escalates complex tickets with full context.', color: '#7B61FF' },
+        { icon: TrendingUp, title: 'Churn prevention', desc: 'Monitors usage patterns, detects at-risk accounts, triggers proactive outreach, and routes save opportunities to your team.', color: '#27C087' },
+        { icon: Target, title: 'Lead qualification', desc: 'AI qualifies inbound leads, enriches contact data, scores buying intent, and books demos with your sales team.', color: '#F59E0B' },
+        { icon: Mail, title: 'Customer communication', desc: 'Automated check-ins, feature announcements, usage reports, and NPS surveys — personalised per account.', color: '#E84393' },
+        { icon: BarChart3, title: 'Revenue intelligence', desc: 'Track MRR, churn, expansion revenue, support load, and customer health scores. Data-driven growth.', color: '#2F8FFF' },
+      ]}
+      steps={[
+        { icon: Code, title: 'Connect your SaaS', desc: 'Integrate your product, CRM, support tools, and billing. We wire up everything in one day.' },
+        { icon: Globe, title: 'AI agents start working', desc: 'Onboarding, support, churn prevention, lead qualification — all running across your channels.' },
+        { icon: Zap, title: 'Scale without hiring', desc: 'Handle 10x the users with the same team. AI does the repetitive work. You build the product.' },
+      ]}
+      useCases={[
+        { icon: Rocket, title: 'PLG / Self-Serve', desc: 'Trial onboarding, activation nudges, upgrade prompts, and usage-based outreach — all automated.' },
+        { icon: Users, title: 'Sales-Led', desc: 'Lead qualification, demo booking, proposal follow-ups, and deal acceleration.' },
+        { icon: Bug, title: 'Developer Tools', desc: 'API question answering, code examples, integration support, and documentation search.' },
+        { icon: BookOpen, title: 'EdTech', desc: 'Student onboarding, course recommendations, progress tracking, and instructor support.' },
+        { icon: Shield, title: 'Security & Compliance', desc: 'Compliance queries, audit documentation, security questionnaire responses, and certification guidance.' },
+        { icon: Cpu, title: 'Infrastructure', desc: 'Status page updates, incident communication, capacity alerts, and migration support.' },
+      ]}
+      ctaHeadline="Grow faster. Support better."
+      ctaSubtitle="AI agents that scale your SaaS without scaling your team."
+    />
+  );
 }

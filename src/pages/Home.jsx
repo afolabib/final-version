@@ -298,11 +298,11 @@ function HeroSection() {
           <div>
             {['One Agent Runs', 'Your Entire Business'].map((line, i) => (
               <motion.div key={i} variants={itemVariants} className="overflow-hidden">
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.05] text-surface">{line}</h1>
+                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.15] text-surface">{line}</h1>
               </motion.div>
             ))}
             <motion.div variants={itemVariants} className="overflow-hidden">
-              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.05] min-h-[1.1em]">
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.15] min-h-[1.2em]">
                 <TypewriterCycle />
               </h1>
             </motion.div>

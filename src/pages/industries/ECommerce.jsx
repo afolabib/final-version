@@ -1,43 +1,41 @@
-import IndustryPage from '../../components/IndustryPage';
-
-const data = {
-  title: 'E-Commerce',
-  headline: 'Run Your Store 24/7 Without Burning Out Your Team',
-  subtitle: 'Freemi operators handle customer inquiries, process orders, manage vendor relationships, and drive repeat purchases — so you can focus on growing your brand, not answering the same questions.',
-  color: '#00B894',
-  operators: ['Rex', 'Nova', 'Pixel'],
-  stats: [
-    { value: '73%', label: 'Tickets auto-resolved' },
-    { value: '< 30s', label: 'First response time' },
-    { value: '28%', label: 'Repeat purchase lift' },
-  ],
-  painPoints: [
-    { emoji: '📦', title: '"Where\'s my order?" on repeat', text: 'Your support team spends 60% of their time answering the same shipping and tracking questions. It\'s draining and doesn\'t scale.' },
-    { emoji: '💸', title: 'Returns eat into margins', text: 'Without proactive sizing guides, product recommendations, and pre-purchase support, return rates stay stubbornly high.' },
-    { emoji: '🤷', title: 'Vendors go radio silent', text: 'Managing dozens of suppliers means chasing invoices, confirming delivery dates, and dealing with quality issues — all manually.' },
-    { emoji: '📧', title: 'Customers buy once and vanish', text: 'Without timely post-purchase follow-ups, review requests, and personalized offers, one-time buyers never come back.' },
-  ],
-  characterQuote: 'I just resolved 47 support tickets, sent tracking updates to 200 customers, and flagged a delayed shipment from your supplier — all before your morning coffee.',
-  benefits: [
-    { title: 'Instant Order Support', text: 'Customers get real-time tracking updates, return processing, and order modifications without waiting for a human. CSAT scores climb while your team handles only the complex stuff.' },
-    { title: 'Smart Vendor Management', text: 'Nova tracks every PO, follows up on delayed shipments, reconciles invoices against delivery records, and flags discrepancies automatically. No more vendor chaos.' },
-    { title: 'Post-Purchase Engagement', text: 'Pixel sends perfectly-timed review requests, cross-sell recommendations, and loyalty offers based on purchase history. Turn one-time buyers into brand advocates.' },
-    { title: 'Pre-Sale Conversion', text: 'Rex answers product questions, suggests alternatives, and guides hesitant shoppers through checkout with live chat support — reducing abandoned carts significantly.' },
-  ],
-  workflows: [
-    { title: 'Customer Inquiry → Instant Resolution', description: 'A customer asks about their order. Rex pulls tracking data, checks delivery status, drafts a clear response, and resolves the ticket — all in under 30 seconds.', tools: ['Shopify', 'Zendesk', 'ShipStation', 'Email'] },
-    { title: 'New Order → Fulfillment Tracking', description: 'An order comes in. Nova confirms inventory, generates the packing slip, notifies the warehouse, sends the customer a confirmation email, and sets up delivery tracking alerts.', tools: ['Shopify', 'Email', 'Slack', 'ShipStation'] },
-    { title: 'Vendor PO → Invoice Reconciliation', description: 'Nova sends the PO, tracks delivery confirmation, matches the invoice to the order, flags any price discrepancies, and queues the payment for approval.', tools: ['QuickBooks', 'Google Sheets', 'Email', 'Airtable'] },
-    { title: 'Purchase → Repeat Customer', description: 'Five days after delivery, Pixel sends a review request. Two weeks later, a personalized product recommendation. A month later, an exclusive returning customer offer.', tools: ['Klaviyo', 'Shopify', 'Email', 'Analytics'] },
-  ],
-  testimonial: {
-    quote: 'Our support team went from drowning in tickets to focusing on VIP customers. Rex handles 73% of inquiries automatically, and our CSAT actually went up.',
-    name: 'Marcus Williams',
-    role: 'Director of CX',
-    company: 'Urban Essentials (DTC Brand)',
-  },
-};
+import ProductPageLayout from '../../components/ProductPageLayout';
+import { ShoppingCart, Package, CreditCard, Clock, Zap, BarChart3, MessageSquare, Globe, Star, RefreshCw, Truck, Tag, Heart, ShoppingBag, Percent, Gift } from 'lucide-react';
 
 export default function ECommerce() {
-  return <IndustryPage data={data} />;
+  return (
+    <ProductPageLayout badge="E-Commerce" badgeIcon={ShoppingCart} accentColor="#E84393"
+      headline="Run Your Store 24/7" headlineAccent="Without Burning Out."
+      subtitle="AI agents that handle customer support, order tracking, returns, product questions, and abandoned cart recovery — so you can focus on growing your brand."
+      seed={220}
+      stats={[{ value: '35%', label: 'Cart recovery rate' }, { value: '4s', label: 'Response time' }, { value: '80%', label: 'Auto-resolved' }, { value: '24/7', label: 'Customer support' }]}
+      testimonials={[
+        { quote: 'Abandoned cart recovery alone paid for the platform 10x over. AI sends personalised WhatsApp messages and 35% of customers come back.', name: 'Emma Clarke', role: 'Founder, Luma Beauty', gradient: 'linear-gradient(135deg, #E84393, #7B61FF)' },
+        { quote: 'We scaled from 200 to 2,000 orders/month without hiring a single support person. AI handles everything.', name: 'Raj Patel', role: 'CEO, TechGear Store', gradient: 'linear-gradient(135deg, #2F8FFF, #27C087)' },
+        { quote: 'Product questions answered in seconds, not hours. Our conversion rate went up 40% when customers got instant responses.', name: 'Anna Berg', role: 'Brand Manager, Nordic Home', gradient: 'linear-gradient(135deg, #F59E0B, #E84393)' },
+      ]}
+      features={[
+        { icon: MessageSquare, title: 'Instant customer support', desc: 'AI answers product questions, sizing queries, shipping info, and returns policy — instantly across website, WhatsApp, and email.', color: '#E84393' },
+        { icon: Package, title: 'Order tracking', desc: 'Customers check order status, delivery ETAs, and tracking info via chat. No more "where\'s my order?" emails.', color: '#2F8FFF' },
+        { icon: RefreshCw, title: 'Returns & exchanges', desc: 'AI handles return requests, generates labels, processes exchanges, and keeps customers happy throughout.', color: '#7B61FF' },
+        { icon: ShoppingBag, title: 'Abandoned cart recovery', desc: 'Personalised WhatsApp and email follow-ups to customers who left items in cart. 35% average recovery rate.', color: '#F59E0B' },
+        { icon: Star, title: 'Product recommendations', desc: 'AI suggests products based on browsing history, past purchases, and stated preferences. Upsell that feels helpful.', color: '#27C087' },
+        { icon: BarChart3, title: 'Customer insights', desc: 'Track common questions, popular products, support volume, and satisfaction. Data to grow your business.', color: '#0984E3' },
+      ]}
+      steps={[
+        { icon: ShoppingCart, title: 'Connect your store', desc: 'Shopify, WooCommerce, or custom — we integrate with your e-commerce platform and tools.' },
+        { icon: Globe, title: 'AI handles customers', desc: 'Product questions, order tracking, returns, and abandoned carts — all automated across channels.' },
+        { icon: Zap, title: 'Scale without hiring', desc: 'Handle 10x the customer volume with the same team. AI does the heavy lifting.' },
+      ]}
+      useCases={[
+        { icon: Tag, title: 'Fashion & Apparel', desc: 'Sizing help, style recommendations, return/exchange handling, and new collection announcements.' },
+        { icon: Heart, title: 'Beauty & Wellness', desc: 'Ingredient queries, routine recommendations, subscription management, and reorder reminders.' },
+        { icon: Gift, title: 'Gifts & Specialty', desc: 'Gift finder, personalisation options, delivery timing, and corporate order handling.' },
+        { icon: CreditCard, title: 'Subscriptions', desc: 'Subscription management, billing queries, pause/cancel handling, and renewal reminders.' },
+        { icon: Percent, title: 'Marketplace', desc: 'Vendor queries, order routing, dispute resolution, and multi-seller coordination.' },
+        { icon: Truck, title: 'D2C Brands', desc: 'Pre-sale questions, shipping updates, loyalty rewards, and post-purchase engagement.' },
+      ]}
+      ctaHeadline="Sell more. Support less."
+      ctaSubtitle="AI agents that handle your customer service so you can focus on growing your brand."
+    />
+  );
 }
