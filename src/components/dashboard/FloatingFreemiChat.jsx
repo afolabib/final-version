@@ -1,29 +1,44 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Sparkles, ChevronDown } from 'lucide-react';
+import { X, Send, Sparkles, ChevronDown, Download } from 'lucide-react';
 import FreemiCharacter from '@/components/FreemiCharacter';
 import { httpsCallable } from 'firebase/functions';
-import { functions as firebaseFunctions } from '@/lib/firebaseClient';
+import { functions as firebaseFunctions, firestore } from '@/lib/firebaseClient';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useCompany } from '@/contexts/CompanyContext';
 import { useAuth } from '@/lib/AuthContext';
+import { useWidget } from '@/contexts/WidgetContext';
 
 const chatProxyFn = httpsCallable(firebaseFunctions, 'chatProxy');
 
 const SUGGESTED = [
-  'What did my agents do today?',
-  'Show me my top priority tasks',
-  'How is my budget tracking?',
-  'Summarize open support tickets',
+  'Export my leads as CSV',
+  'Show me recent bookings',
+  'How many conversations this month?',
+  'List all captured emails',
 ];
 
 const WELCOME = {
   role: 'assistant',
-  text: "Hey! I'm Freemi, your AI Chief Executive. Ask me anything about your goals, agents, or business — I'm on it 24/7.",
+  text: "Hey Lauren! 👋 I'm Freemi — your admin agent.\n\nI can pull stats, list leads, export data, show bookings, and more. Just tell me what you need — I'll do it, not just describe it.",
 };
+
+function toCSV(rows, cols) {
+  const header = cols.join(',');
+  const lines = rows.map(r => cols.map(c => `"${String(r[c] || '').replace(/"/g, '""')}"`).join(','));
+  return [header, ...lines].join('\n');
+}
+function downloadCSV(content, filename) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function FloatingFreemiChat() {
   const { activeCompanyId } = useCompany();
   const { user } = useAuth();
+  const { widgets } = useWidget();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([WELCOME]);
   const [input, setInput] = useState('');
@@ -32,6 +47,7 @@ export default function FloatingFreemiChat() {
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
   const historyRef = useRef([]);
+  const convCacheRef = useRef(null);
 
   // Occasional pulse to draw attention
   useEffect(() => {
@@ -50,32 +66,110 @@ export default function FloatingFreemiChat() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, thinking]);
 
+  // Load conversations once, cache them
+  const getConversations = async () => {
+    if (convCacheRef.current) return convCacheRef.current;
+    if (!user?.uid || widgets.length === 0) return [];
+    const widgetIds = widgets.map(w => w.id);
+    const q = query(collection(firestore, 'widget_conversations'), where('widgetId', 'in', widgetIds));
+    const snap = await getDocs(q);
+    const convs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    convCacheRef.current = convs;
+    return convs;
+  };
+
+  const extractLead = (conv) => {
+    const ld = conv.leadData || conv.lead || {};
+    return ld.data || ld;
+  };
+
   const send = async (text) => {
     const msg = text || input.trim();
     if (!msg || thinking) return;
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: msg }]);
     setThinking(true);
-
-    // Build message history for context
-    const history = historyRef.current.slice(-10);
-    historyRef.current = [...history, { role: 'user', content: msg }];
+    historyRef.current = [...historyRef.current.slice(-10), { role: 'user', content: msg }];
 
     try {
-      const { getAgentSystemPrompt } = await import('@/lib/agentTemplates');
-      const systemPrompt = getAgentSystemPrompt({ role: 'ceo', name: 'Freemi' }, user?.displayName || 'the founder', '');
+      // Load real data to inject as context
+      const convs = await getConversations();
+      const leads = convs.filter(c => { const l = extractLead(c); return l.email || l.name; });
+      const bookings = convs.filter(c => (c.leadData?.type || c.intent || c.type || '').toLowerCase() === 'booking');
+      const thisMonth = convs.filter(c => {
+        const d = c.createdAt?.toDate ? c.createdAt.toDate() : new Date(c.createdAt || 0);
+        const now = new Date();
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      });
+
+      const dataContext = `
+LIVE DATA (today ${new Date().toLocaleDateString('en-IE')}):
+- Total conversations: ${convs.length}
+- This month: ${thisMonth.length}
+- Leads captured (name/email): ${leads.length}
+- Booking requests: ${bookings.length}
+- New (unactioned): ${convs.filter(c => !c.status || c.status === 'new').length}
+- Follow up: ${convs.filter(c => c.status === 'follow_up').length}
+- Actioned: ${convs.filter(c => c.status === 'actioned').length}
+
+LEADS LIST (most recent 20):
+${leads.slice(-20).reverse().map(c => {
+  const l = extractLead(c);
+  const d = c.createdAt?.toDate ? c.createdAt.toDate() : new Date(c.createdAt || 0);
+  return `- ${l.name || 'Unknown'} | ${l.email || ''} | ${l.company || ''} | ${(c.leadData?.type || c.intent || '').toUpperCase()} | ${d.toLocaleDateString('en-IE')}`;
+}).join('\n')}
+
+BOOKINGS LIST:
+${bookings.slice(-10).reverse().map(c => {
+  const l = extractLead(c);
+  const d = c.createdAt?.toDate ? c.createdAt.toDate() : new Date(c.createdAt || 0);
+  return `- ${l.name || 'Unknown'} | ${l.email || ''} | ${l.requestType || ''} | ${l.date || ''} | Status: ${c.status || 'new'} | Received: ${d.toLocaleDateString('en-IE')}`;
+}).join('\n')}`;
+
+      const systemPrompt = `You are Freemi, an admin AI agent for Lauren O'Reilly's dashboard.
+
+RULES — critical:
+- Execute immediately. Never ask a clarifying question unless the request is genuinely ambiguous.
+- Give actual data, not placeholders. Use the LIVE DATA provided.
+- When asked to export: output the data as a formatted markdown table, then say "CSV downloaded".
+- When asked to list something: list it directly with names, emails, types.
+- Keep responses short and factual. No filler.
+- Never say "I'll help you" or "I'll pull that up" — just do it.
+- If you output a CSV export action, include the tag: [ACTION:EXPORT_CSV:type] where type is leads/bookings/all.
+
+${dataContext}`;
+
       const result = await chatProxyFn({
         agentName: 'Freemi',
-        agentRole: 'ceo',
+        agentRole: 'admin',
         companyId: activeCompanyId || '',
         systemPrompt,
         messages: historyRef.current,
       });
-      const reply = result.data?.reply || "I'm having trouble responding right now. Try again.";
+      const reply = result.data?.reply || "Something went wrong — try again.";
       historyRef.current = [...historyRef.current, { role: 'assistant', content: reply }];
-      setMessages(prev => [...prev, { role: 'assistant', text: reply }]);
+
+      // Handle export actions
+      if (reply.includes('[ACTION:EXPORT_CSV:leads]') || (msg.toLowerCase().includes('export') && msg.toLowerCase().includes('lead'))) {
+        const rows = leads.map(c => {
+          const l = extractLead(c);
+          const d = c.createdAt?.toDate ? c.createdAt.toDate() : new Date(c.createdAt || 0);
+          return { date: d.toLocaleDateString('en-IE'), name: l.name || '', email: l.email || '', phone: l.phone || '', company: l.company || '', type: c.leadData?.type || c.intent || '', request: l.requestType || '' };
+        });
+        downloadCSV(toCSV(rows, ['date','name','email','phone','company','type','request']), `freemi-leads-${new Date().toISOString().slice(0,10)}.csv`);
+      }
+      if (reply.includes('[ACTION:EXPORT_CSV:bookings]') || (msg.toLowerCase().includes('export') && msg.toLowerCase().includes('booking'))) {
+        const rows = bookings.map(c => {
+          const l = extractLead(c);
+          const d = c.createdAt?.toDate ? c.createdAt.toDate() : new Date(c.createdAt || 0);
+          return { date: d.toLocaleDateString('en-IE'), name: l.name || '', email: l.email || '', request: l.requestType || '', event_date: l.date || '', budget: l.budget || '', status: c.status || 'new' };
+        });
+        downloadCSV(toCSV(rows, ['date','name','email','request','event_date','budget','status']), `freemi-bookings-${new Date().toISOString().slice(0,10)}.csv`);
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', text: reply.replace(/\[ACTION:[^\]]+\]/g, '').trim() }]);
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', text: "Connection error — please try again." }]);
+      setMessages(prev => [...prev, { role: 'assistant', text: "Connection error — try again." }]);
     } finally {
       setThinking(false);
     }

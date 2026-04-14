@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -37,6 +37,12 @@ import AdminDashboardLayout from './components/AdminDashboardLayout';
 import FloatingChatWidget from './components/FloatingChatWidget';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminInstances from './pages/admin/Instances';
+import AdminSites from './pages/admin/Sites';
+import AdminUsers from './pages/admin/Users';
+import AdminWebsites from './pages/admin/AdminWebsites';
+import AdminWidgets from './pages/admin/AdminWidgets';
+import AdminVoice from './pages/admin/AdminVoice';
+import AdminBilling from './pages/admin/AdminBilling';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -52,6 +58,32 @@ import IndustryHospitality from './pages/industries/Hospitality';
 import IndustryHealthcare from './pages/industries/Healthcare';
 import IndustryAgencies from './pages/industries/Agencies';
 import IndustryLogistics from './pages/industries/Logistics';
+import ForBusiness from './pages/ForBusiness';
+import HowItWorks from './pages/HowItWorks';
+import SolutionAIOperators from './pages/solutions/AIOperators';
+import SolutionWidget from './pages/solutions/Widget';
+import SolutionPhoneAI from './pages/solutions/PhoneAI';
+import DashboardConversations from './pages/dashboard/Conversations';
+import DashboardTools from './pages/dashboard/Tools';
+import DashboardCallLog from './pages/dashboard/CallLog';
+import DashboardVoiceSetup from './pages/dashboard/VoiceSetup';
+import DashboardWebsitePages from './pages/dashboard/WebsitePages';
+import DashboardWebsiteAnalytics from './pages/dashboard/WebsiteAnalytics';
+import DashboardWebsiteSettings from './pages/dashboard/WebsiteSettings';
+import ClipsLanding from './pages/clips/Landing';
+import ClipsHome from './pages/dashboard/ClipsHome';
+import ClipsProject from './pages/dashboard/ClipsProject';
+import ClipsEditor from './pages/dashboard/ClipsEditor';
+import ClipsBrandKit from './pages/dashboard/ClipsBrandKit';
+import ClipsScheduler from './pages/dashboard/ClipsScheduler';
+import ClipsAnalytics from './pages/dashboard/ClipsAnalytics';
+import ClipsSettings from './pages/dashboard/ClipsSettings';
+import ClipsAppLayout from './components/clips/ClipsAppLayout';
+import ProductStudio from './pages/products/Studio';
+import ProductConcierge from './pages/products/Concierge';
+import ProductVoice from './pages/products/Voice';
+import ProductWhatsApp from './pages/products/WhatsApp';
+import ProductBookings from './pages/products/Bookings';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -61,10 +93,16 @@ function ScrollToTop() {
 
 function RequireAuth({ children }) {
   const { isAuthenticated, isLoadingAuth } = useAuth();
-  const location = useLocation();
   if (isLoadingAuth) return null;
-  if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return children;
+}
+
+function NavigateToClips() {
+  const params = useParams();
+  const location = useLocation();
+  const newPath = location.pathname.replace('/dashboard/clips/', '/clips/studio/');
+  return <Navigate to={newPath} replace />;
 }
 
 function RedirectIfAuth({ children }) {
@@ -75,27 +113,7 @@ function RedirectIfAuth({ children }) {
 }
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
-
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Temporary fallback while Sprint 1 is cutting over from Base44 auth.
-      // Keep the app visible instead of hard-bouncing into a broken auth loop.
-      console.warn('Base44 auth required; continuing in degraded mode during Firebase cutover.');
-    }
-  }
+  // Auth temporarily bypassed — render immediately
 
   // Render the main app
   return (
@@ -127,15 +145,55 @@ const AuthenticatedApp = () => {
         <Route path="budget" element={<DashboardBudget />} />
         <Route path="routines" element={<DashboardRoutines />} />
         <Route path="chat" element={<DashboardChat />} />
+        <Route path="conversations" element={<DashboardConversations />} />
+        <Route path="tools" element={<DashboardTools />} />
+        <Route path="call-log" element={<DashboardCallLog />} />
+        <Route path="voice-setup" element={<DashboardVoiceSetup />} />
+        <Route path="website-pages" element={<DashboardWebsitePages />} />
+        <Route path="website-analytics" element={<DashboardWebsiteAnalytics />} />
+        <Route path="website-settings" element={<DashboardWebsiteSettings />} />
+        <Route path="clips" element={<Navigate to="/clips/studio" replace />} />
+        <Route path="clips/project/:projectId" element={<NavigateToClips />} />
+        <Route path="clips/editor/:clipId" element={<NavigateToClips />} />
+        <Route path="clips/brand-kit" element={<Navigate to="/clips/studio/brand-kit" replace />} />
+        <Route path="clips/scheduler" element={<Navigate to="/clips/studio/scheduler" replace />} />
+        <Route path="clips/analytics" element={<Navigate to="/clips/studio/analytics" replace />} />
+        <Route path="clips/settings" element={<Navigate to="/clips/studio/settings" replace />} />
       </Route>
       <Route path="/admin" element={<AdminDashboardLayout />} >
         <Route index element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="instances" element={<ProtectedAdminRoute><AdminInstances /></ProtectedAdminRoute>} />
+        <Route path="sites"     element={<ProtectedAdminRoute><AdminSites /></ProtectedAdminRoute>} />
+        <Route path="users"     element={<ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>} />
+        <Route path="websites"  element={<ProtectedAdminRoute><AdminWebsites /></ProtectedAdminRoute>} />
+        <Route path="widgets"   element={<ProtectedAdminRoute><AdminWidgets /></ProtectedAdminRoute>} />
+        <Route path="voice"     element={<ProtectedAdminRoute><AdminVoice /></ProtectedAdminRoute>} />
+        <Route path="billing"   element={<ProtectedAdminRoute><AdminBilling /></ProtectedAdminRoute>} />
       </Route>
       <Route path="/login" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
       <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
       <Route path="/forgot-password" element={<RedirectIfAuth><ForgotPassword /></RedirectIfAuth>} />
+      <Route path="/clips" element={<Navigate to="/clips/studio" replace />} />
+      <Route path="/clips/studio" element={<ClipsAppLayout />}>
+        <Route index element={<ClipsHome />} />
+        <Route path="project/:projectId" element={<ClipsProject />} />
+        <Route path="editor/:clipId" element={<ClipsEditor />} />
+        <Route path="brand-kit" element={<ClipsBrandKit />} />
+        <Route path="scheduler" element={<ClipsScheduler />} />
+        <Route path="analytics" element={<ClipsAnalytics />} />
+        <Route path="settings" element={<ClipsSettings />} />
+      </Route>
       <Route path="/chat" element={<Navigate to="/dashboard/chat" replace />} />
+      <Route path="/products/studio" element={<ProductStudio />} />
+      <Route path="/products/concierge" element={<ProductConcierge />} />
+      <Route path="/products/voice" element={<ProductVoice />} />
+      <Route path="/products/whatsapp" element={<ProductWhatsApp />} />
+      <Route path="/products/bookings" element={<ProductBookings />} />
+      <Route path="/for-business" element={<ForBusiness />} />
+      <Route path="/how-it-works" element={<HowItWorks />} />
+      <Route path="/solutions/ai-operators" element={<SolutionAIOperators />} />
+      <Route path="/solutions/widget" element={<SolutionWidget />} />
+      <Route path="/solutions/phone" element={<SolutionPhoneAI />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/about" element={<About />} />
       <Route path="/blog/:slug" element={<BlogArticle />} />

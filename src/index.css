@@ -59,10 +59,48 @@
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #5B5FFF, #2563EB);
+    background: linear-gradient(135deg, #7B61FF 0%, #2F8FFF 50%, #27C087 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .text-gradient-purple {
+    background: linear-gradient(135deg, #7B61FF 0%, #A78BFA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+  }
+
+  .noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(123, 97, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 60px -12px rgba(123, 97, 255, 0.3);
   }
 
   .heading-serif {
@@ -152,6 +190,42 @@
   to   { opacity: 1; transform: translateX(0); }
 }
 
+/* Marquee scroll for logo cloud */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Stagger fade in */
+@keyframes staggerFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ring pulse for agent nodes */
+@keyframes ringPulse {
+  0% { transform: scale(1); opacity: 0.15; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Badge sweep shimmer */
+@keyframes badgeSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Purple glow pulse */
+@keyframes purpleGlowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(123, 97, 255, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(123, 97, 255, 0.4); }
+}
+
+/* Pulse dot */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
 /* Intelligence ticker pulse */
 @keyframes ticker {
   0%   { opacity: 1; }
@@ -218,4 +292,91 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(91,95,255,0.18); border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(91,95,255,0.38); }
+
+  /* ── FreemiClips dark scrollbar ── */
+  .clips-dark ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); }
+  .clips-dark ::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.45); }
+}
+
+/* ── FreemiClips Dark Theme ── */
+.clips-dark {
+  --clips-bg:           #0A0A1A;
+  --clips-surface:      #111128;
+  --clips-surface-2:    #1A1A3E;
+  --clips-surface-3:    #222250;
+  --clips-border:       rgba(139, 92, 246, 0.15);
+  --clips-border-hover: rgba(139, 92, 246, 0.30);
+  --clips-text:         #F1F5F9;
+  --clips-text-muted:   #94A3B8;
+  --clips-accent-1:     #8B5CF6;
+  --clips-accent-2:     #3B82F6;
+  --clips-accent-3:     #06B6D4;
+  --clips-gradient:     linear-gradient(135deg, #8B5CF6, #3B82F6, #06B6D4);
+  --clips-glass:        rgba(17, 17, 40, 0.80);
+  --clips-glass-border: rgba(139, 92, 246, 0.12);
+  --clips-glow:         0 0 40px rgba(139, 92, 246, 0.15);
+  color: var(--clips-text);
+}
+
+@layer utilities {
+  .clips-glass {
+    background: var(--clips-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--clips-glass-border);
+  }
+  .clips-gradient-text {
+    background: linear-gradient(135deg, #8B5CF6, #3B82F6, #06B6D4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .clips-glow-purple {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.20), 0 0 80px rgba(139, 92, 246, 0.10);
+  }
+  .clips-glow-blue {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.20), 0 0 80px rgba(59, 130, 246, 0.10);
+  }
+  .clips-border-glow {
+    border: 1px solid rgba(139, 92, 246, 0.20);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.08), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+}
+
+@keyframes clipsPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 0.8; transform: scale(1.05); }
+}
+.clips-pulse { animation: clipsPulse 3s ease-in-out infinite; }
+
+@keyframes clipsScore {
+  from { stroke-dashoffset: 283; }
+}
+.clips-score-ring { animation: clipsScore 1.5s ease-out forwards; }
+
+@keyframes clipsSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.clips-spin { animation: clipsSpin 3s linear infinite; }
+
+@keyframes clipsShimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.clips-shimmer {
+  background: linear-gradient(90deg, rgba(139,92,246,0) 0%, rgba(139,92,246,0.06) 50%, rgba(139,92,246,0) 100%);
+  background-size: 600px 100%;
+  animation: clipsShimmer 2.4s infinite linear;
+}
+
+@keyframes gradientBorder {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.clips-gradient-border {
+  background: linear-gradient(135deg, #8B5CF6, #3B82F6, #06B6D4, #8B5CF6);
+  background-size: 300% 300%;
+  animation: gradientBorder 4s ease infinite;
 }

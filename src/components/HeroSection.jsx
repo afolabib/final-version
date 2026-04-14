@@ -58,20 +58,19 @@ export default function HeroSection() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-bold tracking-widest uppercase"
           style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.08)', border: '1px solid rgba(91,95,255,0.15)' }}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#5B5FFF] animate-pulse" />
-          AI Operating System
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          AI operators for your business
         </motion.div>
 
         <h1 className="text-[clamp(3.2rem,8vw,6.5rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-surface mb-6"
           style={{ perspective: '800px' }}>
           {word('Your', 0.3)}
-          {word('AI', 0.4)}
-          {word('Chief', 0.5)}
+          {word('business,', 0.4)}
           <br className="hidden sm:block" />
           <motion.span
             initial={{ opacity: 0, y: 50, rotateX: -40 }}
             animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="inline-block"
             style={{
               background: 'linear-gradient(135deg, #5B5FFF 0%, #7C3AED 50%, #5B5FFF 100%)',
@@ -81,7 +80,7 @@ export default function HeroSection() {
               animation: 'gradientShift 4s ease-in-out infinite',
             }}
           >
-            Executive
+            running itself.
           </motion.span>
         </h1>
 
@@ -91,7 +90,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed"
         >
-          Tell Freemi your goals. It hires the right agents, delegates the work, and makes sure every goal gets met — without you lifting a finger.
+          Custom AI operators built for your business — answering customers, booking meetings, following up leads, and connecting to your tools. 24/7, automatically.
         </motion.p>
 
         <motion.div
@@ -101,15 +100,15 @@ export default function HeroSection() {
           className="flex items-center justify-center gap-3 mb-5"
         >
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/signup')}
             className="px-10 py-4 rounded-full text-lg font-bold text-white transition-all"
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 8px 32px rgba(91,95,255,0.4)' }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = '0 12px 40px rgba(91,95,255,0.55)'}
             onMouseLeave={e => e.currentTarget.style.boxShadow = '0 8px 32px rgba(91,95,255,0.4)'}>
-            Launch Freemi →
+            Start free trial →
           </motion.button>
           <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-            onClick={() => navigate('/about')}
+            onClick={() => navigate('/how-it-works')}
             className="px-8 py-4 rounded-full text-lg font-semibold transition-all"
             style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.2)' }}>
             See how it works
@@ -122,7 +121,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 1.2 }}
           className="flex items-center justify-center gap-6 text-sm text-gray-400 mb-10"
         >
-          {['No Credit Card', 'Deploy in 60 Seconds', '3-Day Free Trial'].map((t, i) => (
+          {['No credit card needed', 'Set up in 1–2 days', '7-day free trial'].map((t, i) => (
             <motion.span key={t}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -177,27 +176,27 @@ export default function HeroSection() {
               </div>
               {/* Main content */}
               <div className="col-span-10 p-4 space-y-3">
-                {/* Agent row */}
+                {/* Operator row */}
                 <div className="flex gap-2">
                   {[
-                    { name: 'CEO Agent', role: 'Orchestrating', color: '#5B5FFF', active: true },
-                    { name: 'Sales', role: 'Outreach', color: '#10B981', active: true },
-                    { name: 'Marketing', role: 'Content', color: '#F59E0B', active: false },
+                    { name: 'Enquiries', role: 'Active', color: '#5B5FFF', active: true },
+                    { name: 'Bookings', role: 'Active', color: '#5B5FFF', active: true },
+                    { name: 'Lead Follow-up', role: 'Active', color: '#5B5FFF', active: true },
                   ].map(a => (
                     <div key={a.name} className="flex items-center gap-2 px-3 py-2 rounded-xl text-[10px]"
-                      style={{ background: a.active ? `rgba(${a.color === '#5B5FFF' ? '91,95,255' : a.color === '#10B981' ? '16,185,129' : '245,158,11'},0.08)` : 'rgba(0,0,0,0.03)', border: `1px solid ${a.active ? a.color + '28' : 'rgba(0,0,0,0.06)'}` }}>
-                      <div className="w-2 h-2 rounded-full" style={{ background: a.active ? a.color : '#D1D5DB' }} />
+                      style={{ background: 'rgba(91,95,255,0.08)', border: '1px solid rgba(91,95,255,0.16)' }}>
+                      <div className="w-2 h-2 rounded-full bg-emerald-400" />
                       <span className="font-semibold text-gray-700">{a.name}</span>
                       <span className="text-gray-400">{a.role}</span>
                     </div>
                   ))}
                 </div>
-                {/* Task list */}
+                {/* Activity list */}
                 <div className="space-y-1.5">
                   {[
-                    { text: 'Draft Q2 outreach campaign', status: 'done', agent: 'Sales' },
-                    { text: 'Analyse competitor pricing', status: 'active', agent: 'CEO' },
-                    { text: 'Set up onboarding flow', status: 'todo', agent: 'Marketing' },
+                    { text: '12 customer enquiries answered', status: 'done', agent: 'Enquiries' },
+                    { text: '4 bookings confirmed for today', status: 'active', agent: 'Bookings' },
+                    { text: '3 leads followed up automatically', status: 'done', agent: 'Leads' },
                   ].map((t, i) => (
                     <motion.div key={t.text}
                       initial={{ opacity: 0, x: -10 }}

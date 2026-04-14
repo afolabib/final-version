@@ -7,7 +7,10 @@ import { getAgentSystemPrompt, getAgentHeartbeat } from '@/lib/agentTemplates';
 
 // ── File definitions ──────────────────────────────────────────────────────────
 function getFiles(agent, company, user, memoryLines) {
-  const identity = [
+  const fx = agent?.felixFiles || {};
+
+  // Core Felix files — use stored generated version if available, otherwise fallback
+  const identity = fx.IDENTITY || [
     `# IDENTITY.md — ${agent?.name || 'Agent'}`,
     ``,
     `- Name: ${agent?.name || '—'}`,
@@ -22,11 +25,6 @@ function getFiles(agent, company, user, memoryLines) {
     `- Heartbeats: Track execution, unblock issues, keep momentum.`,
     `- Nightly: Review the day. Propose tomorrow's plan. Send summary.`,
     `- Always: Think about the goal unprompted. Identify opportunities. Act.`,
-    ``,
-    `## Boundaries`,
-    `- Fix first, report after — don't escalate problems you can resolve`,
-    `- Escalate when legal, financial, or security risk is material`,
-    `- Never fabricate data, status, or outcomes`,
   ].join('\n');
 
   const companyMd = company ? [
@@ -53,18 +51,18 @@ function getFiles(agent, company, user, memoryLines) {
     ? `# MEMORY.md\n\n## Recent Heartbeats\n${memoryLines.join('\n')}`
     : '# MEMORY.md\n\nNo heartbeats recorded yet.';
 
-  return [
+  const files = [
     {
       name: 'SOUL.md',
-      desc: 'Personality & instructions',
+      desc: 'Personality & operating philosophy',
       field: 'systemPrompt',
       editable: true,
       target: 'agent',
-      content: getAgentSystemPrompt(agent, company?.name, company?.mission),
+      content: agent?.systemPrompt || fx.SOUL || getAgentSystemPrompt(agent, company?.name, company?.mission),
     },
     {
       name: 'IDENTITY.md',
-      desc: 'Role, budget & schedule',
+      desc: 'Role, mission & focus areas',
       editable: false,
       content: identity,
     },
@@ -74,12 +72,35 @@ function getFiles(agent, company, user, memoryLines) {
       field: 'heartbeatInstructions',
       editable: true,
       target: 'agent',
-      content: getAgentHeartbeat(agent),
+      content: agent?.heartbeatInstructions || fx.HEARTBEAT || getAgentHeartbeat(agent),
+    },
+    {
+      name: 'BOOTSTRAP.md',
+      desc: 'First-run setup guide',
+      editable: false,
+      content: fx.BOOTSTRAP || `# BOOTSTRAP.md — ${agent?.name || 'Agent'}\n\nFirst-run setup guide generated on next agent creation.`,
+    },
+    {
+      name: 'AGENTS.md',
+      desc: 'Tool access & permissions',
+      editable: false,
+      content: fx.AGENTS || `# AGENTS.md — ${agent?.name || 'Agent'}\n\nPermissions manifest generated on next agent creation.`,
+    },
+    {
+      name: 'TOOLS.md',
+      desc: 'All available tools',
+      editable: false,
+      content: fx.TOOLS || `# TOOLS.md\n\nFull tool manifest generated on next agent creation.`,
+    },
+    {
+      name: 'SKILLS.md',
+      desc: 'Enabled skill modules',
+      editable: false,
+      content: fx.SKILLS || `# SKILLS.md — ${agent?.name || 'Agent'}\n\nSkills manifest generated on next agent creation.`,
     },
     {
       name: 'COMPANY.md',
       desc: 'Mission, industry & website',
-      field: 'mission',
       editable: false,
       content: companyMd,
     },
@@ -96,6 +117,8 @@ function getFiles(agent, company, user, memoryLines) {
       content: memoryMd,
     },
   ];
+
+  return files;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -169,7 +192,7 @@ export default function FilesTab({ agent, companyId }) {
     <div className="flex h-full" style={{ minHeight: 440 }}>
 
       {/* Left: file list */}
-      <div className="flex-shrink-0 border-r overflow-y-auto" style={{ width: 180, borderColor: '#E8EAFF' }}>
+      <div className="flex-shrink-0 border-r overflow-y-auto" style={{ width: 200, borderColor: '#E8EAFF' }}>
         <p className="px-4 pt-4 pb-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C5C9E0' }}>
           Files {loading && <Loader2 size={9} className="inline animate-spin ml-1" />}
         </p>

@@ -11,6 +11,9 @@ exports.TOOL_DEFINITIONS = void 0;
 exports.executeTool = executeTool;
 const firebase_1 = require("./firebase");
 const node_fetch_1 = __importDefault(require("node-fetch"));
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const KIMI = 'moonshotai/kimi-k2.5';
 // ── Tool definitions (MiniMax / OpenAI function-calling format) ───────────────
 exports.TOOL_DEFINITIONS = [
     {
@@ -94,16 +97,17 @@ exports.TOOL_DEFINITIONS = [
         type: 'function',
         function: {
             name: 'hire_agent',
-            description: 'Request to hire a new AI agent operator. Creates a pending approval the founder must approve.',
+            description: 'Instantly create and deploy a new AI agent operator. Kimi generates full Felix files (SOUL, IDENTITY, HEARTBEAT) and the agent goes live immediately — no approval needed. Use this when you identify a gap in the team.',
             parameters: {
                 type: 'object',
                 properties: {
-                    name: { type: 'string', description: 'Name for the new agent' },
-                    role: { type: 'string', enum: ['sales', 'engineer', 'support', 'marketing', 'researcher', 'custom'] },
-                    reason: { type: 'string', description: 'Business case for hiring — what gap does this fill?' },
-                    monthlyBudgetUsd: { type: 'number', description: 'Monthly token budget in USD (default 30)' },
+                    name: { type: 'string', description: 'Name for the new agent, e.g. "Alex" or "Iris"' },
+                    role: { type: 'string', enum: ['sales', 'engineer', 'support', 'marketing', 'researcher', 'custom'], description: 'Role determines model routing and default behavior' },
+                    objective: { type: 'string', description: 'Primary objective — what this agent owns and must deliver' },
+                    kpis: { type: 'string', description: 'How success is measured, e.g. "leads contacted per week, conversion rate"' },
+                    monthlyBudgetUsd: { type: 'number', description: 'Monthly token budget in USD (default 20)' },
                 },
-                required: ['name', 'role', 'reason'],
+                required: ['name', 'role', 'objective'],
             },
         },
     },
@@ -155,6 +159,67 @@ exports.TOOL_DEFINITIONS = [
             },
         },
     },
+    {
+        type: 'function',
+        function: {
+            name: 'save_memory',
+            description: 'Save a key fact, decision, or insight to your persistent memory. Use this to remember things across heartbeats — ICP details, founder preferences, strategic decisions, key metrics.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    fact: { type: 'string', description: 'The fact or insight to remember, written clearly so it is useful on future heartbeats' },
+                },
+                required: ['fact'],
+            },
+        },
+    },
+    {
+        type: 'function',
+        function: {
+            name: 'log_insight',
+            description: 'Surface an important observation or recommendation to the founder — market opportunity, risk, anomaly, or key insight worth their attention.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    title: { type: 'string', description: 'Short headline, e.g. "Competitor just dropped pricing by 30%"' },
+                    insight: { type: 'string', description: 'Full insight: what you observed, why it matters, and your recommended action' },
+                    urgency: { type: 'string', enum: ['low', 'medium', 'high'], description: 'How quickly the founder should act on this' },
+                },
+                required: ['title', 'insight', 'urgency'],
+            },
+        },
+    },
+    {
+        type: 'function',
+        function: {
+            name: 'comment_on_task',
+            description: 'Add a progress update or note to a task. Use this to report what you did, what you found, or what is next.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    taskId: { type: 'string', description: 'Task ID to comment on' },
+                    comment: { type: 'string', description: 'Your update or note' },
+                },
+                required: ['taskId', 'comment'],
+            },
+        },
+    },
+    {
+        type: 'function',
+        function: {
+            name: 'send_message_to_agent',
+            description: 'Send a direct message to another agent and immediately wake them up. Use this to delegate work, ask for a status update, share context, or coordinate on a task. The agent will be triggered instantly — not at their next scheduled heartbeat.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    toAgentId: { type: 'string', description: 'Firestore ID of the agent to message — get this from read_company_state' },
+                    message: { type: 'string', description: 'Your message to the agent. Be specific: what you need, why, and any relevant context or task IDs' },
+                    taskId: { type: 'string', description: 'Optional task ID this message relates to' },
+                },
+                required: ['toAgentId', 'message'],
+            },
+        },
+    },
 ];
 // ── Tool executor ─────────────────────────────────────────────────────────────
 async function executeTool(toolName, rawArgs, context) {
@@ -167,20 +232,33 @@ async function executeTool(toolName, rawArgs, context) {
     try {
         switch (toolName) {
             case 'read_company_state': {
-                // Use single-field queries only to avoid requiring composite indexes
-                const [agentsSnap, goalsSnap, tasksSnap, activitySnap, approvalsSnap] = await Promise.all([
+                const [agentsSnap, goalsSnap, tasksSnap, activitySnap, approvalsSnap, agentSnap, companySnap] = await Promise.all([
                     firebase_1.db.collection('agents').where('companyId', '==', companyId).limit(20).get(),
                     firebase_1.db.collection('goals').where('companyId', '==', companyId).limit(10).get(),
-                    firebase_1.db.collection('tasks').where('companyId', '==', companyId).limit(30).get(),
+                    firebase_1.db.collection('tasks').where('companyId', '==', companyId).limit(40).get(),
                     firebase_1.db.collection('activity_log').where('companyId', '==', companyId).limit(15).get(),
                     firebase_1.db.collection('approvals').where('companyId', '==', companyId).limit(10).get(),
+                    firebase_1.db.collection('agents').doc(agentId).get(),
+                    firebase_1.db.collection('companies').doc(companyId).get(),
                 ]);
+                const co = companySnap.exists ? companySnap.data() : {};
+                const me = agentSnap.exists ? agentSnap.data() : {};
+                const allTasks = tasksSnap.docs.map(d => ({ id: d.id, ...d.data() }));
                 const state = {
+                    company: {
+                        name: co.name, mission: co.mission,
+                        monthlyBudgetUsd: co.monthlyBudgetUsd || 0,
+                    },
+                    me: {
+                        id: agentId, name: me.name, role: me.role, status: me.status,
+                        monthlyBudgetUsd: me.monthlyBudgetUsd || 0,
+                        spentThisMonthUsd: me.spentThisMonthUsd || 0,
+                        memory: (me.memory || []).slice(-10),
+                    },
                     agents: agentsSnap.docs
                         .filter(d => d.data().status !== 'terminated')
                         .map(d => ({
-                        id: d.id, name: d.data().name, role: d.data().role,
-                        status: d.data().status, machineStatus: d.data().machineStatus,
+                        id: d.id, name: d.data().name, role: d.data().role, status: d.data().status,
                     })),
                     goals: goalsSnap.docs
                         .filter(d => d.data().status === 'active')
@@ -188,13 +266,15 @@ async function executeTool(toolName, rawArgs, context) {
                         id: d.id, title: d.data().title, description: d.data().description,
                         priority: d.data().priority, progressPct: d.data().progressPct || 0,
                     })),
-                    tasks: tasksSnap.docs
-                        .filter(d => ['todo', 'in_progress'].includes(d.data().status))
-                        .map(d => ({
-                        id: d.id, title: d.data().title, status: d.data().status,
-                        priority: d.data().priority, assignedAgentId: d.data().assignedAgentId || 'unassigned',
-                    })),
-                    recentActivity: activitySnap.docs.map(d => d.data().summary).filter(Boolean).slice(0, 10),
+                    myTasks: allTasks
+                        .filter((t) => t.assignedAgentId === agentId && ['todo', 'in_progress'].includes(t.status))
+                        .map((t) => ({ id: t.id, title: t.title, status: t.status, priority: t.priority })),
+                    unassignedTasks: allTasks
+                        .filter((t) => !t.assignedAgentId && t.status === 'todo')
+                        .slice(0, 5)
+                        .map((t) => ({ id: t.id, title: t.title, priority: t.priority })),
+                    recentActivity: activitySnap.docs
+                        .map(d => d.data().summary).filter(Boolean).slice(0, 10),
                     pendingApprovals: approvalsSnap.docs
                         .filter(d => d.data().status === 'pending')
                         .map(d => ({ id: d.id, title: d.data().title, type: d.data().type })),
@@ -288,35 +368,96 @@ async function executeTool(toolName, rawArgs, context) {
                 };
             }
             case 'hire_agent': {
-                const ref = firebase_1.db.collection('approvals').doc();
-                const agentName = String(args.name || 'New Operator');
-                const agentRole = String(args.role || 'ops');
-                await ref.set({
+                const newName = String(args.name || 'New Operator');
+                const newRole = String(args.role || 'custom');
+                const objective = String(args.objective || `Run ${newRole} operations`);
+                const kpis = String(args.kpis || 'tasks completed, quality of output');
+                const budget = Number(args.monthlyBudgetUsd) || 20;
+                // Load company context for Felix file generation
+                const companySnap = await firebase_1.db.collection('companies').doc(companyId).get().catch(() => null);
+                const company = companySnap?.exists ? companySnap.data() : {};
+                // Ask Kimi to generate Felix files (SOUL, IDENTITY, HEARTBEAT) for this agent
+                const felixPrompt = `You are generating the internal operating files (Felix files) for a new AI agent that will autonomously run a business function.
+
+Company: ${company.name || 'Unknown'} — ${company.mission || ''}
+Industry: ${company.industry || 'Technology'}
+
+New Agent:
+- Name: ${newName}
+- Role: ${newRole}
+- Objective: ${objective}
+- KPIs: ${kpis}
+
+Generate exactly 3 Felix files. Respond as valid JSON only — no markdown, no explanation.
+
+{
+  "SOUL": "<2-3 sentences: this agent's core drive, values, and what they care about most>",
+  "IDENTITY": "<3-5 sentences: who this agent is, their voice, how they operate, their relationship with the company and founder>",
+  "HEARTBEAT": "<bullet list of 4-6 things this agent does every time they wake up autonomously: what they check, what they act on, what they always do>"
+}`;
+                let felixFiles = {};
+                try {
+                    const res = await (0, node_fetch_1.default)(OPENROUTER_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+                            'HTTP-Referer': 'https://freemi.ai',
+                            'X-Title': 'Freemi Agent Factory',
+                        },
+                        body: JSON.stringify({
+                            model: KIMI,
+                            messages: [{ role: 'user', content: felixPrompt }],
+                            max_tokens: 800,
+                            temperature: 0.7,
+                        }),
+                    });
+                    const json = await res.json();
+                    const raw = json.choices?.[0]?.message?.content || '{}';
+                    // Extract JSON even if wrapped in code blocks
+                    const match = raw.match(/\{[\s\S]*\}/);
+                    if (match)
+                        felixFiles = JSON.parse(match[0]);
+                }
+                catch (e) {
+                    console.error('[hire_agent] Felix generation failed:', e);
+                    // Use defaults if Kimi fails
+                    felixFiles = {
+                        SOUL: `${newName} exists to own ${newRole} operations and drive measurable results. Revenue and execution are the only metrics that matter.`,
+                        IDENTITY: `You are ${newName}, ${newRole} operator at ${company.name || 'this company'}. You are direct, accountable, and always moving forward. You report to the CEO agent. You don't wait for instructions — you identify what needs doing and do it.`,
+                        HEARTBEAT: `- Check assigned tasks and progress them\n- Look for unassigned tasks in your domain and claim them\n- Identify blockers and create approvals immediately\n- Report key outcomes to the CEO via send_message_to_agent\n- Save any significant output as a document`,
+                    };
+                }
+                // Create the agent in Firestore — live immediately
+                const newAgentRef = firebase_1.db.collection('agents').doc();
+                await newAgentRef.set({
                     companyId,
-                    requestingActorId: agentId,
-                    requestedByAgentId: agentId,
-                    type: 'hire_agent',
-                    title: `Hire ${agentName} (${agentRole})`,
-                    description: String(args.reason || `Hiring a ${agentRole} operator.`),
-                    payload: {
-                        name: agentName,
-                        role: agentRole,
-                        reportsTo: agentId,
-                        monthlyBudgetUsd: Number(args.monthlyBudgetUsd) || 30,
-                        heartbeatIntervalMinutes: 60,
-                        systemPrompt: '',
-                    },
-                    status: 'pending',
-                    decidedByUserId: null,
-                    decidedAt: null,
-                    decisionNote: '',
+                    name: newName,
+                    role: newRole,
+                    objective,
+                    kpis,
+                    felixFiles,
+                    status: 'active',
+                    memory: [],
+                    reportsTo: agentId,
+                    createdByAgentId: agentId,
+                    monthlyBudgetUsd: budget,
+                    spentThisMonthUsd: 0,
+                    lastHeartbeatAt: null,
                     createdAt: (0, firebase_1.serverTimestamp)(),
                     updatedAt: (0, firebase_1.serverTimestamp)(),
                 });
-                await logActivity(companyId, agentId, 'hire.requested', ref.id, `Hire requested: ${agentName} (${agentRole})`);
+                await logActivity(companyId, agentId, 'agent.created', newAgentRef.id, `Hired ${newName} (${newRole}) — goes live immediately`);
                 return {
-                    result: JSON.stringify({ success: true, approvalId: ref.id, name: agentName }),
-                    action: { type: 'hire_agent', id: ref.id, title: `${agentName} (${agentRole})` },
+                    result: JSON.stringify({
+                        success: true,
+                        agentId: newAgentRef.id,
+                        name: newName,
+                        role: newRole,
+                        status: 'active',
+                        note: `${newName} is now live. They will receive their first heartbeat within 30 minutes and can be messaged immediately via send_message_to_agent.`,
+                    }),
+                    action: { type: 'hire_agent', id: newAgentRef.id, title: `Hired ${newName} (${newRole})` },
                 };
             }
             case 'create_workflow': {
@@ -388,6 +529,105 @@ async function executeTool(toolName, rawArgs, context) {
                     const hint = msg.includes('abort') ? 'Request timed out after 10s' : msg;
                     return { result: JSON.stringify({ error: `Failed to fetch ${args.url}: ${hint}` }) };
                 }
+            }
+            case 'save_memory': {
+                const fact = String(args.fact || '').trim();
+                if (!fact)
+                    return { result: JSON.stringify({ error: 'fact is required' }) };
+                const timestamp = new Date().toISOString().slice(0, 10);
+                const entry = `[${timestamp}] ${fact}`;
+                await firebase_1.db.collection('agents').doc(agentId).update({
+                    memory: firebase_1.admin.firestore.FieldValue.arrayUnion(entry),
+                    updatedAt: (0, firebase_1.serverTimestamp)(),
+                });
+                return { result: JSON.stringify({ success: true, saved: entry }) };
+            }
+            case 'log_insight': {
+                const ref = firebase_1.db.collection('insights').doc();
+                const agentSnap = await firebase_1.db.collection('agents').doc(agentId).get().catch(() => null);
+                const agentName = agentSnap?.exists ? agentSnap.data().name : 'Agent';
+                await ref.set({
+                    companyId,
+                    agentId,
+                    agentName,
+                    title: args.title || 'Insight',
+                    insight: args.insight || '',
+                    urgency: args.urgency || 'medium',
+                    read: false,
+                    createdAt: (0, firebase_1.serverTimestamp)(),
+                });
+                await logActivity(companyId, agentId, 'insight.logged', ref.id, `${agentName}: ${args.title}`);
+                return {
+                    result: JSON.stringify({ success: true, insightId: ref.id }),
+                    action: { type: 'log_insight', id: ref.id, title: String(args.title) },
+                };
+            }
+            case 'comment_on_task': {
+                const taskId = String(args.taskId || '');
+                const comment = String(args.comment || '').trim();
+                if (!taskId || !comment)
+                    return { result: JSON.stringify({ error: 'taskId and comment required' }) };
+                const agentSnap = await firebase_1.db.collection('agents').doc(agentId).get().catch(() => null);
+                const agentName = agentSnap?.exists ? agentSnap.data().name : 'Agent';
+                const commentRef = firebase_1.db.collection('tasks').doc(taskId).collection('comments').doc();
+                await commentRef.set({
+                    agentId, agentName, comment,
+                    createdAt: (0, firebase_1.serverTimestamp)(),
+                });
+                await firebase_1.db.collection('tasks').doc(taskId).update({ updatedAt: (0, firebase_1.serverTimestamp)() });
+                await logActivity(companyId, agentId, 'task.commented', taskId, `${agentName} commented on task`);
+                return {
+                    result: JSON.stringify({ success: true, commentId: commentRef.id }),
+                    action: { type: 'comment_on_task', id: taskId, title: `Comment added to task` },
+                };
+            }
+            case 'send_message_to_agent': {
+                const toAgentId = String(args.toAgentId || '');
+                const message = String(args.message || '').trim();
+                if (!toAgentId || !message)
+                    return { result: JSON.stringify({ error: 'toAgentId and message required' }) };
+                // Look up sender + recipient names
+                const [senderSnap, recipientSnap] = await Promise.all([
+                    firebase_1.db.collection('agents').doc(agentId).get().catch(() => null),
+                    firebase_1.db.collection('agents').doc(toAgentId).get().catch(() => null),
+                ]);
+                const senderName = senderSnap?.exists ? senderSnap.data().name : 'Agent';
+                const recipientName = recipientSnap?.exists ? recipientSnap.data().name : 'Agent';
+                // Write the message to Firestore
+                const msgRef = firebase_1.db.collection('agent_messages').doc();
+                await msgRef.set({
+                    companyId,
+                    fromAgentId: agentId,
+                    fromAgentName: senderName,
+                    toAgentId,
+                    toAgentName: recipientName,
+                    message,
+                    taskId: args.taskId || null,
+                    read: false,
+                    createdAt: (0, firebase_1.serverTimestamp)(),
+                });
+                // Log activity so the founder can see it
+                await logActivity(companyId, agentId, 'agent.messaged', msgRef.id, `${senderName} → ${recipientName}: ${message.slice(0, 80)}`);
+                // Immediately trigger the recipient's heartbeat so they respond right away
+                // We do this by writing a wake-trigger document the heartbeatRunner watches
+                await firebase_1.db.collection('heartbeat_triggers').doc(toAgentId).set({
+                    companyId,
+                    agentId: toAgentId,
+                    trigger: 'mention',
+                    triggeredBy: agentId,
+                    triggeredByName: senderName,
+                    messageId: msgRef.id,
+                    createdAt: (0, firebase_1.serverTimestamp)(),
+                });
+                return {
+                    result: JSON.stringify({
+                        success: true,
+                        messageId: msgRef.id,
+                        to: recipientName,
+                        note: `Message sent. ${recipientName} has been woken up and will respond shortly.`,
+                    }),
+                    action: { type: 'send_message_to_agent', id: msgRef.id, title: `Message sent to ${recipientName}` },
+                };
             }
             default:
                 return { result: JSON.stringify({ error: `Unknown tool: ${toolName}` }) };

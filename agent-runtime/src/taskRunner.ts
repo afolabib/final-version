@@ -1,7 +1,8 @@
 import { getDb, serverTimestamp } from './firestoreClient';
 import { buildSystemPrompt, type AgentIdentity } from './identity';
-import { llmToolLoop } from './llm';
+import { orchestrateToolLoop } from './orchestrator';
 import { AGENT_TOOL_DEFINITIONS, executeAgentTool } from './agentTools';
+import { loadAllMemory, formatMemoryForPrompt, appendDailyNote } from './memory';
 
 export async function processTask(taskId: string, identity: AgentIdentity): Promise<void> {
   const db = getDb();
@@ -16,21 +17,24 @@ export async function processTask(taskId: string, identity: AgentIdentity): Prom
 
   console.log(`[${identity.name}] Processing task: "${task.title}"`);
 
-  // Load goal context
+  // Load all 3 memory layers + goal context in parallel
+  const [{ tacit, entities, todayNote }, goalSnap] = await Promise.all([
+    loadAllMemory(identity.agentId),
+    task.goalId ? db.collection('goals').doc(task.goalId).get().catch(() => null) : Promise.resolve(null),
+  ]);
+
+  const memoryBlock = formatMemoryForPrompt(tacit, entities, todayNote);
+
   let goalContext = '';
-  if (task.goalId) {
-    try {
-      const goalSnap = await db.collection('goals').doc(task.goalId).get();
-      if (goalSnap.exists) {
-        const g = goalSnap.data()!;
-        goalContext = `\n\nThis task is part of the goal: "${g.title}" — ${g.description || ''}`;
-      }
-    } catch { /* non-fatal */ }
+  if (goalSnap?.exists) {
+    const g = goalSnap.data()!;
+    goalContext = `\n\nThis task is part of the goal: "${g.title}" — ${g.description || ''}`;
   }
 
-  const systemPrompt = `${buildSystemPrompt(identity)}
+  const systemPrompt = `${buildSystemPrompt(identity)}${memoryBlock}
 
-You have tools to read company state and take actions. For this task, complete the work and use update_task to mark it done with your output.`;
+You have tools to read company state and take actions. For this task, complete the work and use update_task to mark it done with your output.
+Use the remember tool to save anything important you learn during this task.`;
 
   const userPrompt = `Complete this task and mark it done when finished.
 
@@ -48,8 +52,8 @@ Steps:
   try {
     await taskRef.update({ status: 'in_progress', updatedAt: serverTimestamp() });
 
-    const result = await llmToolLoop(
-      'task',
+    const result = await orchestrateToolLoop(
+      { taskType: 'task_execution' },
       [
         { role: 'system', content: systemPrompt, name: identity.name },
         { role: 'user',   content: userPrompt },
@@ -99,6 +103,10 @@ Steps:
       summary:   `${identity.name} completed: "${task.title}"`,
       createdAt: serverTimestamp(),
     });
+
+    await appendDailyNote(identity.agentId, identity.companyId,
+      `Completed task: "${task.title}" (${result.toolCallsMade.length} tool calls, $${result.costUsd.toFixed(5)})`
+    ).catch(() => {});
 
     console.log(`[${identity.name}] Task done in ${elapsedMs}ms — ${result.toolCallsMade.length} tool calls, $${result.costUsd.toFixed(5)}`);
 

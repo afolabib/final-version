@@ -9,9 +9,9 @@ import FreemiCharacter from './FreemiCharacter';
 
 
 const stats = [
-  { value: 5, suffix: '', label: 'Specialized agents' },
-  { value: 24, suffix: '/7', label: 'Always executing' },
-  { value: 98, suffix: '%', label: 'Task completion rate' },
+  { value: 24, suffix: '/7', label: 'Always working' },
+  { value: 2, suffix: ' days', label: 'Average setup time' },
+  { value: 0, suffix: ' missed', label: 'Customer enquiries' },
 ];
 
 export default function AlwaysWorkingSection() {
@@ -21,7 +21,7 @@ export default function AlwaysWorkingSection() {
   const y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [60, -60]);
 
   return (
-    <section ref={ref} id="always-working" className="relative py-32 px-6 overflow-hidden">
+    <section ref={ref} id="always-working" className="relative py-20 px-6 overflow-hidden">
       {/* Ambient background glow */}
       <motion.div style={{ y }} className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl pointer-events-none"
         >
@@ -33,17 +33,17 @@ export default function AlwaysWorkingSection() {
           <ScrollReveal>
             <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
               style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
-              How It Works
+              Always working for you
             </span>
           </ScrollReveal>
           <TextReveal delay={0.1}>
             <h2 className="text-[clamp(2.2rem,5vw,3.8rem)] font-extrabold tracking-[-0.03em] text-surface leading-[1.08]">
-              You set the goals. Freemi builds the team.
+              Your operators are working right now.
             </h2>
           </TextReveal>
           <ScrollReveal delay={0.2}>
             <p className="text-lg text-gray-500 mt-5 max-w-xl mx-auto leading-relaxed">
-              Tell Freemi what you want to achieve. It hires the right agents, assigns the work, and makes sure every goal gets met — reporting back every step of the way.
+              Every customer message answered. Every booking confirmed. Every lead followed up. Your operators handle it all — 24/7, without you being involved.
             </p>
           </ScrollReveal>
         </div>
@@ -74,13 +74,13 @@ export default function AlwaysWorkingSection() {
                 style={{ background: 'linear-gradient(135deg, rgba(91,95,255,0.1), rgba(91,95,255,0.08))' }}>
                 <span className="text-xl">📋</span>
               </div>
-              <h3 className="text-lg font-bold text-surface mb-1.5">🧠 CEO Briefing</h3>
-              <p className="text-xs text-gray-400 font-semibold tracking-wider uppercase mb-5">Freemi coordinates your agent team</p>
+              <h3 className="text-lg font-bold text-surface mb-1.5">⚙️ Operator Setup</h3>
+              <p className="text-xs text-gray-400 font-semibold tracking-wider uppercase mb-5">Built for your specific business</p>
               <div className="space-y-3">
                 {[
-                  { label: 'Strategy', value: 'Goals Broken Into Tasks' },
-                  { label: 'Delegation', value: 'Agents Assigned & Briefed' },
-                  { label: 'Oversight', value: 'Progress Tracked Live' },
+                  { label: 'You describe', value: 'What your business needs' },
+                  { label: 'We build', value: 'Custom operators in 1–2 days' },
+                  { label: 'They connect', value: 'To your tools & start working' },
                 ].map(item => (
                   <div key={item.label} className="flex justify-between items-center py-2.5 border-b border-gray-100/80 last:border-0">
                     <span className="text-xs font-bold" style={{ color: '#5B5FFF' }}>{item.label}</span>
@@ -98,13 +98,13 @@ export default function AlwaysWorkingSection() {
                 style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,191,36,0.08))' }}>
                 <span className="text-xl">⚡</span>
               </div>
-              <h3 className="text-lg font-bold text-surface mb-1.5">⚡ Agents in Action</h3>
-              <p className="text-xs text-gray-400 font-semibold tracking-wider uppercase mb-5">Your team running right now</p>
+              <h3 className="text-lg font-bold text-surface mb-1.5">⚡ Today's Activity</h3>
+              <p className="text-xs text-gray-400 font-semibold tracking-wider uppercase mb-5">Your operators working right now</p>
               <div className="space-y-4">
                 {[
-                  { metric: 'Rex closed 4 leads', desc: 'Qualified, Followed Up, and Booked Meetings' },
-                  { metric: 'Echo resolved 9 tickets', desc: 'Replied, Escalated, and Logged to Helpdesk' },
-                  { metric: 'Nova filed 3 reports', desc: 'Data Pulled, Formatted, and Sent to Slack' },
+                  { metric: '12 enquiries answered', desc: 'Replied instantly via website chat and email' },
+                  { metric: '4 bookings confirmed', desc: 'Calendar checked, confirmed, reminders sent' },
+                  { metric: '3 leads followed up', desc: 'Personalised emails sent, CRM updated' },
                 ].map((item, i) => (
                   <div key={item.metric} className="flex gap-3 group/item">
                     <div className="w-1 rounded-full flex-shrink-0 transition-all duration-300 group-hover/item:w-1.5"
@@ -127,7 +127,7 @@ export default function AlwaysWorkingSection() {
               style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 4px 20px rgba(91,95,255,0.3)' }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 32px rgba(91,95,255,0.45)'}
               onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(91,95,255,0.3)'}>
-              Meet Your CEO Agent →
+              See pricing →
             </button>
           </div>
         </ScrollReveal>

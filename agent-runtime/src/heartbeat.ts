@@ -1,8 +1,10 @@
 import cron from 'node-cron';
 import { getDb, serverTimestamp } from './firestoreClient';
 import { buildSystemPrompt, type AgentIdentity } from './identity';
-import { llmToolLoop } from './llm';
 import { AGENT_TOOL_DEFINITIONS, executeAgentTool } from './agentTools';
+import { loadAllMemory, formatMemoryForPrompt, appendDailyNote } from './memory';
+import { buildHeartbeatPrompt, buildBootstrapPrompt } from './identity';
+import { orchestrateToolLoop } from './orchestrator';
 
 export async function runHeartbeat(identity: AgentIdentity): Promise<void> {
   console.log(`[${identity.name}] Heartbeat starting...`);
@@ -26,9 +28,20 @@ export async function runHeartbeat(identity: AgentIdentity): Promise<void> {
 
   const isCEO = identity.isCEO;
 
-  const systemPrompt = `${buildSystemPrompt(identity)}
+  // Detect first run — check if agent has ever had a heartbeat
+  const agentSnap = await db.collection('agents').doc(identity.agentId).get();
+  const agentData = agentSnap.data() || {};
+  const isFirstRun = !agentData.bootstrapped && !agentData.lastHeartbeatAt;
 
-This is your periodic heartbeat. Review company state using read_company_state, then make 0–4 smart decisions.
+  // Load all 3 memory layers
+  const { tacit, entities, todayNote } = await loadAllMemory(identity.agentId);
+  const memoryBlock = formatMemoryForPrompt(tacit, entities, todayNote);
+
+  const systemPrompt = `${buildSystemPrompt(identity)}${memoryBlock}
+
+${isFirstRun
+  ? `This is your FIRST EVER heartbeat. You are in bootstrap mode — gather context before acting. Do not create tasks or goals yet.`
+  : `This is your periodic heartbeat. Review company state using read_company_state, then make 0–4 smart decisions.`}
 
 ${isCEO ? `As CEO you can:
 - create_goal — set new strategic objectives
@@ -54,19 +67,19 @@ Rules:
 - If no goals exist, create 1–2 based on company mission
 - Tasks should be specific and actionable, not vague or generic
 - After all decisions, your final message should be a 1–2 sentence summary of what you decided
+- Use the remember tool to save anything important you learn (founder preferences, lessons, key facts)
 
 Monthly spend so far: $${monthlySpend.toFixed(3)} / $${identity.monthlyBudgetUsd}`;
 
-  const userPrompt = `Date: ${new Date().toDateString()}
-Company: ${identity.companyName}
-Mission: ${identity.companyMission}
-Industry: ${identity.companyIndustry}
-
-Call read_company_state to see current situation, then make your decisions.`;
+  const userPrompt = isFirstRun
+    ? buildBootstrapPrompt(identity)
+    : buildHeartbeatPrompt(identity, monthlySpend);
 
   try {
-    const result = await llmToolLoop(
-      'heartbeat',
+    const budgetUsedPct = monthlySpend / (identity.monthlyBudgetUsd || 20);
+
+    const result = await orchestrateToolLoop(
+      { taskType: isFirstRun ? 'bootstrap' : 'heartbeat', budgetUsedPct },
       [
         { role: 'system', content: systemPrompt, name: identity.name },
         { role: 'user',   content: userPrompt },
@@ -122,12 +135,18 @@ Call read_company_state to see current situation, then make your decisions.`;
       createdAt: serverTimestamp(),
     });
 
-    // Update agent timestamps
+    // Update agent timestamps (mark bootstrapped on first run)
     await db.collection('agents').doc(identity.agentId).update({
       lastHeartbeatAt: serverTimestamp(),
       nextHeartbeatAt: new Date(Date.now() + identity.heartbeatIntervalMinutes * 60 * 1000),
       updatedAt:       serverTimestamp(),
+      ...(isFirstRun ? { bootstrapped: true, bootstrappedAt: serverTimestamp() } : {}),
     });
+
+    // Write to daily notes (Layer 2 memory)
+    await appendDailyNote(identity.agentId, identity.companyId,
+      `Heartbeat: ${decisionsCount} decision(s) — ${summary.slice(0, 120)}`
+    ).catch(() => {});
 
     console.log(`[${identity.name}] Heartbeat done — ${decisionsCount} decision(s), $${result.costUsd.toFixed(5)}`);
 

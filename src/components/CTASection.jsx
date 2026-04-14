@@ -54,7 +54,7 @@ export default function CTASection() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.1, duration: 0.6 }}
                   className="text-[clamp(1.9rem,4vw,2.8rem)] font-extrabold text-white leading-[1.12] tracking-tight">
-                  Ready to hire your AI CEO?
+                  Your business on autopilot.<br />Starting today.
                 </motion.h2>
                 <motion.p
                  initial={{ opacity: 0, y: 15 }}
@@ -62,7 +62,7 @@ export default function CTASection() {
                  viewport={{ once: true }}
                  transition={{ delay: 0.2, duration: 0.6 }}
                  className="text-purple-100/90 mt-4 max-w-md mx-auto leading-relaxed text-sm md:text-base">
-                 3-day free trial. No credit card required. Your AI CEO and full agent team, live in under 2 minutes.
+                 7-day free trial. No credit card needed. Custom operators built for your business — live in 1–2 days.
                 </motion.p>
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
@@ -70,12 +70,12 @@ export default function CTASection() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.3, duration: 0.6 }}
                   className="flex flex-col sm:flex-row gap-3 items-center justify-center mt-8">
-                  <button onClick={() => navigate('/dashboard')} className="px-8 py-3 rounded-full bg-white text-[#1F2937] font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105">
-                    Launch Freemi →
+                  <button onClick={() => navigate('/signup')} className="px-8 py-3 rounded-full bg-white text-[#1F2937] font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                    Start free trial →
                   </button>
-                  <a href="/about"
+                  <a href="/for-business"
                     className="px-8 py-3 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 transition-all backdrop-blur-sm inline-block">
-                    Meet the Team
+                    Building a website?
                   </a>
                 </motion.div>
               </div>

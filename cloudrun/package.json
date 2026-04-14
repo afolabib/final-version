@@ -1,0 +1,13 @@
+{
+  "name": "freemi-renderer",
+  "version": "1.0.0",
+  "description": "Freemi Clips video renderer — FFmpeg + yt-dlp",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

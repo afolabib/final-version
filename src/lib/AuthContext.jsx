@@ -41,6 +41,16 @@ const mapFirebaseUser = (firebaseUser, claims = {}) => {
   };
 };
 
+// Guest user — used when auth is bypassed. UID matches Lauren's Firestore docs.
+const GUEST_USER = {
+  uid: 'NHK2XlH09NOgtEBlPGUZjOPeNmF2',
+  email: 'lauren oreill7@gmail.com',
+  full_name: "Lauren O'Reilly",
+  displayName: "Lauren O'Reilly",
+  isAdmin: true,
+  role: 'admin',
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);

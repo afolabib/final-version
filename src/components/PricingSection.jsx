@@ -1,229 +1,357 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import MagneticButton from './MagneticButton';
+import { Check, Minus } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
 import TextReveal from './TextReveal';
-import CountUp from './CountUp';
-import FreemiCharacter from './FreemiCharacter';
+
+const PLANS = [
+  {
+    key: 'widget',
+    name: 'Widget',
+    tagline: 'AI concierge for your website',
+    monthly: 19.99,
+    annual: 16.99,
+    color: '#00B894',
+    highlight: false,
+    cta: 'Get Started',
+    operatorStat: null,
+    features: [
+      { label: 'Embeddable concierge widget', included: true },
+      { label: 'Lead capture & conversations', included: true },
+      { label: 'Custom branding & instructions', included: true },
+      { label: 'Bookings, enquiries, complaints', included: true },
+      { label: '1 company', included: true },
+      { label: '1 seat', included: true },
+      { label: 'AI Operators', included: false },
+      { label: 'Automations', included: false },
+      { label: 'Integrations', included: false },
+      { label: 'Approval workflows', included: false },
+      { label: 'Priority support', included: false },
+      { label: 'White-label widget', included: false },
+      { label: 'API access', included: false },
+    ],
+  },
+  {
+    key: 'starter',
+    name: 'Starter',
+    tagline: 'Your first AI workforce',
+    monthly: 49.99,
+    annual: 39.99,
+    color: '#5B5FFF',
+    highlight: false,
+    cta: 'Start Free Trial',
+    operatorStat: { count: '3', label: 'custom AI operators' },
+    features: [
+      { label: 'Embeddable concierge widget', included: true },
+      { label: 'Lead capture & conversations', included: true },
+      { label: 'Custom branding & instructions', included: true },
+      { label: 'Bookings, enquiries, complaints', included: true },
+      { label: '1 company', included: true },
+      { label: '2 seats', included: true },
+      { label: '3 AI Operators', included: true },
+      { label: '5 Automations', included: true },
+      { label: '3 core integrations', included: true },
+      { label: 'Approval workflows', included: false },
+      { label: 'Priority support', included: false },
+      { label: 'White-label widget', included: false },
+      { label: 'API access', included: false },
+    ],
+  },
+  {
+    key: 'growth',
+    name: 'Growth',
+    tagline: 'Scale across multiple businesses',
+    monthly: 299,
+    annual: 239,
+    color: '#5B5FFF',
+    highlight: true,
+    cta: 'Start Free Trial',
+    badge: 'Most Popular',
+    operatorStat: { count: '18', label: 'custom AI operators' },
+    features: [
+      { label: 'Embeddable concierge widget', included: true },
+      { label: 'Lead capture & conversations', included: true },
+      { label: 'Custom branding & instructions', included: true },
+      { label: 'Bookings, enquiries, complaints', included: true },
+      { label: '3 companies', included: true },
+      { label: '12 seats', included: true },
+      { label: '18 AI Operators', included: true },
+      { label: '30 Automations', included: true },
+      { label: 'All integrations', included: true },
+      { label: 'Approval workflows', included: true },
+      { label: 'Priority support', included: false },
+      { label: 'White-label widget', included: false },
+      { label: 'API access', included: false },
+    ],
+  },
+  {
+    key: 'scale',
+    name: 'Scale',
+    tagline: 'Unlimited everything',
+    monthly: 599,
+    annual: 479,
+    color: '#7C3AED',
+    highlight: false,
+    cta: 'Start Free Trial',
+    operatorStat: { count: '60', label: 'custom AI operators' },
+    features: [
+      { label: 'Embeddable concierge widget', included: true },
+      { label: 'Lead capture & conversations', included: true },
+      { label: 'Custom branding & instructions', included: true },
+      { label: 'Bookings, enquiries, complaints', included: true },
+      { label: 'Unlimited companies', included: true },
+      { label: '40 seats', included: true },
+      { label: '60 AI Operators', included: true },
+      { label: '100 Automations', included: true },
+      { label: 'All integrations', included: true },
+      { label: 'Approval workflows', included: true },
+      { label: 'Priority support', included: true },
+      { label: 'White-label widget', included: true },
+      { label: 'API access', included: true },
+    ],
+  },
+];
+
+const COMPARISON_ROWS = [
+  { label: 'Companies', values: ['1', '1', '3', 'Unlimited'] },
+  { label: 'Team seats', values: ['1', '2', '12', '40'] },
+  { label: 'AI Operators', values: ['—', '3', '18', '60'] },
+  { label: 'Automations', values: ['—', '5', '30', '100'] },
+  { label: 'Active routines', values: ['—', '3', '18', '60'] },
+  { label: 'Integrations', values: ['—', '3 core', 'All', 'All'] },
+  { label: 'File storage', values: ['500MB', '2GB', '12GB', '40GB'] },
+  { label: 'Embeddable widget', values: [true, true, true, true] },
+  { label: 'Lead capture', values: [true, true, true, true] },
+  { label: 'Approval workflows', values: [false, false, true, true] },
+  { label: 'White-label widget', values: [false, false, false, true] },
+  { label: 'API access', values: [false, false, false, true] },
+  { label: 'Priority support', values: [false, false, false, true] },
+];
+
+function FeatureValue({ value, color }) {
+  if (value === true) return (
+    <div className="w-5 h-5 rounded-full flex items-center justify-center mx-auto"
+      style={{ background: `${color}15` }}>
+      <Check size={11} style={{ color }} strokeWidth={3} />
+    </div>
+  );
+  if (value === false) return <Minus size={14} className="mx-auto" style={{ color: '#CBD5E1' }} />;
+  return <span className="text-sm font-semibold" style={{ color: '#0A0F1E' }}>{value}</span>;
+}
 
 export default function PricingSection() {
-  const [annual, setAnnual] = useState(true);
+  const [annual, setAnnual] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" className="relative py-32 px-6 overflow-hidden">
-      {/* Background orb */}
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none"
+    <section id="pricing" className="relative py-24 px-4 md:px-6 overflow-hidden">
+      <div className="absolute top-20 right-0 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(91,95,255,0.05), transparent 70%)' }} />
 
-      <div className="max-w-5xl mx-auto relative">
-        <div className="text-center mb-16">
+      <div className="max-w-7xl mx-auto relative">
+
+        {/* Header */}
+        <div className="text-center mb-12">
           <ScrollReveal>
             <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
               style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
-              Cost Comparison
+              Pricing
             </span>
           </ScrollReveal>
           <TextReveal delay={0.1}>
-            <h2 className="text-[clamp(2.2rem,5vw,3.8rem)] font-extrabold tracking-[-0.03em] text-surface leading-[1.08]">
-              Freemi vs. Building a Full Team
+            <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-extrabold tracking-[-0.03em] text-surface leading-[1.08] mb-4">
+              Simple, transparent pricing
             </h2>
           </TextReveal>
           <ScrollReveal delay={0.2}>
-            <p className="text-gray-500 mt-5 max-w-lg mx-auto leading-relaxed text-lg">
-              Salary, benefits, recruiting, ramp time, and management overhead. Or — an entire AI executive team that starts working tonight for a fraction of the cost.
+            <p className="text-gray-500 max-w-lg mx-auto text-base leading-relaxed mb-8">
+              Start with a widget. Build a full AI workforce. Scale without limits.
             </p>
           </ScrollReveal>
-        </div>
 
-        {/* Cost comparison cards */}
-        <div className="grid md:grid-cols-2 gap-5 mb-24">
-          <ScrollReveal delay={0.1} direction="left">
-            <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-sm relative overflow-hidden"
-              style={{ border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-              <div className="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-3">Building a Team</div>
-              <div className="text-4xl font-extrabold text-gray-300 mb-6">
-                $<CountUp end={59200} duration={2000} /><span className="text-lg font-bold"> / year</span>
-              </div>
-              <div className="space-y-3">
-                {['Salary, benefits, recruiting', '3–6 month ramp-up', 'Ongoing management and training'].map(item => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-gray-400">
-                    <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.03)' }}>
-                      <div className="w-1 h-1 rounded-full bg-gray-300" />
-                    </div>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.2} direction="right">
-            <div className="p-8 rounded-3xl relative overflow-hidden group"
+          {/* Toggle */}
+          <div className="flex items-center justify-center gap-1 p-1.5 rounded-full w-fit mx-auto"
+            style={{ background: 'rgba(0,0,0,0.04)' }}>
+            <button onClick={() => setAnnual(false)}
+              className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all"
               style={{
-                background: 'linear-gradient(135deg, rgba(91,95,255,0.03), rgba(91,95,255,0.01))',
-                border: '2px solid #5B5FFF',
-                boxShadow: '0 8px 40px rgba(91,95,255,0.12)',
+                background: !annual ? '#fff' : 'transparent',
+                color: !annual ? '#0F172A' : '#9CA3AF',
+                boxShadow: !annual ? '0 2px 10px rgba(0,0,0,0.08)' : 'none',
+              }}>Monthly</button>
+            <button onClick={() => setAnnual(true)}
+              className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all"
+              style={{
+                background: annual ? '#fff' : 'transparent',
+                color: annual ? '#0F172A' : '#9CA3AF',
+                boxShadow: annual ? '0 2px 10px rgba(0,0,0,0.08)' : 'none',
               }}>
-              <div className="absolute top-0 right-0 px-4 py-1.5 text-white text-[10px] font-bold rounded-bl-2xl"
-                style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)' }}>RECOMMENDED</div>
-              <div className="absolute -top-6 -left-4 opacity-80">
-                <motion.div animate={{ y: [0, -4, 0], rotate: [0, 5, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
-                  <FreemiCharacter size="sm" />
-                </motion.div>
-              </div>
-              <div className="text-[10px] font-bold tracking-[0.2em] uppercase mb-3" style={{ color: '#5B5FFF' }}>Freemi Pro</div>
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-4xl font-extrabold text-surface">$<CountUp end={299} duration={1500} /></span>
-                <span className="text-gray-400 text-sm font-semibold"> / month</span>
-              </div>
-              <div className="text-xs text-gray-400 mb-6">$2,868/year with annual — saves $55,000+</div>
-              <div className="space-y-3">
-                {['CEO agent + 4 specialized agents', 'Works 24/7 across all your tools', 'Executes tasks, workflows, and follow-ups', 'Setup and onboarding included', 'No downtime, no overhead'].map(item => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-gray-600">
-                    <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(91,95,255,0.08)' }}>
-                       <span className="text-[8px]" style={{ color: '#5B5FFF' }}>✓</span>
-                    </div>
-                    {item}
-                    </div>
-                    ))}
-                    </div>
-                    </div>
-                    </ScrollReveal>
-                    </div>
-
-                    {/* Plans */}
-        <ScrollReveal>
-          <div className="text-center mb-12">
-            <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-[-0.03em] text-surface">Choose Your Plan</h2>
-            <p className="text-gray-400 mt-2 text-sm">Start with one operator. Expand as you grow.</p>
-            <div className="flex items-center justify-center gap-1 mt-6 p-1.5 rounded-full w-fit mx-auto"
-              style={{ background: 'rgba(0,0,0,0.04)' }}>
-              <button onClick={() => setAnnual(false)} className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all"
-                style={{
-                  background: !annual ? '#fff' : 'transparent',
-                  color: !annual ? '#0F172A' : '#9CA3AF',
-                  boxShadow: !annual ? '0 2px 10px rgba(0,0,0,0.08), 0 0 0 2px rgba(91,95,255,0.35)' : 'none',
-                }}>
-                Monthly
-              </button>
-              <button onClick={() => setAnnual(true)} className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all"
-                style={{
-                  background: annual ? '#fff' : 'transparent',
-                  color: annual ? '#0F172A' : '#9CA3AF',
-                  boxShadow: annual ? '0 2px 10px rgba(0,0,0,0.08), 0 0 0 2px rgba(91,95,255,0.35)' : 'none',
-                }}>
-                Annual
-                <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.1)', color: '#059669' }}>– 20%</span>
-              </button>
-            </div>
+              Annual
+              <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                style={{ background: 'rgba(16,185,129,0.1)', color: '#059669' }}>–20%</span>
+            </button>
           </div>
-        </ScrollReveal>
-
-        <div className="grid md:grid-cols-3 gap-5">
-          {/* Starter */}
-          <ScrollReveal delay={0.05}>
-            <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-sm"
-              style={{ border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-              <div className="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-3">Starter</div>
-              <p className="text-sm text-gray-500 mb-5">For solo founders and early-stage teams.</p>
-              <div className="flex items-baseline gap-1 mb-1">
-                <AnimatePresence mode="wait">
-                  <motion.span key={annual ? 'sa' : 'sm'}
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                    className="text-5xl font-extrabold text-surface">${annual ? '39' : '49'}</motion.span>
-                </AnimatePresence>
-                <span className="text-gray-400 text-sm font-semibold">/mo</span>
-                {annual && <span className="ml-2 text-xs text-gray-300 line-through">$49</span>}
-              </div>
-              <div className="text-xs text-gray-400 mb-7">{annual ? 'Billed annually at $468. Save 20%.' : 'Billed monthly.'}</div>
-              <button onClick={() => navigate('/dashboard')} className="w-full px-6 py-3 rounded-full text-white font-bold text-sm transition-all"
-                style={{ background: 'linear-gradient(135deg, #5B5FFF, #6B63FF)', boxShadow: '0 4px 16px rgba(91,95,255,0.3)' }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 6px 24px rgba(91,95,255,0.45)'}
-                onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,95,255,0.3)'}>Start Free Trial</button>
-              <div className="mt-7 space-y-3">
-                {['Freemi CEO agent', '1 specialized agent (Rex, Dev, Echo, or Nova)', 'Core tool integrations', 'Email and task support'].map(item => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-gray-500">
-                    <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.03)' }}>
-                      <span className="text-[8px] text-gray-400">✓</span>
-                    </div>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Business Operator */}
-          <ScrollReveal delay={0.1}>
-            <div className="p-8 rounded-3xl relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(91,95,255,0.02), #fff)',
-                border: '2px solid #5B5FFF',
-                boxShadow: '0 8px 40px rgba(91,95,255,0.1)',
-              }}>
-              <div className="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-3">Pro</div>
-              <p className="text-sm text-gray-500 mb-5">Full agent team for one growing business.</p>
-              <div className="flex items-baseline gap-1 mb-1">
-                <AnimatePresence mode="wait">
-                  <motion.span key={annual ? 'a' : 'm'}
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                    className="text-5xl font-extrabold text-surface">${annual ? '239' : '299'}</motion.span>
-                </AnimatePresence>
-                <span className="text-gray-400 text-sm font-semibold">/mo</span>
-                {annual && <span className="ml-2 text-xs text-gray-300 line-through">$299</span>}
-              </div>
-              <div className="text-xs text-gray-400 mb-7">{annual ? 'Billed annually at $2,868. Save 20%.' : 'Billed monthly. Includes a 3-day free trial.'}</div>
-              <button onClick={() => navigate('/dashboard')} className="w-full px-6 py-3 rounded-full text-white font-bold text-sm transition-all"
-                style={{ background: 'linear-gradient(135deg, #5B5FFF, #6B63FF)', boxShadow: '0 4px 16px rgba(91,95,255,0.3)' }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 6px 24px rgba(91,95,255,0.45)'}
-                onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,95,255,0.3)'}>Start Free Trial</button>
-              <div className="mt-7 space-y-3">
-                {['Freemi CEO + all 4 agents (Rex, Dev, Echo, Nova)', 'Works across email, CRM, GitHub, helpdesk', 'Handles tasks, follow-ups, and full workflows', 'Memory and context included', 'Live oversight and approval controls'].map(item => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-gray-500">
-                    <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(91,95,255,0.08)' }}>
-                      <span className="text-[8px]" style={{ color: '#5B5FFF' }}>✓</span>
-                    </div>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.2}>
-            <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-sm"
-              style={{ border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-              <div className="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-3">Max</div>
-              <p className="text-sm text-gray-500 mb-5">Multiple agent teams across departments.</p>
-              <div className="flex items-baseline gap-1 mb-1">
-                <AnimatePresence mode="wait">
-                  <motion.span key={annual ? 'ma' : 'mm'}
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                    className="text-5xl font-extrabold text-surface">${annual ? '479' : '599'}</motion.span>
-                </AnimatePresence>
-                <span className="text-gray-400 text-sm font-semibold">/mo</span>
-                {annual && <span className="ml-2 text-xs text-gray-300 line-through">$599</span>}
-              </div>
-              <div className="text-xs text-gray-400 mb-7">{annual ? 'Billed annually at $5,748. Save 20%.' : 'Billed monthly.'}</div>
-              <button onClick={() => navigate('/dashboard')} className="w-full px-6 py-3 rounded-full text-white font-bold text-sm transition-all"
-                style={{ background: 'linear-gradient(135deg, #5B5FFF, #6B63FF)', boxShadow: '0 4px 16px rgba(91,95,255,0.3)' }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 6px 24px rgba(91,95,255,0.45)'}
-                onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,95,255,0.3)'}>Start Free Trial</button>
-              <div className="mt-7 space-y-3">
-                {['Multiple CEO + agent teams', 'Shared workflows across departments', 'Cross-functional automation', 'Custom integrations and agents', 'Dedicated deployment support'].map(item => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-gray-500">
-                    <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.03)' }}>
-                      <span className="text-[8px] text-gray-400">✓</span>
-                    </div>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
         </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          {PLANS.map((plan, i) => (
+            <ScrollReveal key={plan.key} delay={i * 0.07}>
+              <div className="relative rounded-3xl p-6 flex flex-col h-full transition-all duration-300"
+                style={{
+                  background: plan.highlight ? 'linear-gradient(135deg, #5B5FFF, #7C3AED)' : 'rgba(255,255,255,0.9)',
+                  border: plan.highlight ? 'none' : '1px solid rgba(0,0,0,0.06)',
+                  boxShadow: plan.highlight ? '0 20px 60px rgba(91,95,255,0.35)' : '0 4px 20px rgba(0,0,0,0.03)',
+                }}>
+
+                {plan.badge && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-bold text-white"
+                    style={{ background: 'linear-gradient(135deg, #F59E0B, #EF4444)', boxShadow: '0 4px 12px rgba(245,158,11,0.4)' }}>
+                    {plan.badge}
+                  </div>
+                )}
+
+                <div className="mb-5">
+                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase mb-1"
+                    style={{ color: plan.highlight ? 'rgba(255,255,255,0.6)' : '#94A3B8' }}>
+                    {plan.name}
+                  </p>
+                  <p className="text-sm font-medium mb-4"
+                    style={{ color: plan.highlight ? 'rgba(255,255,255,0.8)' : '#64748B' }}>
+                    {plan.tagline}
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    <AnimatePresence mode="wait">
+                      <motion.span key={annual ? 'a' : 'm'}
+                        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                        className="text-4xl font-extrabold"
+                        style={{ color: plan.highlight ? '#fff' : '#0A0F1E' }}>
+                        ${annual ? plan.annual : plan.monthly}
+                      </motion.span>
+                    </AnimatePresence>
+                    <span className="text-sm font-medium"
+                      style={{ color: plan.highlight ? 'rgba(255,255,255,0.6)' : '#94A3B8' }}>/mo</span>
+                  </div>
+                  {annual && (
+                    <p className="text-xs mt-1"
+                      style={{ color: plan.highlight ? 'rgba(255,255,255,0.5)' : '#94A3B8' }}>
+                      Billed annually · Save 20%
+                    </p>
+                  )}
+                </div>
+
+                {plan.operatorStat && (
+                  <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-4"
+                    style={{ background: plan.highlight ? 'rgba(255,255,255,0.15)' : `${plan.color}08`, border: `1px solid ${plan.highlight ? 'rgba(255,255,255,0.2)' : `${plan.color}20`}` }}>
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ background: plan.highlight ? 'rgba(255,255,255,0.2)' : `${plan.color}15` }}>
+                      <span className="text-sm font-extrabold" style={{ color: plan.highlight ? '#fff' : plan.color }}>
+                        {plan.operatorStat.count}
+                      </span>
+                    </div>
+                    <span className="text-xs font-semibold" style={{ color: plan.highlight ? 'rgba(255,255,255,0.85)' : '#374151' }}>
+                      {plan.operatorStat.label}
+                    </span>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => navigate('/signup')}
+                  className="w-full py-3 rounded-2xl text-sm font-bold mb-6 transition-all"
+                  style={{
+                    background: plan.highlight ? '#fff' : 'linear-gradient(135deg, #5B5FFF, #7C3AED)',
+                    color: plan.highlight ? '#5B5FFF' : '#fff',
+                    boxShadow: plan.highlight ? '0 4px 16px rgba(255,255,255,0.2)' : '0 4px 16px rgba(91,95,255,0.3)',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
+                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
+                  {plan.cta}
+                </button>
+
+                <div className="space-y-2.5 flex-1">
+                  {plan.features.map((f, j) => (
+                    <div key={j} className="flex items-center gap-2.5">
+                      {f.included ? (
+                        <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ background: plan.highlight ? 'rgba(255,255,255,0.2)' : `${plan.color}15` }}>
+                          <Check size={9} style={{ color: plan.highlight ? '#fff' : plan.color }} strokeWidth={3} />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                          <Minus size={10} style={{ color: plan.highlight ? 'rgba(255,255,255,0.25)' : '#CBD5E1' }} />
+                        </div>
+                      )}
+                      <span className="text-xs"
+                        style={{ color: plan.highlight ? (f.included ? '#fff' : 'rgba(255,255,255,0.4)') : (f.included ? '#374151' : '#94A3B8') }}>
+                        {f.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        {/* Compare toggle */}
+        <div className="text-center mb-6">
+          <button
+            onClick={() => setShowComparison(s => !s)}
+            className="text-sm font-semibold transition-colors"
+            style={{ color: '#5B5FFF' }}>
+            {showComparison ? 'Hide comparison ↑' : 'Compare all plans ↓'}
+          </button>
+        </div>
+
+        {/* Full comparison table */}
+        <AnimatePresence>
+          {showComparison && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.35 }}
+              className="overflow-hidden">
+              <div className="rounded-3xl overflow-hidden"
+                style={{ border: '1px solid rgba(0,0,0,0.06)', background: 'rgba(255,255,255,0.9)' }}>
+
+                {/* Table header */}
+                <div className="grid grid-cols-5 gap-0"
+                  style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', background: 'rgba(248,250,255,0.8)' }}>
+                  <div className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Feature</div>
+                  {PLANS.map(p => (
+                    <div key={p.key} className="p-4 text-center">
+                      <p className="text-sm font-extrabold" style={{ color: p.highlight ? '#5B5FFF' : '#0A0F1E' }}>{p.name}</p>
+                      <p className="text-xs font-bold" style={{ color: '#94A3B8' }}>
+                        ${p.monthly}/mo
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Rows */}
+                {COMPARISON_ROWS.map((row, i) => (
+                  <div key={i} className="grid grid-cols-5 gap-0"
+                    style={{ borderBottom: i < COMPARISON_ROWS.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none', background: i % 2 === 0 ? 'transparent' : 'rgba(248,250,255,0.4)' }}>
+                    <div className="p-4 text-sm font-medium" style={{ color: '#374151' }}>{row.label}</div>
+                    {row.values.map((val, j) => (
+                      <div key={j} className="p-4 text-center flex items-center justify-center">
+                        <FeatureValue value={val} color={PLANS[j].color} />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Bottom note */}
+        <p className="text-center text-xs text-gray-400 mt-8">
+          All plans include a 7-day free trial. No credit card required to start.
+        </p>
       </div>
     </section>
   );

@@ -28,3 +28,9 @@ export { readWebsite } from './readWebsite';
 
 // ── Composio integration auth ─────────────────────────────────────────────────
 export { initComposioConnection, connectComposioApiKey, composioCallback, disconnectComposioIntegration } from './composioAuth';
+
+// ── Clips: YouTube transcript → real clips pipeline ───────────────────────────
+export { processYouTubeVideo } from './processYouTube';
+
+// ── Clips: Uploaded video → AssemblyAI transcription → real clips ─────────────
+export { transcribeVideo } from './transcribeVideo';

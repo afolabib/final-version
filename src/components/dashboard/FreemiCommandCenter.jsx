@@ -25,14 +25,7 @@ function dateString() {
   return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 }
 
-// ── Quick action chips ────────────────────────────────────────────────────────
-
-const CHIPS = [
-  { emoji: '🎯', text: 'Score leads' },
-  { emoji: '✍️', text: 'Compose responses' },
-  { emoji: '📅', text: 'Schedule meetings' },
-  { emoji: '💬', text: 'Follow-up messages' },
-];
+// ── Quick chips computed from live state (defined inside component) ───────────
 
 // ── Priority config ───────────────────────────────────────────────────────────
 
@@ -277,6 +270,34 @@ export default function FreemiCommandCenter() {
         : 'No operators deployed';
 
   const approvalCount = (pendingApprovals || []).length;
+
+  // Dynamic chips based on actual company state
+  const chips = useMemo(() => {
+    if (activeGoals.length === 0) return [
+      { emoji: '🎯', text: 'Set our first goal' },
+      { emoji: '📊', text: 'What\'s the company status?' },
+      { emoji: '🤝', text: 'What should we focus on?' },
+      { emoji: '💡', text: 'What opportunities do you see?' },
+    ];
+    if (openTasks.length === 0) return [
+      { emoji: '📋', text: 'Create tasks for the team' },
+      { emoji: '📊', text: 'Review progress on goals' },
+      { emoji: '🔍', text: 'What should we work on next?' },
+      { emoji: '⚡', text: 'Run a team briefing' },
+    ];
+    if (approvalCount > 0) return [
+      { emoji: '🔔', text: 'Walk me through pending approvals' },
+      { emoji: '📊', text: 'Summarize today\'s activity' },
+      { emoji: '⚡', text: 'What\'s most urgent right now?' },
+      { emoji: '💰', text: 'Review budget status' },
+    ];
+    return [
+      { emoji: '📊', text: 'Summarize today\'s activity' },
+      { emoji: '🎯', text: 'What are my top priorities?' },
+      { emoji: '💰', text: 'Review budget status' },
+      { emoji: '⚡', text: 'Run a full team briefing' },
+    ];
+  }, [activeGoals.length, openTasks.length, approvalCount]);
 
   const handleTriggerHeartbeat = async () => {
     if (!ceoAgent?.id || pingingHeartbeat) return;
@@ -737,7 +758,7 @@ export default function FreemiCommandCenter() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.35 }}
           className="flex flex-wrap gap-2 justify-center max-w-xl">
-          {CHIPS.map(c => (
+          {chips.map(c => (
             <button key={c.text} onClick={() => navigate(`/dashboard/chat?q=${encodeURIComponent(c.text)}`)}
               className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all"
               style={{
@@ -793,9 +814,12 @@ export default function FreemiCommandCenter() {
               },
               {
                 icon: TrendingUp,
-                label: `${activeGoals.length} goal${activeGoals.length !== 1 ? 's' : ''}`,
-                onClick: () => setQuickLook(v => v === 'goals' ? null : 'goals'),
+                label: activeGoals.length === 0 ? '+ Set first goal' : `${activeGoals.length} goal${activeGoals.length !== 1 ? 's' : ''}`,
+                onClick: activeGoals.length === 0
+                  ? () => navigate('/dashboard/chat?q=' + encodeURIComponent('Set our first strategic goal'))
+                  : () => setQuickLook(v => v === 'goals' ? null : 'goals'),
                 active: quickLook === 'goals',
+                urgent: activeGoals.length === 0,
               },
               {
                 icon: Zap,
@@ -807,12 +831,12 @@ export default function FreemiCommandCenter() {
               <button key={s.label} onClick={s.onClick}
                 className="flex items-center gap-1.5 text-xs font-semibold transition-all"
                 style={{
-                  color: s.active ? '#5B5FFF' : '#94A3B8',
-                  borderBottom: s.active ? '1.5px solid #5B5FFF' : '1.5px solid transparent',
+                  color: s.urgent ? '#F59E0B' : s.active ? '#5B5FFF' : '#94A3B8',
+                  borderBottom: s.urgent ? '1.5px solid #F59E0B' : s.active ? '1.5px solid #5B5FFF' : '1.5px solid transparent',
                   paddingBottom: 2,
                 }}
-                onMouseEnter={e => { if (!s.active) e.currentTarget.style.color = '#5B5FFF'; }}
-                onMouseLeave={e => { if (!s.active) e.currentTarget.style.color = '#94A3B8'; }}>
+                onMouseEnter={e => { if (!s.active && !s.urgent) e.currentTarget.style.color = '#5B5FFF'; }}
+                onMouseLeave={e => { if (!s.active && !s.urgent) e.currentTarget.style.color = '#94A3B8'; }}>
                 <s.icon size={12} />
                 {s.label}
               </button>

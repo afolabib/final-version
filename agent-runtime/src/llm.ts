@@ -1,21 +1,23 @@
 /**
- * MiniMax LLM client — single entry point for all model calls.
- * Supports both simple completion and full tool-use loops.
+ * OpenRouter LLM client — OpenAI-compatible API.
+ * Supports simple completion and full tool-use loops.
+ * Model: configurable via OPENROUTER_MODEL env var (default: anthropic/claude-3.5-haiku)
  */
 
-const MINIMAX_API_URL = 'https://api.minimax.io/v1/text/chatcompletion_v2';
+const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const DEFAULT_MODEL      = 'moonshotai/kimi-k1.5';
 
 export const MODELS = {
-  heartbeat: 'MiniMax-M2.5-highspeed',
-  task:      'MiniMax-M2.5-highspeed',
-  chat:      'MiniMax-M2.5-highspeed',
+  heartbeat: process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
+  task:      process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
+  chat:      process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
 } as const;
 
 export type ModelType = keyof typeof MODELS;
 
-const COST_PER_TOKEN: Record<string, number> = {
-  'MiniMax-M2.5-highspeed': 0.0000004,
-};
+// Cost per token fallback — OpenRouter billing varies by model.
+// These are rough estimates; actual cost comes from the x-usage headers.
+const COST_FALLBACK = 0.0000004; // $0.40 per million tokens (haiku-level)
 
 export interface LLMMessage {
   role:          'system' | 'user' | 'assistant' | 'tool';
@@ -52,6 +54,21 @@ export interface ToolLoopResult extends LLMResult {
   toolCallsMade: Array<{ name: string; args: Record<string, unknown> }>;
 }
 
+function getApiKey(): string {
+  const key = process.env.OPENROUTER_API_KEY;
+  if (!key) throw new Error('OPENROUTER_API_KEY not set');
+  return key;
+}
+
+function getHeaders(apiKey: string): Record<string, string> {
+  return {
+    'Content-Type':  'application/json',
+    'Authorization': `Bearer ${apiKey}`,
+    'HTTP-Referer':  'https://freemi.ai',
+    'X-Title':       'Freemi Agent Runtime',
+  };
+}
+
 // ── Simple completion (no tools) ──────────────────────────────────────────────
 
 export async function llmCall(
@@ -59,31 +76,25 @@ export async function llmCall(
   messages:  LLMMessage[],
   maxTokens = 1024,
 ): Promise<LLMResult> {
-  const apiKey = process.env.MINIMAX_API_KEY;
-  if (!apiKey) throw new Error('MINIMAX_API_KEY not set');
+  const apiKey = getApiKey();
+  const model  = MODELS[type];
 
-  const model = MODELS[type];
-
-  const res = await fetch(MINIMAX_API_URL, {
+  const res = await fetch(OPENROUTER_API_URL, {
     method:  'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body:    JSON.stringify({ model, messages, max_completion_tokens: maxTokens }),
+    headers: getHeaders(apiKey),
+    body:    JSON.stringify({ model, messages, max_tokens: maxTokens }),
   });
 
   const data = await res.json() as any;
-  if (data.base_resp?.status_code && data.base_resp.status_code !== 0) {
-    throw new Error(`MiniMax error: ${data.base_resp.status_msg}`);
-  }
-  if (!res.ok) throw new Error(`MiniMax HTTP ${res.status}`);
+  if (!res.ok) throw new Error(`OpenRouter error ${res.status}: ${data.error?.message || JSON.stringify(data)}`);
 
   const tokensIn  = data.usage?.prompt_tokens     || 0;
   const tokensOut = data.usage?.completion_tokens || 0;
-  const cost      = COST_PER_TOKEN[model] || 0.0000001;
 
   return {
-    text:      data.choices?.[0]?.message?.content || '',
-    tokensIn,  tokensOut,
-    costUsd:   (tokensIn + tokensOut) * cost,
+    text:    data.choices?.[0]?.message?.content || '',
+    tokensIn, tokensOut,
+    costUsd: (tokensIn + tokensOut) * COST_FALLBACK,
     model,
   };
 }
@@ -91,51 +102,44 @@ export async function llmCall(
 // ── Tool-use loop ─────────────────────────────────────────────────────────────
 
 export async function llmToolLoop(
-  type:            ModelType,
-  messages:        LLMMessage[],
-  tools:           ToolDefinition[],
-  toolExecutor:    (name: string, args: Record<string, unknown>) => Promise<string>,
-  maxTokens      = 2048,
-  maxRounds      = 8,
+  type:         ModelType,
+  messages:     LLMMessage[],
+  tools:        ToolDefinition[],
+  toolExecutor: (name: string, args: Record<string, unknown>) => Promise<string>,
+  maxTokens   = 2048,
+  maxRounds   = 8,
 ): Promise<ToolLoopResult> {
-  const apiKey = process.env.MINIMAX_API_KEY;
-  if (!apiKey) throw new Error('MINIMAX_API_KEY not set');
-
-  const model      = MODELS[type];
-  const costPerTok = COST_PER_TOKEN[model] || 0.0000001;
+  const apiKey = getApiKey();
+  const model  = MODELS[type];
 
   let totalIn  = 0;
   let totalOut = 0;
   let finalText = '';
   const toolCallsMade: Array<{ name: string; args: Record<string, unknown> }> = [];
-
   const conversation: LLMMessage[] = [...messages];
 
   for (let round = 0; round < maxRounds; round++) {
-    const res = await fetch(MINIMAX_API_URL, {
+    const res = await fetch(OPENROUTER_API_URL, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      headers: getHeaders(apiKey),
       body:    JSON.stringify({
         model,
-        messages:               conversation,
+        messages:    conversation,
         tools,
-        tool_choice:            'auto',
-        max_completion_tokens:  maxTokens,
+        tool_choice: 'auto',
+        max_tokens:  maxTokens,
       }),
     });
 
     const data = await res.json() as any;
-    if (data.base_resp?.status_code && data.base_resp.status_code !== 0) {
-      throw new Error(`MiniMax error: ${data.base_resp.status_msg}`);
-    }
-    if (!res.ok) throw new Error(`MiniMax HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`OpenRouter error ${res.status}: ${data.error?.message || JSON.stringify(data)}`);
 
     totalIn  += data.usage?.prompt_tokens     || 0;
     totalOut += data.usage?.completion_tokens || 0;
 
-    const choice  = data.choices?.[0];
-    const msg     = choice?.message;
-    const finish  = choice?.finish_reason;
+    const choice = data.choices?.[0];
+    const msg    = choice?.message;
+    const finish = choice?.finish_reason;
 
     if (!msg) break;
 
@@ -146,12 +150,13 @@ export async function llmToolLoop(
       tool_calls: msg.tool_calls,
     });
 
+    // No tool calls or model said stop — we're done
     if (!msg.tool_calls?.length || finish === 'stop') {
       finalText = msg.content || '';
       break;
     }
 
-    // Execute tools
+    // Execute each tool call
     for (const tc of msg.tool_calls as ToolCall[]) {
       let args: Record<string, unknown> = {};
       try { args = JSON.parse(tc.function.arguments); } catch { /* ignore */ }
@@ -177,7 +182,7 @@ export async function llmToolLoop(
     text:         finalText,
     tokensIn:     totalIn,
     tokensOut:    totalOut,
-    costUsd:      (totalIn + totalOut) * costPerTok,
+    costUsd:      (totalIn + totalOut) * COST_FALLBACK,
     model,
     toolCallsMade,
   };

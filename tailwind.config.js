@@ -56,6 +56,17 @@ module.exports = {
   				border: 'hsl(var(--border))',
   				input: 'hsl(var(--input))',
   				ring: 'hsl(var(--ring))',
+  				clips: {
+  				  bg: '#0A0A1A',
+  				  surface: '#111128',
+  				  'surface-2': '#1A1A3E',
+  				  'surface-3': '#222250',
+  				  accent: '#8B5CF6',
+  				  blue: '#3B82F6',
+  				  cyan: '#06B6D4',
+  				  text: '#F1F5F9',
+  				  muted: '#94A3B8',
+  				},
   				chart: {
   					'1': 'hsl(var(--chart-1))',
   					'2': 'hsl(var(--chart-2))',

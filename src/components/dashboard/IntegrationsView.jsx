@@ -1,6 +1,10 @@
-import { useState } from 'react';
-import { Search, Check, Plus } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
+import { firestore, functions } from '@/lib/firebaseClient';
+import { useCompany } from '@/contexts/CompanyContext';
+import { Search, Check, X, ExternalLink, Loader } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import BrandLogo from '@/components/BrandLogo';
 
 const cats = ['All', 'Communication', 'CRM', 'Payments', 'Productivity', 'Marketing', 'Analytics', 'Storage'];
@@ -36,14 +40,158 @@ const integrations = [
   { name: 'Canva', desc: 'Design graphics and visual content', color: '#00C4CC', cat: 'Storage' },
 ];
 
+function ConnectModal({ item, onSave, onClose }) {
+  const [apiKey, setApiKey] = useState('');
+  const [webhookUrl, setWebhookUrl] = useState('');
+
+  const needsApiKey = ['OpenAI', 'HubSpot', 'Stripe', 'Salesforce', 'Twilio', 'Airtable', 'GitHub', 'Zapier', 'Pipedrive', 'Zendesk', 'Shopify', 'Intercom', 'Asana', 'Linear', 'Jira', 'Monday.com'].includes(item.name);
+  const needsWebhook = ['Slack', 'Discord', 'Telegram'].includes(item.name);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(10,10,26,0.5)', backdropFilter: 'blur(8px)' }}
+      onClick={onClose}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 10 }}
+        transition={{ duration: 0.2 }}
+        className="w-full rounded-2xl overflow-hidden"
+        style={{ maxWidth: 420, background: '#fff', boxShadow: '0 32px 80px rgba(0,0,0,0.18)' }}
+        onClick={e => e.stopPropagation()}>
+
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid #F0F1FF' }}>
+          <div className="flex items-center gap-3">
+            <BrandLogo name={item.name} fallbackColor={item.color} size={32} />
+            <div>
+              <p className="text-sm font-bold" style={{ color: '#0A0A1A' }}>Connect {item.name}</p>
+              <p className="text-xs" style={{ color: '#94A3B8' }}>{item.cat}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ color: '#94A3B8' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#F3F4F6'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+            <X size={14} />
+          </button>
+        </div>
+
+        <div className="px-6 py-5 space-y-4">
+          {needsApiKey && (
+            <div>
+              <label className="text-[10px] font-black uppercase tracking-widest mb-1.5 block" style={{ color: '#94A3B8' }}>API Key</label>
+              <input
+                value={apiKey} onChange={e => setApiKey(e.target.value)}
+                placeholder={`Paste your ${item.name} API key…`}
+                type="password"
+                className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
+                style={{ background: '#F8FAFF', border: '1px solid rgba(91,95,255,0.12)', color: '#0A0A1A' }}
+                autoFocus
+              />
+            </div>
+          )}
+          {needsWebhook && (
+            <div>
+              <label className="text-[10px] font-black uppercase tracking-widest mb-1.5 block" style={{ color: '#94A3B8' }}>Webhook URL</label>
+              <input
+                value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)}
+                placeholder="https://…"
+                className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
+                style={{ background: '#F8FAFF', border: '1px solid rgba(91,95,255,0.12)', color: '#0A0A1A' }}
+                autoFocus
+              />
+            </div>
+          )}
+          {!needsApiKey && !needsWebhook && (
+            <div className="flex flex-col items-center py-4 gap-3">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(91,95,255,0.07)' }}>
+                <ExternalLink size={20} style={{ color: '#5B5FFF' }} />
+              </div>
+              <p className="text-sm text-center" style={{ color: '#374151' }}>
+                Click below to authorize {item.name} via OAuth.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end gap-2 px-6 py-4" style={{ borderTop: '1px solid #F0F1FF' }}>
+          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-semibold" style={{ color: '#64748B', background: 'rgba(0,0,0,0.04)' }}>
+            Cancel
+          </button>
+          <button
+            onClick={() => onSave({ apiKey: apiKey || undefined, webhookUrl: webhookUrl || undefined })}
+            className="px-4 py-2 rounded-xl text-sm font-semibold"
+            style={{ background: '#5B5FFF', color: '#fff' }}>
+            {needsApiKey || needsWebhook ? 'Save & Connect' : 'Authorize'}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function IntegrationsView() {
+  const { activeCompanyId } = useCompany();
   const [search, setSearch] = useState('');
   const [category, setCat] = useState('All');
   const [connected, setConnected] = useState({});
+  const [connectingItem, setConnectingItem] = useState(null);
 
-  const handleConnect = (name) => {
-    setConnected(prev => ({ ...prev, [name]: !prev[name] }));
-  };
+  // Load from Firestore
+  useEffect(() => {
+    if (!activeCompanyId) return;
+    const ref = doc(firestore, 'companies', activeCompanyId);
+    return onSnapshot(ref, snap => {
+      if (snap.exists()) {
+        setConnected(snap.data().integrations || {});
+      }
+    });
+  }, [activeCompanyId]);
+
+  async function handleSaveConnection(item, config) {
+    try {
+      const appName = item.name;
+      const needsOAuth = !['OpenAI', 'HubSpot', 'Stripe', 'Salesforce', 'Twilio', 'Airtable',
+        'GitHub', 'Zapier', 'Pipedrive', 'Zendesk', 'Shopify', 'Intercom', 'Asana',
+        'Linear', 'Jira', 'Monday.com', 'Slack', 'Discord', 'Telegram'].includes(appName);
+
+      if (config.apiKey) {
+        // API key flow — call Cloud Function
+        const fn = httpsCallable(functions, 'connectComposioApiKey');
+        await fn({ companyId: activeCompanyId, appName, apiKey: config.apiKey });
+      } else if (config.webhookUrl) {
+        // Webhook URL flow — call Cloud Function
+        const fn = httpsCallable(functions, 'connectComposioApiKey');
+        await fn({ companyId: activeCompanyId, appName, apiKey: config.webhookUrl });
+      } else {
+        // OAuth flow — open popup
+        const fn = httpsCallable(functions, 'initComposioConnection');
+        const result = await fn({ companyId: activeCompanyId, appName });
+        const { redirectUrl } = result.data;
+        const popup = window.open(redirectUrl, 'composio-auth', 'width=600,height=700');
+        // Listen for popup message (composioCallback sends postMessage)
+        window.addEventListener('message', function handler(e) {
+          if (e.data?.composioConnected) {
+            window.removeEventListener('message', handler);
+            popup?.close();
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Connection failed:', err);
+    }
+    setConnectingItem(null);
+  }
+
+  async function handleDisconnect(name) {
+    try {
+      const fn = httpsCallable(functions, 'disconnectComposioIntegration');
+      await fn({ companyId: activeCompanyId, appName: name });
+    } catch (err) {
+      console.error('Disconnect failed:', err);
+    }
+  }
 
   const filtered = integrations.filter(i => {
     const matchSearch = i.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -52,10 +200,10 @@ export default function IntegrationsView() {
     return matchSearch && matchCat;
   });
 
-  const connectedCount = Object.values(connected).filter(Boolean).length;
+  const connectedCount = Object.keys(connected).length;
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
+    <div className="h-full flex flex-col relative" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
 
       {/* Header */}
       <div className="flex items-center justify-between px-8 py-5 flex-shrink-0">
@@ -100,7 +248,7 @@ export default function IntegrationsView() {
       <div className="flex-1 overflow-y-auto px-8 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map((item, i) => {
-            const isConnected = !!connected[item.name];
+            const isConnected = connected[item.name] != null;
             return (
               <motion.div
                 key={item.name}
@@ -130,13 +278,22 @@ export default function IntegrationsView() {
                 </div>
 
                 {isConnected ? (
-                  <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold"
-                    style={{ color: '#00B894' }}>
-                    <Check size={11} strokeWidth={2.5} /> Connected
+                  <div className="mt-3 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: '#10B981' }}>
+                      <Check size={11} strokeWidth={2.5} /> Connected
+                    </div>
+                    <button
+                      onClick={() => handleDisconnect(item.name)}
+                      className="text-[10px] font-semibold px-2 py-1 rounded-lg transition-all"
+                      style={{ color: '#94A3B8', background: 'transparent' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.06)'; e.currentTarget.style.color = '#EF4444'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}>
+                      Disconnect
+                    </button>
                   </div>
                 ) : (
                   <button
-                    onClick={() => handleConnect(item.name)}
+                    onClick={() => setConnectingItem(item)}
                     className="mt-3 w-full py-1.5 text-xs font-semibold rounded-xl transition-all"
                     style={{
                       color: '#5B5FFF',
@@ -153,6 +310,16 @@ export default function IntegrationsView() {
           })}
         </div>
       </div>
+
+      <AnimatePresence>
+        {connectingItem && (
+          <ConnectModal
+            item={connectingItem}
+            onSave={config => handleSaveConnection(connectingItem, config)}
+            onClose={() => setConnectingItem(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

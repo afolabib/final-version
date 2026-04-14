@@ -4,11 +4,11 @@ import FreemiCharacter from './FreemiCharacter';
 import MiniFreemi from './MiniFreemi';
 
 const agents = [
-  { label: 'Sales', color: '#5B5FFF', targetIndex: 0, path: 'runLeft' },
-  { label: 'Support', color: '#7C3AED', targetIndex: 1, path: 'climbLeft' },
-  { label: 'Operations', color: '#059669', targetIndex: 2, path: 'jumpCenter' },
-  { label: 'Customer Success', color: '#D97706', targetIndex: 3, path: 'crawlRight' },
-  { label: 'Executive Assistant', color: '#2563EB', targetIndex: 4, path: 'runRight' },
+  { label: 'Enquiries', color: '#5B5FFF', targetIndex: 0, path: 'runLeft' },
+  { label: 'Bookings', color: '#7C6CF7', targetIndex: 1, path: 'climbLeft' },
+  { label: 'Leads', color: '#9B8BFF', targetIndex: 2, path: 'jumpCenter' },
+  { label: 'Email', color: '#6C63FF', targetIndex: 3, path: 'crawlRight' },
+  { label: 'Operations', color: '#5B5FFF', targetIndex: 4, path: 'runRight' },
 ];
 
 // Each agent gets a unique movement style
@@ -136,7 +136,7 @@ export default function FreemiEntrance({ onTabClick }) {
                   style={{
                     width: 3 + Math.random() * 5,
                     height: 3 + Math.random() * 5,
-                    background: ['#5B5FFF', '#7C3AED', '#059669', '#D97706', '#2563EB'][i % 5],
+                    background: ['#5B5FFF', '#7C6CF7', '#9B8BFF', '#6C63FF', '#5B4BC7'][i % 5],
                     top: 45,
                     left: '50%',
                   }}

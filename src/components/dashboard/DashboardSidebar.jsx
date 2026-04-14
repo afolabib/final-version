@@ -249,6 +249,13 @@ export default function DashboardSidebar({ active, onNav }) {
   const approvalCount = pendingApprovals.length;
   const openTaskCount = (tasks || []).filter(t => t.status !== 'done' && t.status !== 'cancelled').length;
 
+  // Adaptive: detect what this client has
+  const products = company?.products || [];
+  const hasOperators = products.includes('operators') || agents.length > 0;
+  const hasWidget = products.includes('widget');
+  const hasWebsite = products.includes('website');
+  const hasVoice = products.includes('voice');
+
   useEffect(() => {
     const handler = e => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
@@ -346,43 +353,64 @@ export default function DashboardSidebar({ active, onNav }) {
       {/* ── Nav ── */}
       <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
 
-        {/* Workspace */}
-        <NavBtn icon={Home}          label="Home"         id="home"         active={active} onClick={onNav} />
-        <NavBtn icon={Building2}    label="Companies"    id="companies"    active={active} onClick={onNav} />
-        <NavBtn icon={Inbox}        label="Inbox"        id="inbox"        active={active} onClick={onNav} badgeCount={approvalCount} />
-        <NavBtn icon={Layers}      label="Projects"     id="projects"     active={active} onClick={onNav} badgeCount={openTaskCount} bellBadge />
-        <NavBtn icon={FolderOpen}  label="Files"        id="files"        active={active} onClick={onNav} badge="Beta" />
+        {/* Core */}
+        <NavBtn icon={Home}         label="Home"         id="home"         active={active} onClick={onNav} />
+        <NavBtn icon={Inbox}        label="Conversations" id="inbox"       active={active} onClick={onNav} badgeCount={approvalCount} />
+
+        {/* Operators-only section */}
+        {hasOperators && (
+          <>
+            <NavBtn icon={Building2}  label="Companies"    id="companies"    active={active} onClick={onNav} />
+            <NavBtn icon={Layers}     label="Projects"     id="projects"     active={active} onClick={onNav} badgeCount={openTaskCount} bellBadge />
+            <NavBtn icon={FolderOpen} label="Knowledge"    id="files"        active={active} onClick={onNav} />
+          </>
+        )}
 
         {/* Configure */}
         <SectionLabel label="Configure" />
-        <NavBtn icon={Zap}         label="Automations"  id="automations"  active={active} onClick={onNav} badge="Beta" />
+
+        {/* Widget link — show prominently for widget clients */}
+        {(hasWidget || hasOperators) && (
+          <NavBtn icon={Code2}       label="Widget"       id="widget"       active={active} onClick={onNav} />
+        )}
+
         <NavBtn icon={Plug}        label="Integrations" id="integrations" active={active} onClick={onNav} />
-        <NavBtn icon={Code2}       label="Widget"       id="widget"       active={active} onClick={onNav} badge="New" />
-        <NavBtn icon={Wrench}      label="Skills"       id="skills"       active={active} onClick={onNav} />
+
+        {/* Operators-only config */}
+        {hasOperators && (
+          <>
+            <NavBtn icon={Zap}       label="Automations"  id="automations"  active={active} onClick={onNav} badge="Beta" />
+            <NavBtn icon={Wrench}    label="Skills"       id="skills"       active={active} onClick={onNav} />
+          </>
+        )}
+
         <NavBtn icon={Settings}    label="Settings"     id="settings"     active={active} onClick={onNav} />
-        <NavBtn icon={CreditCard}  label="Credits"      id="credits"      active={active} onClick={onNav} />
+        <NavBtn icon={CreditCard}  label="Billing"      id="credits"      active={active} onClick={onNav} />
         <NavBtn icon={HelpCircle}  label="Support"      id="support"      active={active} onClick={onNav} />
 
-        {/* Deployed agents */}
-        <div className="px-3 pt-5 pb-1.5 flex items-center justify-between">
-          <span className="text-[9px] font-black tracking-[0.12em] uppercase" style={{ color: '#C7D0E8' }}>
-            Deployed Operators
-          </span>
-          <button onClick={() => onNav('agents')}
-            className="w-5 h-5 rounded-md flex items-center justify-center transition-colors"
-            style={{ color: '#C7D0E8' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.08)'; e.currentTarget.style.color = '#5B5FFF'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C7D0E8'; }}>
-            <Plus size={11} />
-          </button>
-        </div>
-
-        {visibleAgents.length === 0 ? (
-          <p className="px-3 text-xs font-medium" style={{ color: '#CBD5E1' }}>No operators yet</p>
-        ) : (
-          visibleAgents.map(agent => (
-            <AgentRow key={agent.id} agent={agent} onClick={() => setSidebarOpen?.(false)} />
-          ))
+        {/* Deployed agents — only for operators clients */}
+        {hasOperators && (
+          <>
+            <div className="px-3 pt-5 pb-1.5 flex items-center justify-between">
+              <span className="text-[9px] font-black tracking-[0.12em] uppercase" style={{ color: '#C7D0E8' }}>
+                Deployed Operators
+              </span>
+              <button onClick={() => onNav('agents')}
+                className="w-5 h-5 rounded-md flex items-center justify-center transition-colors"
+                style={{ color: '#C7D0E8' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(91,95,255,0.08)'; e.currentTarget.style.color = '#5B5FFF'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C7D0E8'; }}>
+                <Plus size={11} />
+              </button>
+            </div>
+            {visibleAgents.length === 0 ? (
+              <p className="px-3 text-xs font-medium" style={{ color: '#CBD5E1' }}>No operators yet</p>
+            ) : (
+              visibleAgents.map(agent => (
+                <AgentRow key={agent.id} agent={agent} />
+              ))
+            )}
+          </>
         )}
       </nav>
 

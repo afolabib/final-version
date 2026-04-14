@@ -5,15 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompany } from '@/contexts/CompanyContext';
+import { useProduct } from '@/contexts/ProductContext';
 import { fireAgent, AGENT_STATUS } from '@/lib/agentService';
 
-const settingsTabs = [
-  { id: 'general', label: 'General', icon: User },
-  { id: 'agents', label: 'Agents', icon: Bot },
-  { id: 'integrations', label: 'Integrations', icon: Plug },
-  { id: 'referrals', label: 'Referrals', icon: Gift },
-  { id: 'security', label: 'Security', icon: Shield },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
+const ALL_TABS = [
+  { id: 'general',       label: 'General',       icon: User,   products: ['operators', 'widget', 'website', 'voice'] },
+  { id: 'agents',        label: 'Agents',         icon: Bot,    products: ['operators'] },
+  { id: 'integrations',  label: 'Integrations',   icon: Plug,   products: ['operators', 'widget'] },
+  { id: 'referrals',     label: 'Referrals',      icon: Gift,   products: ['operators', 'widget', 'website', 'voice'] },
+  { id: 'security',      label: 'Security',       icon: Shield, products: ['operators', 'widget', 'website', 'voice'] },
+  { id: 'notifications', label: 'Notifications',  icon: Bell,   products: ['operators', 'widget', 'website', 'voice'] },
 ];
 
 const glassCard = {
@@ -378,6 +379,11 @@ function AgentsTab() {
 export default function SettingsView() {
   const [tab, setTab] = useState('general');
   const { user } = useAuth();
+  const { activeProduct } = useProduct();
+
+  // Filter tabs based on active product
+  const settingsTabs = ALL_TABS.filter(t => t.products.includes(activeProduct || 'widget'));
+
   return (
     <div className="flex-1 flex flex-col md:flex-row overflow-hidden" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)' }}>
       {/* Mobile tabs - horizontal scroll */}
