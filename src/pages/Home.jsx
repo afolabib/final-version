@@ -16,6 +16,11 @@ import {
   Users, BarChart3, Bot, Plug, Clock, Shield, Sparkles, ChevronRight,
   Search, FileText, Headphones, TrendingUp, Send, Star
 } from 'lucide-react';
+import {
+  SiWhatsapp, SiGmail, SiSlack, SiHubspot, SiSalesforce,
+  SiGooglecalendar, SiStripe, SiCalendly, SiNotion, SiZapier,
+  SiMicrosoftteams, SiGooglesheets, SiMicrosoftoutlook
+} from 'react-icons/si';
 
 /* ─── floating elements (studio-style) ────────────────── */
 
@@ -871,11 +876,23 @@ function StatsSection() {
 /* ── INTEGRATIONS ─────────────────────────────────────── */
 
 function IntegrationsSection() {
-  const icons = {
-    WhatsApp: '💬', Gmail: '📧', Slack: '💜', HubSpot: '🧡', Salesforce: '☁️',
-    'Google Calendar': '📅', Stripe: '💳', Calendly: '🗓️', Notion: '📝', Zapier: '⚡',
-    'Microsoft Teams': '👥', Pipedrive: '🔵', 'Google Sheets': '📊', Outlook: '📨', Make: '🔧',
-  };
+  const integrationData = [
+    { name: 'WhatsApp', Icon: SiWhatsapp, color: '#25D366' },
+    { name: 'Gmail', Icon: SiGmail, color: '#EA4335' },
+    { name: 'Slack', Icon: SiSlack, color: '#4A154B' },
+    { name: 'HubSpot', Icon: SiHubspot, color: '#FF7A59' },
+    { name: 'Salesforce', Icon: SiSalesforce, color: '#00A1E0' },
+    { name: 'Google Calendar', Icon: SiGooglecalendar, color: '#4285F4' },
+    { name: 'Stripe', Icon: SiStripe, color: '#635BFF' },
+    { name: 'Calendly', Icon: SiCalendly, color: '#006BFF' },
+    { name: 'Notion', Icon: SiNotion, color: '#000000' },
+    { name: 'Zapier', Icon: SiZapier, color: '#FF4A00' },
+    { name: 'Microsoft Teams', Icon: SiMicrosoftteams, color: '#6264A7' },
+    { name: 'Pipedrive', Icon: null, color: '#1A1A1A', emoji: '🔵' },
+    { name: 'Google Sheets', Icon: SiGooglesheets, color: '#34A853' },
+    { name: 'Outlook', Icon: SiMicrosoftoutlook, color: '#0078D4' },
+    { name: 'Make', Icon: null, color: '#6D00CC', emoji: '⚡' },
+  ];
 
   return (
     <section className="py-24 md:py-32 px-6">
@@ -886,12 +903,12 @@ function IntegrationsSection() {
       />
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-wrap justify-center gap-3">
-          {integrations.map((name, i) => (
-            <ScrollReveal key={name} delay={i * 0.03}>
-              <div className="card-hover flex items-center gap-2.5 px-4 py-3 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(12px)', border: '1px solid rgba(0,0,0,0.06)' }}>
-                <span className="text-base">{icons[name]}</span>
-                <span className="text-sm font-semibold text-surface">{name}</span>
+          {integrationData.map((item, i) => (
+            <ScrollReveal key={item.name} delay={i * 0.03}>
+              <div className="card-hover flex items-center gap-2.5 px-5 py-3.5 rounded-xl"
+                style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(12px)', border: '1px solid rgba(0,0,0,0.06)' }}>
+                {item.Icon ? <item.Icon className="w-4 h-4" style={{ color: item.color }} /> : <span className="text-sm">{item.emoji}</span>}
+                <span className="text-sm font-semibold text-surface">{item.name}</span>
               </div>
             </ScrollReveal>
           ))}

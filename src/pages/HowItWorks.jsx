@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
+  SiWhatsapp, SiGmail, SiSlack, SiGooglecalendar, SiHubspot, SiStripe,
+  SiSalesforce, SiNotion, SiZapier,
+} from 'react-icons/si';
+import {
   MessageSquare, Bot, Zap, Sparkles, Globe, ArrowRight, Check,
   Plug, BarChart3, Phone, Send, Calendar, Mail, Star, Shield,
   Palette, Code, Rocket
@@ -47,10 +51,18 @@ const capabilities = [
 ];
 
 const integrations = [
-  { name: 'WhatsApp', icon: '💬' }, { name: 'Gmail', icon: '📧' }, { name: 'Slack', icon: '💜' },
-  { name: 'Google Calendar', icon: '📅' }, { name: 'HubSpot', icon: '🧡' }, { name: 'Stripe', icon: '💳' },
-  { name: 'Salesforce', icon: '☁️' }, { name: 'Notion', icon: '📝' }, { name: 'Zapier', icon: '⚡' },
-  { name: 'Phone AI', icon: '📞' }, { name: 'Website Widget', icon: '🌐' }, { name: 'Make', icon: '🔧' },
+  { name: 'WhatsApp', Icon: SiWhatsapp, color: '#25D366' },
+  { name: 'Gmail', Icon: SiGmail, color: '#EA4335' },
+  { name: 'Slack', Icon: SiSlack, color: '#4A154B' },
+  { name: 'Google Calendar', Icon: SiGooglecalendar, color: '#4285F4' },
+  { name: 'HubSpot', Icon: SiHubspot, color: '#FF7A59' },
+  { name: 'Stripe', Icon: SiStripe, color: '#635BFF' },
+  { name: 'Salesforce', Icon: SiSalesforce, color: '#00A1E0' },
+  { name: 'Notion', Icon: SiNotion, color: '#000' },
+  { name: 'Zapier', Icon: SiZapier, color: '#FF4A00' },
+  { name: 'Phone AI', Icon: null, color: '#7B61FF' },
+  { name: 'Website Widget', Icon: null, color: '#2F8FFF' },
+  { name: 'Make', Icon: null, color: '#6D00CC' },
 ];
 
 export default function HowItWorks() {
@@ -171,7 +183,7 @@ export default function HowItWorks() {
                   style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(12px)', border: '1px solid rgba(0,0,0,0.06)', transition: 'transform 200ms ease, box-shadow 200ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(123,97,255,0.08)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                  <span className="text-base">{tool.icon}</span>
+                  {tool.Icon ? <tool.Icon className="w-4 h-4" style={{ color: tool.color }} /> : <Phone className="w-4 h-4" style={{ color: tool.color }} />}
                   <span className="text-sm font-semibold text-surface">{tool.name}</span>
                 </div>
               </ScrollReveal>
