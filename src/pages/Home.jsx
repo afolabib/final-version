@@ -29,20 +29,25 @@ function seededRandom(seed) {
   return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
 }
 
-function FloatingBg({ darkBg = false, seed = 42, density = 'normal' }) {
-  const counts = { sparse: { orbs: 3, dots: 5, rings: 0 }, normal: { orbs: 4, dots: 10, rings: 2 }, dense: { orbs: 5, dots: 15, rings: 3 } };
+const FLOAT_ICONS = [Sparkles, Bot, Zap, Globe, Star, MessageSquare, Calendar, Send];
+
+function FloatingBg({ darkBg = false, seed = 42, density = 'normal', icons = FLOAT_ICONS }) {
+  const counts = { sparse: { orbs: 3, dots: 5, rings: 0, icons: 4 }, normal: { orbs: 4, dots: 10, rings: 2, icons: 8 }, dense: { orbs: 5, dots: 15, rings: 3, icons: 12 } };
   const d = counts[density] || counts.normal;
   const r = seededRandom(seed);
   const rand = () => r();
-  const gen = (n) => Array.from({ length: n }, () => ({ left: `${5 + rand() * 90}%`, top: `${5 + rand() * 90}%`, delay: rand() * 3 }));
+  const gen = (n) => Array.from({ length: n }, () => ({ left: `${5 + rand() * 90}%`, top: `${5 + rand() * 90}%`, delay: rand() * 3, duration: 4 + rand() * 6, size: 14 + rand() * 18 }));
   const orbs = gen(d.orbs);
   const dots = gen(d.dots);
   const rings = gen(d.rings);
+  const iconItems = gen(d.icons);
   const dotBg = darkBg ? 'bg-white/[0.15]' : 'bg-purple-500/[0.25]';
   const ringBorder = darkBg ? '1.5px solid rgba(255,255,255,0.08)' : '1.5px solid rgba(123,97,255,0.1)';
+  const iconColor = darkBg ? 'text-white/[0.12]' : 'text-purple-500/[0.12]';
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* gradient orbs */}
       {orbs.map((p, i) => (
         <motion.div key={`o${i}`} className="absolute rounded-full"
           style={{ left: p.left, top: p.top, width: 300 + i * 100, height: 300 + i * 100,
@@ -51,15 +56,29 @@ function FloatingBg({ darkBg = false, seed = 42, density = 'normal' }) {
           animate={{ x: [0, 30 + i * 10, 0], y: [0, -(20 + i * 10), 0], scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 10 + i * 3, repeat: Infinity, ease: 'easeInOut', delay: p.delay }} />
       ))}
+      {/* expanding rings */}
       {rings.map((p, i) => (
         <motion.div key={`r${i}`} className="absolute rounded-full"
           style={{ left: p.left, top: p.top, width: 100 + i * 50, height: 100 + i * 50, border: ringBorder, transform: 'translate(-50%,-50%)' }}
           animate={{ scale: [1, 2.5], opacity: [0.15, 0] }}
           transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeOut', delay: i * 1.5 }} />
       ))}
+      {/* floating icons */}
+      {iconItems.map((p, i) => {
+        const Icon = icons[i % icons.length];
+        return (
+          <motion.div key={`i${i}`} className={`absolute ${iconColor}`}
+            style={{ left: p.left, top: p.top }}
+            animate={{ y: [0, -15, 0], rotate: [0, 8, -8, 0], scale: [1, 1.1, 1] }}
+            transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}>
+            <Icon style={{ width: p.size, height: p.size }} />
+          </motion.div>
+        );
+      })}
+      {/* particle dots */}
       {dots.map((p, i) => (
         <motion.div key={`d${i}`} className={`absolute rounded-full ${dotBg}`}
-          style={{ left: p.left, top: p.top, width: 2 + (i % 3) * 2, height: 2 + (i % 3) * 2 }}
+          style={{ left: p.left, top: p.top, width: 3 + (i % 4) * 3, height: 3 + (i % 4) * 3 }}
           animate={{ opacity: [0.1, 0.7, 0.1], scale: [0.5, 1.2, 0.5] }}
           transition={{ duration: 1.5 + (i % 4) * 0.5, repeat: Infinity, ease: 'easeInOut', delay: p.delay }} />
       ))}

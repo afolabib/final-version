@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, Sparkles, Bot, Zap, Globe, MessageSquare, Star, Send, CalendarCheck } from 'lucide-react';
+import { ArrowRight, Check, Sparkles, Bot, Zap, Globe, MessageSquare, Star, Send, CalendarCheck, Calendar, Phone } from 'lucide-react';
+
+const FLOAT_ICONS = [Sparkles, Bot, Zap, Globe, Star, MessageSquare, Calendar, Send, Phone];
 import TopNav from './TopNav';
 import SiteFooter from './SiteFooter';
 import ScrollReveal from './ScrollReveal';
@@ -13,10 +15,11 @@ function seededRandom(seed) { let s = seed; return () => { s = (s * 16807) % 214
 function FloatingBg({ seed = 42, darkBg = false }) {
   const r = seededRandom(seed);
   const rand = () => r();
-  const gen = (n) => Array.from({ length: n }, () => ({ left: `${5 + rand() * 90}%`, top: `${5 + rand() * 90}%`, delay: rand() * 3 }));
-  const orbs = gen(4); const dots = gen(10); const rings = gen(2);
+  const gen = (n) => Array.from({ length: n }, () => ({ left: `${5 + rand() * 90}%`, top: `${5 + rand() * 90}%`, delay: rand() * 3, duration: 4 + rand() * 6, size: 14 + rand() * 18 }));
+  const orbs = gen(4); const dots = gen(10); const rings = gen(2); const iconItems = gen(8);
   const dotBg = darkBg ? 'bg-white/[0.15]' : 'bg-purple-500/[0.25]';
   const ringBorder = darkBg ? '1.5px solid rgba(255,255,255,0.08)' : '1.5px solid rgba(123,97,255,0.1)';
+  const iconColor = darkBg ? 'text-white/[0.12]' : 'text-purple-500/[0.12]';
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {orbs.map((p, i) => (
@@ -31,9 +34,20 @@ function FloatingBg({ seed = 42, darkBg = false }) {
           animate={{ scale: [1, 2.5], opacity: [0.15, 0] }}
           transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeOut', delay: i * 1.5 }} />
       ))}
+      {iconItems.map((p, i) => {
+        const Icon = FLOAT_ICONS[i % FLOAT_ICONS.length];
+        return (
+          <motion.div key={`i${i}`} className={`absolute ${iconColor}`}
+            style={{ left: p.left, top: p.top }}
+            animate={{ y: [0, -15, 0], rotate: [0, 8, -8, 0], scale: [1, 1.1, 1] }}
+            transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}>
+            <Icon style={{ width: p.size, height: p.size }} />
+          </motion.div>
+        );
+      })}
       {dots.map((p, i) => (
         <motion.div key={`d${i}`} className={`absolute rounded-full ${dotBg}`}
-          style={{ left: p.left, top: p.top, width: 2 + (i % 3) * 2, height: 2 + (i % 3) * 2 }}
+          style={{ left: p.left, top: p.top, width: 3 + (i % 4) * 3, height: 3 + (i % 4) * 3 }}
           animate={{ opacity: [0.1, 0.7, 0.1], scale: [0.5, 1.2, 0.5] }}
           transition={{ duration: 1.5 + (i % 4) * 0.5, repeat: Infinity, ease: 'easeInOut', delay: p.delay }} />
       ))}
