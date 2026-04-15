@@ -2,52 +2,47 @@ import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
 
 export default function SiteFooter() {
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <footer className="relative pt-16 pb-24 px-6">
       <ScrollReveal>
         <div className="max-w-5xl mx-auto">
-          {/* Main footer grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 md:gap-6 mb-14">
-            {/* Brand column */}
+            {/* Brand */}
             <div className="col-span-2 sm:col-span-3 md:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 2px 12px rgba(91,95,255,0.3)' }}>
+                  style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 2px 12px rgba(123,97,255,0.3)' }}>
                   <div className="w-3 h-3 rounded-full bg-white/90" />
                 </div>
                 <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
               </div>
               <p className="text-sm text-gray-400 leading-relaxed max-w-[200px]">
-                AI operators built for your business — answering customers, booking meetings, following up leads.
+                AI agents that run your business — answering customers, booking meetings, handling operations 24/7.
               </p>
             </div>
 
-            {/* Product */}
+            {/* Products */}
             <div>
-              <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Platform</h4>
+              <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Products</h4>
               <div className="space-y-2.5">
-                <Link to="/how-it-works" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">How It Works</Link>
-                <Link to="/solutions/ai-operators" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">AI Operators</Link>
-                <Link to="/solutions/phone" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Freemi Voice</Link>
-                <Link to="/solutions/widget" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Website Widget</Link>
-                <Link to="/for-business" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Website Build</Link>
-                <button onClick={() => scrollTo('pricing')} className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium text-left">Pricing</button>
+                <Link to="/products/studio" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Studio</Link>
+                <Link to="/products/concierge" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Concierge</Link>
+                <Link to="/products/voice" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Voice</Link>
+                <Link to="/products/whatsapp" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">WhatsApp</Link>
+                <Link to="/products/bookings" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Bookings</Link>
               </div>
             </div>
 
-            {/* Use cases */}
+            {/* Solutions */}
             <div>
-              <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Use Cases</h4>
+              <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Solutions</h4>
               <div className="space-y-2.5">
-                <span className="block text-sm text-gray-500 font-medium">Customer Enquiries</span>
-                <span className="block text-sm text-gray-500 font-medium">Bookings & Calendar</span>
-                <span className="block text-sm text-gray-500 font-medium">Lead Follow-up</span>
-                <span className="block text-sm text-gray-500 font-medium">Email & Inbox</span>
-                <span className="block text-sm text-gray-500 font-medium">Operations & Tasks</span>
+                <Link to="/solutions/pharmacy" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Pharmacy</Link>
+                <Link to="/industries/hospitality" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Hospitality</Link>
+                <Link to="/industries/healthcare" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Healthcare</Link>
+                <Link to="/industries/agencies" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Agencies</Link>
+                <Link to="/industries/ecommerce" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">E-Commerce</Link>
+                <Link to="/industries/saas" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">SaaS</Link>
               </div>
             </div>
 
@@ -57,18 +52,18 @@ export default function SiteFooter() {
               <div className="space-y-2.5">
                 <Link to="/about" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">About</Link>
                 <Link to="/blog" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Blog</Link>
-                <a href="#" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Careers</a>
+                <Link to="/how-it-works" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">How It Works</Link>
                 <a href="mailto:hello@freemi.ai" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Contact</a>
               </div>
             </div>
 
-            {/* Legal */}
+            {/* Apps */}
             <div>
-              <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Legal</h4>
+              <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Apps</h4>
               <div className="space-y-2.5">
-                <a href="#" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Privacy Policy</a>
-                <a href="#" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Terms of Service</a>
-                <a href="#" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Security</a>
+                <a href="https://studio.freemi.ai" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Freemi Studio →</a>
+                <a href="https://pharmacy.freemi.ai" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Freemi Pharmacy →</a>
+                <Link to="/login" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Dashboard Login</Link>
               </div>
             </div>
           </div>
@@ -77,13 +72,13 @@ export default function SiteFooter() {
           <div className="flex flex-wrap items-center justify-center gap-6 py-6 mb-10 rounded-2xl"
             style={{ background: 'rgba(0,0,0,0.015)', border: '1px solid rgba(0,0,0,0.04)' }}>
             {[
-              { icon: '⚡', label: 'Set up in 1–2 days' },
-              { icon: '🔗', label: 'Connects to your existing tools' },
-              { icon: '💬', label: '24/7 customer responses' },
+              { icon: '⚡', label: 'Live in 48 hours' },
+              { icon: '🔗', label: 'Connects to your tools' },
+              { icon: '💬', label: '24/7 AI agents' },
               { icon: '📊', label: 'Full dashboard visibility' },
             ].map(badge => (
               <div key={badge.label} className="flex items-center gap-2 px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(91,95,255,0.04)', border: '1px solid rgba(91,95,255,0.06)' }}>
+                style={{ background: 'rgba(123,97,255,0.04)', border: '1px solid rgba(123,97,255,0.06)' }}>
                 <span className="text-xs">{badge.icon}</span>
                 <span className="text-[11px] font-semibold text-gray-500">{badge.label}</span>
               </div>
@@ -95,7 +90,7 @@ export default function SiteFooter() {
             style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
             <div className="text-xs text-gray-400">© 2026 Freemi. All rights reserved.</div>
             <div className="flex items-center gap-6 text-xs text-gray-400">
-              <span>Built for businesses that run on outcomes.</span>
+              <a href="mailto:hello@freemi.ai" className="hover:text-gray-600 transition-colors">hello@freemi.ai</a>
             </div>
           </div>
         </div>

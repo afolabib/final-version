@@ -257,7 +257,7 @@ export default function Solutions() {
   const [selected, setSelected] = useState(agents[0]);
 
   return (
-    <div className="relative w-full text-surface" style={{ background: 'linear-gradient(180deg, #EEF0F8 0%, #F8F9FE 30%, #F0F1FF 70%, #EEF0F8 100%)', minHeight: '100vh' }}>
+    <div className="relative w-full text-surface" style={{ background: 'linear-gradient(180deg, #F5F3FF 0%, #F8F9FE 30%, #EEF2FF 60%, #F0F7FF 100%)', minHeight: '100vh' }}>
       <InteractiveGrid />
       <TopNav />
 

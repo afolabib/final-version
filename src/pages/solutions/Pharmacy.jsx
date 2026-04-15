@@ -29,7 +29,7 @@ function FloatingBg({ seed = 42 }) {
 const containerV = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
 const itemV = { hidden: { opacity: 0, y: 30, filter: 'blur(10px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } } };
 
-const PHARMACY_URL = 'https://freemipharmacy.web.app';
+const PHARMACY_URL = 'https://pharmacy.freemi.ai';
 
 const features = [
   { icon: Phone, title: 'AI Phone Assistant', desc: 'Handles inbound calls, captures prescription orders, answers medication queries, and routes exceptions to your team.', color: '#7B61FF' },

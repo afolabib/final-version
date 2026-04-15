@@ -11,7 +11,7 @@ import AboutCTA from '../components/about/AboutCTA';
 
 export default function About() {
   return (
-    <div className="flex flex-col min-h-screen" style={{ background: 'linear-gradient(180deg, #EEF0F8 0%, #F8FAFF 40%, #FFFFFF 100%)' }}>
+    <div className="flex flex-col min-h-screen" style={{ background: 'linear-gradient(180deg, #F5F3FF 0%, #F8F9FE 30%, #EEF2FF 60%, #F0F7FF 100%)' }}>
       <TopNav />
       <div className="flex-1 overflow-y-auto">
         <AboutHero />
