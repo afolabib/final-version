@@ -59,7 +59,7 @@ export default function Pharmacy() {
           <motion.div variants={itemV} className="flex justify-center">
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/70 backdrop-blur-xl border border-purple-200/30 shadow-sm">
               <Pill className="w-3.5 h-3.5" style={{ color: '#7B61FF' }} />
-              <span className="text-xs font-semibold text-surface/80 tracking-wide">AI for Pharmacy</span>
+              <span className="text-xs font-semibold text-surface/80 tracking-wide">Freemi | Pharmacy</span>
             </div>
           </motion.div>
           <motion.div variants={itemV}><h1 className="mt-8 text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.15] text-surface">Your Pharmacy.</h1></motion.div>

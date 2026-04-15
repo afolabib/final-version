@@ -142,8 +142,9 @@ export default function HowItWorks() {
       </section>
 
       {/* ── CAPABILITIES ── */}
-      <section className="py-24 md:py-32 px-6">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-24 md:py-32 px-6 relative overflow-hidden">
+        <FloatingBg seed={77} />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <ScrollReveal><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wide uppercase" style={{ background: 'rgba(123,97,255,0.08)', color: '#7B61FF', border: '1px solid rgba(123,97,255,0.15)' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> What agents handle
@@ -169,8 +170,9 @@ export default function HowItWorks() {
       </section>
 
       {/* ── INTEGRATIONS ── */}
-      <section className="py-24 md:py-32 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-24 md:py-32 px-6 relative overflow-hidden">
+        <FloatingBg seed={88} />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           <ScrollReveal><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wide uppercase mb-6" style={{ background: 'rgba(123,97,255,0.08)', color: '#7B61FF', border: '1px solid rgba(123,97,255,0.15)' }}>
             <Plug className="w-3 h-3" /> Integrations
           </div></ScrollReveal>

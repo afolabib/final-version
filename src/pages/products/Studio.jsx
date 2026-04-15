@@ -85,7 +85,7 @@ const StudioDemo = () => (
 export default function ProductStudio() {
   return (
     <ProductPageLayout
-      badge="Freemi Studio"
+      badge="Freemi | Studio"
       badgeIcon={Globe}
       accentColor="#7B61FF"
       headline="We Build Websites"

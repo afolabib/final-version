@@ -1,9 +1,23 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, User, Tag, Search, ChevronLeft } from 'lucide-react';
+import { ArrowRight, Clock, User, Tag, Search, ChevronLeft, Sparkles, Bot, Zap, Globe, Star, BookOpen } from 'lucide-react';
 import TopNav from '../components/TopNav';
 import SiteFooter from '../components/SiteFooter';
+
+const ORB_COLORS = ['rgba(123,97,255,0.22)', 'rgba(47,143,255,0.16)', 'rgba(236,72,153,0.14)', 'rgba(39,192,135,0.12)'];
+const FLOAT_ICONS = [Sparkles, Bot, Zap, Globe, Star, BookOpen];
+function seededRandom(seed) { let s = seed; return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+function FloatingBg({ seed = 42 }) {
+  const r = seededRandom(seed); const rand = () => r();
+  const gen = (n) => Array.from({ length: n }, () => ({ left: `${5 + rand() * 90}%`, top: `${5 + rand() * 90}%`, delay: rand() * 3, duration: 4 + rand() * 6, size: 14 + rand() * 18 }));
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {gen(3).map((p, i) => <motion.div key={`o${i}`} className="absolute rounded-full" style={{ left: p.left, top: p.top, width: 300 + i * 100, height: 300 + i * 100, background: `radial-gradient(circle, ${ORB_COLORS[i % 4]}, transparent 65%)`, filter: `blur(${50 + i * 12}px)` }} animate={{ x: [0, 30 + i * 10, 0], y: [0, -(20 + i * 10), 0], scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 10 + i * 3, repeat: Infinity, ease: 'easeInOut', delay: p.delay }} />)}
+      {gen(6).map((p, i) => { const Icon = FLOAT_ICONS[i % FLOAT_ICONS.length]; return <motion.div key={`i${i}`} className="absolute text-purple-500/[0.12]" style={{ left: p.left, top: p.top }} animate={{ y: [0, -15, 0], rotate: [0, 8, -8, 0], scale: [1, 1.1, 1] }} transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}><Icon style={{ width: p.size, height: p.size }} /></motion.div>; })}
+    </div>
+  );
+}
 
 const categories = ['All', 'AI Strategy', 'Automation', 'Product Updates', 'Guides', 'Industry'];
 
@@ -281,23 +295,25 @@ export default function Blog() {
 
       <div className="flex-1 overflow-y-auto">
         {/* Hero */}
-        <div className="min-h-screen flex flex-col justify-center pt-32 pb-16 px-6 relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(123,97,255,0.06), transparent 70%)' }} />
-          <div className="max-w-4xl mx-auto text-center relative">
-            <motion.span initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-              className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
-              style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.1)' }}>
-              Blog
-            </motion.span>
-            <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.05 }}
-              className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4"
-              style={{ color: '#0F172A', letterSpacing: '-0.03em', lineHeight: 1.08, fontFamily: 'var(--font-serif)' }}>
-              Insights & Updates
+        <div className="pt-32 pb-16 px-6 relative overflow-hidden">
+          <FloatingBg seed={500} />
+          <div className="absolute inset-0 noise pointer-events-none" />
+          <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(123,97,255,0.06) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+              className="flex justify-center mb-6">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/70 backdrop-blur-xl border border-purple-200/30 shadow-sm">
+                <BookOpen className="w-3.5 h-3.5" style={{ color: '#7B61FF' }} />
+                <span className="text-xs font-semibold text-surface/80 tracking-wide">Blog</span>
+              </div>
+            </motion.div>
+            <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }}
+              className="text-5xl md:text-6xl font-extrabold tracking-tight text-surface leading-[1.1] mb-4">
+              Insights & <span className="text-gradient">Updates.</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.1 }}
-              className="text-lg max-w-xl mx-auto" style={{ color: '#64748B' }}>
-              Thoughts on AI agents, automation strategy, and the future of work from the Freemi team.
+              className="text-lg max-w-xl mx-auto text-gray-500">
+              Thoughts on AI employees, automation strategy, and the future of work from the Freemi team.
             </motion.p>
           </div>
         </div>

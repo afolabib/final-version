@@ -143,8 +143,9 @@ export default function About() {
       </section>
 
       {/* ── WHAT WE BELIEVE — bold statement cards ── */}
-      <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-16 px-6 relative overflow-hidden">
+        <FloatingBg seed={420} />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">What we <span className="text-gradient">believe.</span></h2>
@@ -176,8 +177,9 @@ export default function About() {
       </section>
 
       {/* ── WHY WE'RE DIFFERENT — comparison strip ── */}
-      <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto">
+      <section className="py-16 px-6 relative overflow-hidden">
+        <FloatingBg seed={430} />
+        <div className="relative z-10 max-w-3xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-10">
               <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Why we're <span className="text-gradient-purple">not like the rest.</span></h2>
