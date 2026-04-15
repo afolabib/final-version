@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
   Briefcase, Users, BarChart3, Calendar, FileText, Mail, Zap, ArrowRight, Check,
-  Star, Bot, Sparkles, Globe, TrendingUp, Target, Palette, Code, Megaphone, PenTool, X
+  Star, Bot, Sparkles, Globe, TrendingUp, Target, Palette, Code, Megaphone, PenTool, Shield, X
 } from 'lucide-react';
 import TopNav from '../../components/TopNav';
 import SiteFooter from '../../components/SiteFooter';
