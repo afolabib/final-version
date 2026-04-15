@@ -281,7 +281,7 @@ export default function Blog() {
 
       <div className="flex-1 overflow-y-auto">
         {/* Hero */}
-        <div className="pt-32 pb-16 px-6 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col justify-center pt-32 pb-16 px-6 relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl pointer-events-none"
             style={{ background: 'radial-gradient(circle, rgba(123,97,255,0.06), transparent 70%)' }} />
           <div className="max-w-4xl mx-auto text-center relative">

@@ -55,7 +55,7 @@ export default function ForBusiness() {
       <TopNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 text-center relative overflow-hidden">
+      <section className="min-h-screen flex flex-col justify-center pt-32 pb-20 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'radial-gradient(ellipse 900px 500px at 50% 0%, rgba(91,95,255,0.08), transparent)' }} />
 

@@ -7,7 +7,7 @@ const agents = ['sam', 'rex', 'nova', 'pixel', 'echo', 'ghost'];
 
 export default function SolutionsHero() {
   return (
-    <section className="relative pt-28 md:pt-36 pb-16 md:pb-24 px-4 md:px-6 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col justify-center pt-28 md:pt-36 pb-16 md:pb-24 px-4 md:px-6 overflow-hidden">
       {/* Background orbs */}
       <div className="absolute top-20 left-[10%] w-72 h-72 rounded-full blur-3xl pointer-events-none" style={{ background: 'rgba(91,95,255,0.06)' }} />
       <div className="absolute top-40 right-[15%] w-56 h-56 rounded-full blur-3xl pointer-events-none" style={{ background: 'rgba(232,67,147,0.04)' }} />
