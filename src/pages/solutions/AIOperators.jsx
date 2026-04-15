@@ -123,18 +123,18 @@ export default function SolutionAIOperators() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative w-full" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)', minHeight: '100vh' }}>
+    <div className="relative w-full" style={{ background: 'linear-gradient(135deg, #F5F3FF 0%, #F8F9FE 50%, #F0F1FF 100%)', minHeight: '100vh' }}>
       <TopNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 text-center relative overflow-hidden">
+      <section className="min-h-screen flex flex-col justify-center pt-32 pb-20 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 800px 500px at 50% 0%, rgba(91,95,255,0.07), transparent)' }} />
+          style={{ background: 'radial-gradient(ellipse 800px 500px at 50% 0%, rgba(123,97,255,0.07), transparent)' }} />
         <div className="max-w-3xl mx-auto relative">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-bold tracking-widest uppercase"
-            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.08)', border: '1px solid rgba(91,95,255,0.15)' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#5B5FFF] animate-pulse" />
+            style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.08)', border: '1px solid rgba(123,97,255,0.15)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7B61FF] animate-pulse" />
             AI Operators
           </motion.div>
 
@@ -142,7 +142,7 @@ export default function SolutionAIOperators() {
             className="text-[clamp(2.8rem,6vw,4.5rem)] font-extrabold leading-[1.05] tracking-[-0.04em] mb-6"
             style={{ color: '#0A0F1E' }}>
             An AI team that handles<br />
-            <span style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <span style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               the work that fills your day.
             </span>
           </motion.h1>
@@ -156,12 +156,12 @@ export default function SolutionAIOperators() {
             className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
             <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
               className="px-10 py-4 rounded-full text-base font-bold text-white"
-              style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 8px 28px rgba(91,95,255,0.35)' }}>
+              style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 28px rgba(123,97,255,0.35)' }}>
               Start free trial →
             </button>
             <a href="mailto:hello@freemi.ai"
               className="px-8 py-4 rounded-full text-base font-semibold text-center"
-              style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.2)' }}>
+              style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.2)' }}>
               Book a demo
             </a>
           </motion.div>
@@ -171,7 +171,7 @@ export default function SolutionAIOperators() {
             {['7-day free trial', 'Live in 1–2 days', 'No technical setup'].map(t => (
               <span key={t} className="flex items-center gap-1.5">
                 <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] font-black text-indigo-500"
-                  style={{ background: 'rgba(91,95,255,0.1)' }}>✓</span>
+                  style={{ background: 'rgba(123,97,255,0.1)' }}>✓</span>
                 {t}
               </span>
             ))}
@@ -185,7 +185,7 @@ export default function SolutionAIOperators() {
           <ScrollReveal>
             <div className="text-center mb-14">
               <span className="inline-block text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4"
-                style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
+                style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.1)' }}>
                 What your operators do
               </span>
               <h2 className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-extrabold tracking-[-0.03em]" style={{ color: '#0A0F1E' }}>
@@ -199,18 +199,18 @@ export default function SolutionAIOperators() {
             {operators.map((op, i) => (
               <ScrollReveal key={op.name} delay={i * 0.05}>
                 <div className="rounded-2xl overflow-hidden"
-                  style={{ border: '1px solid rgba(91,95,255,0.08)', background: '#FAFBFF', boxShadow: '0 2px 16px rgba(0,0,0,0.03)' }}>
+                  style={{ border: '1px solid rgba(123,97,255,0.08)', background: '#FAFBFF', boxShadow: '0 2px 16px rgba(0,0,0,0.03)' }}>
                   <div className="grid md:grid-cols-2 gap-0">
                     {/* Left */}
-                    <div className="p-8 md:border-r" style={{ borderColor: 'rgba(91,95,255,0.06)' }}>
+                    <div className="p-8 md:border-r" style={{ borderColor: 'rgba(123,97,255,0.06)' }}>
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                          style={{ background: 'rgba(91,95,255,0.08)' }}>
+                          style={{ background: 'rgba(123,97,255,0.08)' }}>
                           {op.emoji}
                         </div>
                         <div>
                           <h3 className="text-base font-bold" style={{ color: '#0A0F1E' }}>{op.name}</h3>
-                          <p className="text-xs font-semibold" style={{ color: '#5B5FFF' }}>{op.tagline}</p>
+                          <p className="text-xs font-semibold" style={{ color: '#7B61FF' }}>{op.tagline}</p>
                         </div>
                       </div>
                       <p className="text-sm text-gray-500 leading-relaxed mb-5">{op.desc}</p>
@@ -218,8 +218,8 @@ export default function SolutionAIOperators() {
                         {op.does.map(d => (
                           <div key={d} className="flex items-center gap-2.5 text-sm text-gray-700">
                             <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
-                              style={{ background: 'rgba(91,95,255,0.1)' }}>
-                              <span className="text-[8px] font-black" style={{ color: '#5B5FFF' }}>✓</span>
+                              style={{ background: 'rgba(123,97,255,0.1)' }}>
+                              <span className="text-[8px] font-black" style={{ color: '#7B61FF' }}>✓</span>
                             </div>
                             {d}
                           </div>
@@ -228,7 +228,7 @@ export default function SolutionAIOperators() {
                       <div className="flex flex-wrap gap-2">
                         {op.connects.map(c => (
                           <span key={c} className="px-3 py-1 rounded-full text-xs font-semibold"
-                            style={{ background: 'rgba(91,95,255,0.06)', color: '#5B5FFF', border: '1px solid rgba(91,95,255,0.12)' }}>
+                            style={{ background: 'rgba(123,97,255,0.06)', color: '#7B61FF', border: '1px solid rgba(123,97,255,0.12)' }}>
                             {c}
                           </span>
                         ))}
@@ -237,7 +237,7 @@ export default function SolutionAIOperators() {
 
                     {/* Right — live example */}
                     <div className="p-8 flex flex-col justify-center"
-                      style={{ background: 'rgba(91,95,255,0.015)' }}>
+                      style={{ background: 'rgba(123,97,255,0.015)' }}>
                       <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400 block mb-4">Live example</span>
                       <div className="space-y-3">
                         <div className="flex justify-end">
@@ -248,11 +248,11 @@ export default function SolutionAIOperators() {
                         </div>
                         <div className="flex items-start gap-2.5">
                           <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                            style={{ background: 'rgba(91,95,255,0.12)' }}>
+                            style={{ background: 'rgba(123,97,255,0.12)' }}>
                             <span className="text-sm">{op.emoji}</span>
                           </div>
                           <div className="max-w-[85%] px-4 py-2.5 rounded-2xl rounded-tl-sm text-sm leading-relaxed text-gray-700"
-                            style={{ background: 'rgba(91,95,255,0.07)', border: '1px solid rgba(91,95,255,0.1)' }}>
+                            style={{ background: 'rgba(123,97,255,0.07)', border: '1px solid rgba(123,97,255,0.1)' }}>
                             {op.example.operator}
                           </div>
                         </div>
@@ -277,7 +277,7 @@ export default function SolutionAIOperators() {
           <ScrollReveal>
             <div className="text-center mb-14">
               <span className="inline-block text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4"
-                style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
+                style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.1)' }}>
                 How it works
               </span>
               <h2 className="text-[clamp(1.8rem,3.5vw,2.6rem)] font-extrabold tracking-[-0.03em]" style={{ color: '#0A0F1E' }}>
@@ -287,15 +287,15 @@ export default function SolutionAIOperators() {
           </ScrollReveal>
           <div className="relative">
             <div className="hidden md:block absolute left-[72px] top-4 bottom-4 w-px"
-              style={{ background: 'linear-gradient(180deg, #5B5FFF, rgba(91,95,255,0.05))' }} />
+              style={{ background: 'linear-gradient(180deg, #7B61FF, rgba(123,97,255,0.05))' }} />
             <div className="space-y-4">
               {timeline.map((t, i) => (
                 <ScrollReveal key={t.day} delay={i * 0.1}>
                   <div className="flex gap-5 items-start p-6 rounded-2xl"
-                    style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(91,95,255,0.07)', boxShadow: '0 2px 16px rgba(0,0,0,0.03)' }}>
+                    style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(123,97,255,0.07)', boxShadow: '0 2px 16px rgba(0,0,0,0.03)' }}>
                     <div className="flex-shrink-0 text-center relative z-10" style={{ minWidth: 90 }}>
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-1"
-                        style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 4px 16px rgba(91,95,255,0.25)' }}>
+                        style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 4px 16px rgba(123,97,255,0.25)' }}>
                         <span className="text-white text-xs font-black">{i + 1}</span>
                       </div>
                       <span className="text-[9px] font-bold tracking-widest uppercase text-indigo-400">{t.day}</span>
@@ -351,7 +351,7 @@ export default function SolutionAIOperators() {
           <div className="space-y-3">
             {faqs.map((faq, i) => (
               <ScrollReveal key={faq.q} delay={i * 0.04}>
-                <div className="p-6 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(91,95,255,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}>
+                <div className="p-6 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(123,97,255,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}>
                   <h3 className="font-bold text-sm mb-2" style={{ color: '#0A0F1E' }}>{faq.q}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{faq.a}</p>
                 </div>
@@ -366,7 +366,7 @@ export default function SolutionAIOperators() {
         <div className="max-w-2xl mx-auto">
           <ScrollReveal>
             <div className="text-center px-8 py-12 rounded-3xl relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)', boxShadow: '0 20px 60px rgba(91,95,255,0.28)' }}>
+              style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 20px 60px rgba(123,97,255,0.28)' }}>
               <div className="flex justify-center mb-4">
                 <FreemiCharacter size="sm" />
               </div>
@@ -379,7 +379,7 @@ export default function SolutionAIOperators() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
                   className="px-8 py-3 rounded-full bg-white font-bold text-sm hover:scale-105 transition-transform"
-                  style={{ color: '#5B5FFF' }}>
+                  style={{ color: '#7B61FF' }}>
                   Start free trial →
                 </button>
                 <button onClick={() => navigate('/for-business')}

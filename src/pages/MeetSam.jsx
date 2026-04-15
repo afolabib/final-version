@@ -6,12 +6,12 @@ import SystemMetadata from '../components/SystemMetadata';
 
 export default function MeetSam() {
   return (
-    <div className="relative min-h-screen bg-[#EEF0F8] text-surface overflow-y-auto overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#F5F3FF] text-surface overflow-y-auto overflow-x-hidden">
       <InteractiveGrid />
       <SystemMetadata />
       <TopNav />
 
-      <main className="pt-20 pb-20">
+      <main className="min-h-screen flex flex-col justify-center pt-20 pb-20">
         {/* Hero */}
         <section className="max-w-4xl mx-auto px-4 mb-16">
           <div className="text-center">

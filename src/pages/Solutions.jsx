@@ -17,7 +17,7 @@ const agents = [
     key: 'freemi',
     name: 'Freemi',
     role: 'AI Operator Platform',
-    color: '#5B5FFF',
+    color: '#7B61FF',
     personality: 'Your always-on AI operator that coordinates the work before specialists take over',
     description: 'Freemi is the front door to your agent workforce — triaging requests, understanding intent, routing work, and making sure every task lands with the right specialist. Start with Freemi, then deploy the agents that fit your workflow.',
     tasks: [

@@ -51,19 +51,19 @@ export default function ForBusiness() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative w-full text-surface" style={{ background: 'linear-gradient(135deg, #EEF0F8 0%, #F8F9FE 50%, #F0F1FF 100%)', minHeight: '100vh' }}>
+    <div className="relative w-full text-surface" style={{ background: 'linear-gradient(135deg, #F5F3FF 0%, #F8F9FE 50%, #F0F1FF 100%)', minHeight: '100vh' }}>
       <TopNav />
 
       {/* Hero */}
       <section className="min-h-screen flex flex-col justify-center pt-32 pb-20 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 900px 500px at 50% 0%, rgba(91,95,255,0.08), transparent)' }} />
+          style={{ background: 'radial-gradient(ellipse 900px 500px at 50% 0%, rgba(123,97,255,0.08), transparent)' }} />
 
         <div className="max-w-3xl mx-auto relative">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-bold tracking-widest uppercase"
-            style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.08)', border: '1px solid rgba(91,95,255,0.15)' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#5B5FFF] animate-pulse" />
+            style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.08)', border: '1px solid rgba(123,97,255,0.15)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7B61FF] animate-pulse" />
             Website + AI for your business
           </motion.div>
 
@@ -71,7 +71,7 @@ export default function ForBusiness() {
             className="text-[clamp(2.8rem,6vw,5rem)] font-extrabold leading-[1.04] tracking-[-0.04em] mb-6"
             style={{ color: '#0A0F1E' }}>
             A website that works<br />
-            <span style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <span style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               even when you don't.
             </span>
           </motion.h1>
@@ -85,12 +85,12 @@ export default function ForBusiness() {
             className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
             <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
               className="px-10 py-4 rounded-full text-base font-bold text-white"
-              style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 8px 28px rgba(91,95,255,0.35)' }}>
+              style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 28px rgba(123,97,255,0.35)' }}>
               Get started →
             </button>
             <a href="mailto:hello@freemi.ai"
               className="px-8 py-4 rounded-full text-base font-semibold"
-              style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.2)' }}>
+              style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.2)' }}>
               Book a call
             </a>
           </motion.div>
@@ -100,7 +100,7 @@ export default function ForBusiness() {
             {['From €1,500 one-off build', '€49.99/month after', 'We manage everything'].map(t => (
               <span key={t} className="flex items-center gap-1.5">
                 <span className="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black"
-                  style={{ background: 'rgba(91,95,255,0.1)', color: '#5B5FFF' }}>✓</span>
+                  style={{ background: 'rgba(123,97,255,0.1)', color: '#7B61FF' }}>✓</span>
                 {t}
               </span>
             ))}
@@ -113,7 +113,7 @@ export default function ForBusiness() {
         <div className="max-w-4xl mx-auto">
           <ScrollReveal>
             <div className="rounded-3xl overflow-hidden"
-              style={{ background: '#0A0F1E', border: '1px solid rgba(91,95,255,0.2)', boxShadow: '0 24px 80px rgba(91,95,255,0.15)' }}>
+              style={{ background: '#0A0F1E', border: '1px solid rgba(123,97,255,0.2)', boxShadow: '0 24px 80px rgba(123,97,255,0.15)' }}>
               <div className="p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center">
                 <div>
                   <span className="text-xs font-bold tracking-widest uppercase block mb-3"
@@ -131,11 +131,11 @@ export default function ForBusiness() {
                 </div>
 
                 <div className="rounded-2xl overflow-hidden"
-                  style={{ background: '#111827', border: '1px solid rgba(91,95,255,0.15)' }}>
+                  style={{ background: '#111827', border: '1px solid rgba(123,97,255,0.15)' }}>
                   <div className="px-4 py-3 flex items-center gap-2.5"
-                    style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(91,95,255,0.08)' }}>
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(123,97,255,0.08)' }}>
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-                      style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)' }}>
+                      style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)' }}>
                       <div className="w-2.5 h-2.5 rounded-full bg-white opacity-90" />
                     </div>
                     <div>
@@ -157,7 +157,7 @@ export default function ForBusiness() {
                       <div key={i} className={`flex ${m.s === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className="max-w-[80%] px-3 py-2 text-xs leading-relaxed"
                           style={{
-                            background: m.s === 'bot' ? 'rgba(91,95,255,0.18)' : 'rgba(255,255,255,0.07)',
+                            background: m.s === 'bot' ? 'rgba(123,97,255,0.18)' : 'rgba(255,255,255,0.07)',
                             color: m.s === 'bot' ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.6)',
                             borderRadius: m.s === 'bot' ? '12px 12px 12px 3px' : '12px 12px 3px 12px',
                           }}>
@@ -183,7 +183,7 @@ export default function ForBusiness() {
           <ScrollReveal>
             <div className="text-center mb-14">
               <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
-                style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
+                style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.1)' }}>
                 What's included
               </span>
               <TextReveal>
@@ -197,7 +197,7 @@ export default function ForBusiness() {
             {includes.map((item, i) => (
               <ScrollReveal key={item.title} delay={i * 0.07}>
                 <div className="p-6 rounded-2xl bg-white/80 backdrop-blur-sm h-full"
-                  style={{ border: '1px solid rgba(91,95,255,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+                  style={{ border: '1px solid rgba(123,97,255,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
                   <div className="text-2xl mb-3">{item.emoji}</div>
                   <h3 className="text-base font-bold mb-2" style={{ color: '#0A0F1E' }}>{item.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
@@ -214,7 +214,7 @@ export default function ForBusiness() {
           <ScrollReveal>
             <div className="text-center mb-14">
               <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
-                style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
+                style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.1)' }}>
                 How it works
               </span>
               <h2 className="text-[clamp(2rem,4vw,3rem)] font-extrabold tracking-[-0.04em]" style={{ color: '#0A0F1E' }}>
@@ -224,18 +224,18 @@ export default function ForBusiness() {
           </ScrollReveal>
           <div className="relative">
             <div className="hidden md:block absolute left-8 top-8 bottom-8 w-px"
-              style={{ background: 'linear-gradient(180deg, #5B5FFF, rgba(91,95,255,0.08))' }} />
+              style={{ background: 'linear-gradient(180deg, #7B61FF, rgba(123,97,255,0.08))' }} />
             <div className="space-y-4">
               {steps.map((step, i) => (
                 <ScrollReveal key={step.num} delay={i * 0.09}>
                   <div className="flex gap-5 items-start p-6 md:p-8 rounded-2xl bg-white/80 backdrop-blur-sm"
-                    style={{ border: '1px solid rgba(91,95,255,0.07)', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+                    style={{ border: '1px solid rgba(123,97,255,0.07)', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl relative z-10"
-                      style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 4px 16px rgba(91,95,255,0.3)' }}>
+                      style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 4px 16px rgba(123,97,255,0.3)' }}>
                       {step.emoji}
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold tracking-widest uppercase block mb-1" style={{ color: '#5B5FFF' }}>
+                      <span className="text-[10px] font-bold tracking-widest uppercase block mb-1" style={{ color: '#7B61FF' }}>
                         Step {step.num}
                       </span>
                       <h3 className="text-base font-bold mb-2" style={{ color: '#0A0F1E' }}>{step.title}</h3>
@@ -254,7 +254,7 @@ export default function ForBusiness() {
         <div className="max-w-3xl mx-auto text-center">
           <ScrollReveal>
             <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full mb-5"
-              style={{ color: '#5B5FFF', background: 'rgba(91,95,255,0.06)', border: '1px solid rgba(91,95,255,0.1)' }}>
+              style={{ color: '#7B61FF', background: 'rgba(123,97,255,0.06)', border: '1px solid rgba(123,97,255,0.1)' }}>
               Pricing
             </span>
             <h2 className="text-[clamp(2rem,4vw,3rem)] font-extrabold tracking-[-0.04em] mb-4" style={{ color: '#0A0F1E' }}>
@@ -265,24 +265,24 @@ export default function ForBusiness() {
           <ScrollReveal delay={0.1}>
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
               <div className="p-8 rounded-2xl text-left bg-white/80 backdrop-blur-sm"
-                style={{ border: '1.5px solid rgba(91,95,255,0.12)', boxShadow: '0 8px 32px rgba(91,95,255,0.08)' }}>
-                <div className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#5B5FFF' }}>New website + AI</div>
+                style={{ border: '1.5px solid rgba(123,97,255,0.12)', boxShadow: '0 8px 32px rgba(123,97,255,0.08)' }}>
+                <div className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#7B61FF' }}>New website + AI</div>
                 <div className="text-4xl font-black tracking-tight mb-1" style={{ color: '#0A0F1E' }}>€1,500</div>
                 <div className="text-sm text-gray-400 mb-5">one-off build</div>
-                <div className="text-2xl font-black tracking-tight mb-1" style={{ color: '#5B5FFF' }}>+ €49.99/mo</div>
+                <div className="text-2xl font-black tracking-tight mb-1" style={{ color: '#7B61FF' }}>+ €49.99/mo</div>
                 <div className="text-sm text-gray-400 mb-7">hosting · AI · maintenance</div>
                 <div className="space-y-2.5">
                   {['Professional website built for you', 'AI concierge embedded & configured', 'Bookings, leads, enquiries handled', 'We manage everything forever'].map(f => (
                     <div key={f} className="flex items-center gap-2.5 text-sm text-gray-600">
                       <span className="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black"
-                        style={{ background: 'rgba(91,95,255,0.1)', color: '#5B5FFF' }}>✓</span>
+                        style={{ background: 'rgba(123,97,255,0.1)', color: '#7B61FF' }}>✓</span>
                       {f}
                     </div>
                   ))}
                 </div>
               </div>
               <div className="p-8 rounded-2xl text-left"
-                style={{ background: 'linear-gradient(135deg, #0A0F1E, #1a1040)', border: '1.5px solid rgba(91,95,255,0.2)', boxShadow: '0 8px 32px rgba(91,95,255,0.15)' }}>
+                style={{ background: 'linear-gradient(135deg, #0A0F1E, #1a1040)', border: '1.5px solid rgba(123,97,255,0.2)', boxShadow: '0 8px 32px rgba(123,97,255,0.15)' }}>
                 <div className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: 'rgba(165,168,255,0.7)' }}>Add AI to existing site</div>
                 <div className="text-4xl font-black tracking-tight mb-1 text-white">€400</div>
                 <div className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.35)' }}>one-off setup</div>
@@ -292,7 +292,7 @@ export default function ForBusiness() {
                   {['AI concierge on your existing site', 'Bookings & lead capture', 'Full dashboard access', 'Ongoing support included'].map(f => (
                     <div key={f} className="flex items-center gap-2.5 text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
                       <span className="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black"
-                        style={{ background: 'rgba(91,95,255,0.2)', color: '#A5A8FF' }}>✓</span>
+                        style={{ background: 'rgba(123,97,255,0.2)', color: '#A5A8FF' }}>✓</span>
                       {f}
                     </div>
                   ))}
@@ -303,7 +303,7 @@ export default function ForBusiness() {
           <ScrollReveal delay={0.15}>
             <p className="text-sm text-gray-400">
               First 3 builds at a discounted rate in exchange for a testimonial.{' '}
-              <a href="mailto:hello@freemi.ai" className="font-semibold" style={{ color: '#5B5FFF' }}>Get in touch →</a>
+              <a href="mailto:hello@freemi.ai" className="font-semibold" style={{ color: '#7B61FF' }}>Get in touch →</a>
             </p>
           </ScrollReveal>
         </div>
@@ -321,7 +321,7 @@ export default function ForBusiness() {
             {faqs.map((faq, i) => (
               <ScrollReveal key={faq.q} delay={i * 0.06}>
                 <div className="p-6 rounded-2xl bg-white/80 backdrop-blur-sm"
-                  style={{ border: '1px solid rgba(91,95,255,0.07)' }}>
+                  style={{ border: '1px solid rgba(123,97,255,0.07)' }}>
                   <h3 className="text-sm font-bold mb-2" style={{ color: '#0A0F1E' }}>{faq.q}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{faq.a}</p>
                 </div>
@@ -336,7 +336,7 @@ export default function ForBusiness() {
         <div className="max-w-2xl mx-auto">
           <ScrollReveal>
             <div className="text-center px-8 py-12 rounded-3xl relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED, #5B5FFF)', boxShadow: '0 20px 60px rgba(91,95,255,0.3)' }}>
+              style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8, #7B61FF)', boxShadow: '0 20px 60px rgba(123,97,255,0.3)' }}>
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute inset-0 opacity-10"
                   style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
@@ -354,7 +354,7 @@ export default function ForBusiness() {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
                     className="px-8 py-3 rounded-full bg-white font-bold text-sm hover:scale-105 transition-transform"
-                    style={{ color: '#5B5FFF' }}>
+                    style={{ color: '#7B61FF' }}>
                     Get started →
                   </button>
                   <a href="mailto:hello@freemi.ai"
