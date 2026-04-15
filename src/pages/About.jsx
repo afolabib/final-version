@@ -224,7 +224,7 @@ export default function About() {
                   </a>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+                  <button onClick={() => window.open('https://freemi-studio.web.app', '_blank')}
                     className="px-10 py-4 rounded-full font-semibold text-base text-white"
                     style={{ border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.08)' }}>
                     Start free trial

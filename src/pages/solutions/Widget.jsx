@@ -113,7 +113,7 @@ export default function SolutionWidget() {
 
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
                 className="flex flex-col sm:flex-row gap-3 mb-6">
-                <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+                <button onClick={() => window.open('https://freemi-studio.web.app', '_blank')}
                   className="px-8 py-3.5 rounded-full text-sm font-bold text-white"
                   style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 8px 24px rgba(91,95,255,0.3)' }}>
                   Start free trial →
@@ -358,7 +358,7 @@ export default function SolutionWidget() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+              <button onClick={() => window.open('https://freemi-studio.web.app', '_blank')}
                 className="w-full py-3 rounded-full text-sm font-bold text-white"
                 style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)' }}>
                 Start free trial →
@@ -404,7 +404,7 @@ export default function SolutionWidget() {
                 Set up in under 24 hours. €19.99/month. Start your 7-day free trial today.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+                <button onClick={() => window.open('https://freemi-studio.web.app', '_blank')}
                   className="px-8 py-3 rounded-full bg-white font-bold text-sm hover:scale-105 transition-transform"
                   style={{ color: '#5B5FFF' }}>
                   Start free trial →

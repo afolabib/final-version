@@ -323,7 +323,7 @@ function HeroSection() {
           {/* CTAs */}
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+              <button onClick={() => window.open('https://freemi-studio.web.app', '_blank')}
                 className="relative px-10 py-4 rounded-full text-white font-semibold text-base overflow-hidden group"
                 style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 32px rgba(123,97,255,0.35)' }}>
                 <span className="relative z-10 flex items-center gap-2">
@@ -956,7 +956,7 @@ function CTAFinalSection() {
               7-day free trial. No credit card. Custom agents built for your business — live in 48 hours.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+              <button onClick={() => window.open('https://freemi-studio.web.app', '_blank')}
                 className="btn-press px-8 py-4 rounded-2xl font-bold text-sm"
                 style={{ background: 'white', color: '#7B61FF', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
                 Start free trial <ArrowRight className="inline ml-2 w-4 h-4" />
