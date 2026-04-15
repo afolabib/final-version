@@ -115,24 +115,40 @@ export default function ProductStudio() {
                   <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full bg-red-400" /><div className="w-3 h-3 rounded-full bg-amber-400" /><div className="w-3 h-3 rounded-full bg-emerald-400" /></div>
                   <div className="flex-1 mx-8"><div className="bg-white border border-gray-200 rounded-lg px-3 py-1 text-xs text-gray-400">yourbusiness.com</div></div>
                 </div>
-                {/* page content */}
-                <div className="p-6 space-y-4">
-                  <div className="h-3 bg-purple-200/40 rounded-full w-2/3" />
-                  <div className="h-8 bg-gradient-to-r from-purple-100/60 to-blue-100/40 rounded-xl w-full" />
-                  <div className="h-3 bg-gray-200/40 rounded-full w-5/6" />
-                  <div className="h-3 bg-gray-200/30 rounded-full w-4/6" />
-                  <div className="grid grid-cols-3 gap-3 mt-6">
-                    {[{ c: 'bg-purple-50' }, { c: 'bg-blue-50' }, { c: 'bg-emerald-50' }].map((b, i) => (
-                      <div key={i} className={`${b.c} rounded-xl p-4 space-y-2`}>
-                        <div className="w-8 h-8 rounded-lg bg-white/60" />
-                        <div className="h-2 bg-white/40 rounded-full w-3/4" />
-                        <div className="h-2 bg-white/30 rounded-full w-1/2" />
+                {/* realistic website content */}
+                <div className="p-5">
+                  {/* nav */}
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-2"><div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500" /><span className="text-[11px] font-bold text-gray-800">GreenPath Clinic</span></div>
+                    <div className="flex gap-4 text-[10px] text-gray-400"><span className="text-gray-700 font-medium">Home</span><span>Services</span><span>Team</span><span>Contact</span></div>
+                    <div className="px-2.5 py-1 rounded-full text-[9px] font-bold text-white bg-emerald-500">Book Now</div>
+                  </div>
+                  {/* hero banner */}
+                  <div className="rounded-xl p-5 mb-4" style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(59,130,246,0.05))' }}>
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Healthcare & Wellness</p>
+                    <p className="text-base font-extrabold text-gray-900 leading-tight">Your health, <span className="text-emerald-500">our priority.</span></p>
+                    <p className="text-[10px] text-gray-500 mt-1.5 max-w-[200px]">Expert care with AI-powered booking. Open 24/7 online.</p>
+                    <div className="flex gap-2 mt-3">
+                      <div className="px-2.5 py-1 rounded-lg text-[8px] font-bold text-white bg-emerald-500">Book Consultation</div>
+                      <div className="px-2.5 py-1 rounded-lg text-[8px] font-medium text-gray-500 border border-gray-200">Our Services</div>
+                    </div>
+                  </div>
+                  {/* services */}
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {[
+                      { name: 'General Check-up', price: '€60', time: '30 min', color: 'bg-emerald-50', border: 'border-emerald-100' },
+                      { name: 'Dental Cleaning', price: '€85', time: '45 min', color: 'bg-blue-50', border: 'border-blue-100' },
+                      { name: 'Physio Session', price: '€75', time: '60 min', color: 'bg-purple-50', border: 'border-purple-100' },
+                    ].map(s => (
+                      <div key={s.name} className={`${s.color} ${s.border} border rounded-lg p-2.5`}>
+                        <p className="text-[9px] font-bold text-gray-800">{s.name}</p>
+                        <div className="flex items-center justify-between mt-1"><span className="text-[7px] text-gray-400">{s.time}</span><span className="text-[8px] font-bold text-gray-600">{s.price}</span></div>
                       </div>
                     ))}
                   </div>
-                  <div className="flex gap-3 mt-4">
-                    <div className="h-10 bg-purple-200/30 rounded-full flex-1" />
-                    <div className="h-10 bg-gray-100 rounded-full w-32" />
+                  {/* trust */}
+                  <div className="flex items-center gap-4 text-[8px] text-gray-400">
+                    <span>⭐ 4.9 Google Reviews</span><span>👥 2,400+ patients</span><span>🤖 AI booking</span>
                   </div>
                 </div>
               </div>
