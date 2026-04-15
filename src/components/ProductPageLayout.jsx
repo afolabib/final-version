@@ -152,7 +152,7 @@ export default function ProductPageLayout({
 
           <motion.div variants={itemVariants} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <button onClick={() => navigate('/signup')}
+              <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
                 className="relative px-10 py-4 rounded-full text-white font-semibold text-base overflow-hidden group"
                 style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor}CC)`, boxShadow: `0 8px 32px ${accentColor}40` }}>
                 <span className="relative z-10 flex items-center gap-2">
@@ -396,7 +396,7 @@ export default function ProductPageLayout({
                     ))}
                   </div>
                   <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-8">
-                    <button onClick={() => navigate('/signup')}
+                    <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
                       className="w-full py-4 rounded-full text-white font-bold text-base relative overflow-hidden group"
                       style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor}CC)`, boxShadow: `0 8px 24px ${accentColor}30` }}>
                       <span className="relative z-10">Start free trial →</span>
@@ -476,7 +476,7 @@ export default function ProductPageLayout({
               <p className="mt-4 text-base text-white/70 max-w-md mx-auto">{ctaSubtitle}</p>
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => navigate('/signup')}
+                  <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
                     className="px-10 py-4 rounded-full font-bold text-base"
                     style={{ background: 'white', color: accentColor, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
                     Start free trial <ArrowRight className="inline ml-2 w-4 h-4" />

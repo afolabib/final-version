@@ -90,7 +90,7 @@ export default function HowItWorks() {
           <motion.p variants={itemV} className="mt-7 text-base md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">Tell us what your business needs. We build custom AI agents, connect them to your tools, and they start working — 24/7, automatically.</motion.p>
           <motion.div variants={itemV} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <button onClick={() => navigate('/signup')} className="relative px-10 py-4 rounded-full text-white font-semibold text-base overflow-hidden group" style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 32px rgba(123,97,255,0.35)' }}>
+              <button onClick={() => window.open('https://studio.freemi.ai', '_blank')} className="relative px-10 py-4 rounded-full text-white font-semibold text-base overflow-hidden group" style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 32px rgba(123,97,255,0.35)' }}>
                 <span className="relative z-10 flex items-center gap-2">Start free trial <ArrowRight className="w-4 h-4" /></span>
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
               </button>
@@ -209,7 +209,7 @@ export default function HowItWorks() {
               <p className="mt-4 text-base text-white/70 max-w-md mx-auto">7-day free trial. No credit card. Custom AI agents live in 48 hours.</p>
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => navigate('/signup')} className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: '#7B61FF', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
+                  <button onClick={() => window.open('https://studio.freemi.ai', '_blank')} className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: '#7B61FF', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
                     Start free trial <ArrowRight className="inline ml-2 w-4 h-4" />
                   </button>
                 </motion.div>
