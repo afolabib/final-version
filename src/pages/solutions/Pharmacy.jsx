@@ -29,7 +29,7 @@ function FloatingBg({ seed = 42 }) {
 const containerV = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
 const itemV = { hidden: { opacity: 0, y: 30, filter: 'blur(10px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } } };
 
-const PHARMACY_URL = 'https://freemipharmacy.web.app';
+const PHARMACY_URL = 'https://pharmacy.freemi.ai';
 
 const features = [
   { icon: Phone, title: 'AI Phone Assistant', desc: 'Handles inbound calls, captures prescription orders, answers medication queries, and routes exceptions to your team.', color: '#7B61FF' },
@@ -99,7 +99,7 @@ export default function Pharmacy() {
               {/* browser chrome */}
               <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100">
                 <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full bg-red-300" /><div className="w-3 h-3 rounded-full bg-amber-300" /><div className="w-3 h-3 rounded-full bg-emerald-300" /></div>
-                <div className="flex-1 flex justify-center"><div className="px-4 py-1 rounded-md text-[10px] text-gray-400 bg-gray-50 border border-gray-100 font-mono">freemipharmacy.web.app</div></div>
+                <div className="flex-1 flex justify-center"><div className="px-4 py-1 rounded-md text-[10px] text-gray-400 bg-gray-50 border border-gray-100 font-mono">pharmacy.freemi.ai</div></div>
               </div>
               {/* dashboard */}
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 min-h-[380px]">

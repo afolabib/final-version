@@ -100,7 +100,7 @@ export default function HeroSection() {
           className="flex items-center justify-center gap-3 mb-5"
         >
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            onClick={() => window.open('https://freemi-studio.web.app', '_blank')}
+            onClick={() => window.open('https://studio.freemi.ai', '_blank')}
             className="px-10 py-4 rounded-full text-lg font-bold text-white transition-all"
             style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C6CF7)', boxShadow: '0 8px 32px rgba(91,95,255,0.4)' }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = '0 12px 40px rgba(91,95,255,0.55)'}

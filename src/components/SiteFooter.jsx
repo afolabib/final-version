@@ -61,8 +61,8 @@ export default function SiteFooter() {
             <div>
               <h4 className="text-xs font-bold tracking-[0.15em] uppercase text-gray-400 mb-4">Apps</h4>
               <div className="space-y-2.5">
-                <a href="https://freemi-studio.web.app" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Freemi Studio →</a>
-                <a href="https://freemipharmacy.web.app" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Freemi Pharmacy →</a>
+                <a href="https://studio.freemi.ai" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Freemi Studio →</a>
+                <a href="https://pharmacy.freemi.ai" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Freemi Pharmacy →</a>
                 <Link to="/login" className="block text-sm text-gray-500 hover:text-surface transition-colors font-medium">Dashboard Login</Link>
               </div>
             </div>
