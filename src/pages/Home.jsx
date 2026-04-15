@@ -176,7 +176,7 @@ function SectionHeader({ badge, title, subtitle }) {
 
 /* ── TYPEWRITER ───────────────────────────────────────── */
 
-const typingLines = ['On Autopilot', 'While You Sleep', '24/7', 'Without Hiring'];
+const typingLines = ['On Autopilot.', 'While You Sleep.', 'Without Hiring.', 'Around The Clock.'];
 
 function TypewriterCycle() {
   const [lineIndex, setLineIndex] = useState(0);
