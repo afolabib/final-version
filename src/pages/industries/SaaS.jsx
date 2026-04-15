@@ -27,12 +27,12 @@ export default function SaaS() {
         { icon: Zap, title: 'Scale without hiring', desc: 'Handle 10x the users with the same team. AI does the repetitive work. You build the product.' },
       ]}
       useCases={[
-        { icon: Rocket, title: 'PLG / Self-Serve', desc: 'Trial onboarding, activation nudges, upgrade prompts, and usage-based outreach — all automated.' },
-        { icon: Users, title: 'Sales-Led', desc: 'Lead qualification, demo booking, proposal follow-ups, and deal acceleration.' },
-        { icon: Bug, title: 'Developer Tools', desc: 'API question answering, code examples, integration support, and documentation search.' },
-        { icon: BookOpen, title: 'EdTech', desc: 'Student onboarding, course recommendations, progress tracking, and instructor support.' },
-        { icon: Shield, title: 'Security & Compliance', desc: 'Compliance queries, audit documentation, security questionnaire responses, and certification guidance.' },
-        { icon: Cpu, title: 'Infrastructure', desc: 'Status page updates, incident communication, capacity alerts, and migration support.' },
+        { icon: Rocket, title: 'PLG / Self-Serve', desc: 'Trial onboarding, activation nudges, upgrade prompts, and usage-based outreach — all automated.', color: '#E84393', metric: '3×', metricLabel: 'Trial conversions', features: ['Onboarding', 'Activation', 'Upgrades'] },
+        { icon: Users, title: 'Sales-Led', desc: 'Lead qualification, demo booking, proposal follow-ups, and deal acceleration.', color: '#7B61FF', metric: '73%', metricLabel: 'Auto-qualified', features: ['Qualification', 'Demos', 'Proposals'] },
+        { icon: Bug, title: 'Developer Tools', desc: 'API question answering, code examples, integration support, and documentation search.', color: '#2F8FFF', metric: '89%', metricLabel: 'Auto-resolved', features: ['API Help', 'Code', 'Integrations'] },
+        { icon: BookOpen, title: 'EdTech', desc: 'Student onboarding, course recommendations, progress tracking, and instructor support.', color: '#27C087', metric: '34%', metricLabel: 'Less churn', features: ['Onboarding', 'Courses', 'Progress'] },
+        { icon: Shield, title: 'Security & Compliance', desc: 'Compliance queries, audit documentation, security questionnaire responses, and certification guidance.', color: '#F59E0B', metric: '100%', metricLabel: 'Audit-ready', features: ['Audits', 'Questionnaires', 'Certs'] },
+        { icon: Cpu, title: 'Infrastructure', desc: 'Status page updates, incident communication, capacity alerts, and migration support.', color: '#0984E3', metric: '24/7', metricLabel: 'Monitoring', features: ['Status', 'Incidents', 'Migrations'] },
       ]}
       ctaHeadline="Grow faster. Support better."
       ctaSubtitle="AI agents that scale your SaaS without scaling your team."

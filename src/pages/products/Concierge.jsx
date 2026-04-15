@@ -146,12 +146,12 @@ export default function ProductConcierge() {
         { icon: MessageSquare, title: 'Customers get answered', desc: 'Live on your site 24/7. Answers questions, captures leads, books appointments. You see everything in your dashboard.' },
       ]}
       useCases={[
-        { icon: Scissors, title: 'Salons & Spas', desc: 'Instant answers about services, pricing, and availability. Books appointments directly from the chat.' },
-        { icon: Building2, title: 'Law & Accounting', desc: 'Qualifies potential clients, answers common legal questions, and books initial consultations.' },
-        { icon: Stethoscope, title: 'Medical Clinics', desc: 'Handles appointment requests, answers insurance questions, and manages prescription refill enquiries.' },
-        { icon: Utensils, title: 'Restaurants', desc: 'Takes reservation requests, answers menu questions, handles dietary enquiry and event bookings.' },
-        { icon: GraduationCap, title: 'Education & Coaching', desc: 'Course enquiries, enrollment questions, schedule information — all handled instantly by AI.' },
-        { icon: ShoppingBag, title: 'E-Commerce', desc: 'Product recommendations, order status, returns policy — customer service that scales with your store.' },
+        { icon: Scissors, title: 'Salons & Spas', desc: 'Instant answers about services, pricing, and availability. Books appointments directly from the chat.', color: '#E84393', metric: '89%', metricLabel: 'Auto-resolved', features: ['Booking', 'Pricing', 'Availability'] },
+        { icon: Building2, title: 'Law & Accounting', desc: 'Qualifies potential clients, answers common legal questions, and books initial consultations.', color: '#7B61FF', metric: '3×', metricLabel: 'More leads', features: ['Qualification', 'Intake', 'Scheduling'] },
+        { icon: Stethoscope, title: 'Medical Clinics', desc: 'Handles appointment requests, answers insurance questions, and manages prescription refill enquiries.', color: '#2F8FFF', metric: '73%', metricLabel: 'Auto-handled', features: ['Appointments', 'Insurance', 'Refills'] },
+        { icon: Utensils, title: 'Restaurants', desc: 'Takes reservation requests, answers menu questions, handles dietary enquiry and event bookings.', color: '#27C087', metric: '24/7', metricLabel: 'Availability', features: ['Reservations', 'Menu', 'Events'] },
+        { icon: GraduationCap, title: 'Education & Coaching', desc: 'Course enquiries, enrollment questions, schedule information — all handled instantly by AI.', color: '#F59E0B', metric: '60%', metricLabel: 'Less admin', features: ['Enrollment', 'Schedules', 'FAQs'] },
+        { icon: ShoppingBag, title: 'E-Commerce', desc: 'Product recommendations, order status, returns policy — customer service that scales with your store.', color: '#0984E3', metric: '4s', metricLabel: 'Response', features: ['Orders', 'Returns', 'Recommendations'] },
       ]}
       price={{ amount: '€19.99', period: 'month', setup: 'Widget-only plan. Upgrade anytime for full AI operators.', features: ['AI chat widget on your website', 'Trained on your business', 'Lead capture & notification', 'Booking integration', 'Customisable design & tone', 'Conversation analytics dashboard', 'Email escalation', 'Works on any website platform'] }}
       ctaHeadline="Stop losing customers to silence."

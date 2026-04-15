@@ -27,12 +27,12 @@ export default function Logistics() {
         { icon: Zap, title: 'Operations run themselves', desc: 'Fewer calls, faster responses, happier customers. Your team focuses on what matters.' },
       ]}
       useCases={[
-        { icon: Truck, title: 'Last-Mile Delivery', desc: 'ETA updates, delivery instructions, failed delivery rebooking, and proof of delivery notifications.' },
-        { icon: Warehouse, title: 'Warehouse & Fulfilment', desc: 'Order status updates, stock alerts, pick-pack notifications, and dispatch confirmations.' },
-        { icon: Container, title: 'Freight & Shipping', desc: 'Shipment tracking, customs documentation queries, arrival notifications, and cargo status updates.' },
-        { icon: Navigation, title: 'Fleet Management', desc: 'Route assignment, driver communication, maintenance scheduling, and incident reporting.' },
-        { icon: Shield, title: 'Cold Chain', desc: 'Temperature alerts, compliance documentation, delivery window management, and quality assurance tracking.' },
-        { icon: Fuel, title: 'Field Services', desc: 'Job assignment, customer scheduling, completion updates, and invoicing triggers.' },
+        { icon: Truck, title: 'Last-Mile Delivery', desc: 'ETA updates, delivery instructions, failed delivery rebooking, and proof of delivery notifications.', color: '#E84393', metric: '99.2%', metricLabel: 'On-time', features: ['ETAs', 'Rebooking', 'Proof'] },
+        { icon: Warehouse, title: 'Warehouse & Fulfilment', desc: 'Order status updates, stock alerts, pick-pack notifications, and dispatch confirmations.', color: '#7B61FF', metric: '70%', metricLabel: 'Fewer calls', features: ['Stock', 'Pick-Pack', 'Dispatch'] },
+        { icon: Container, title: 'Freight & Shipping', desc: 'Shipment tracking, customs documentation queries, arrival notifications, and cargo status updates.', color: '#2F8FFF', metric: '24/7', metricLabel: 'Tracking', features: ['Customs', 'Arrivals', 'Cargo'] },
+        { icon: Navigation, title: 'Fleet Management', desc: 'Route assignment, driver communication, maintenance scheduling, and incident reporting.', color: '#27C087', metric: '5hrs', metricLabel: 'Saved daily', features: ['Routes', 'Drivers', 'Maintenance'] },
+        { icon: Shield, title: 'Cold Chain', desc: 'Temperature alerts, compliance documentation, delivery window management, and quality assurance tracking.', color: '#F59E0B', metric: '100%', metricLabel: 'Compliance', features: ['Temp Alerts', 'Compliance', 'QA'] },
+        { icon: Fuel, title: 'Field Services', desc: 'Job assignment, customer scheduling, completion updates, and invoicing triggers.', color: '#0984E3', metric: '3×', metricLabel: 'Efficiency', features: ['Jobs', 'Scheduling', 'Invoicing'] },
       ]}
       ctaHeadline="Smoother operations. Happier customers."
       ctaSubtitle="AI agents that keep your supply chain moving — without the manual overhead."

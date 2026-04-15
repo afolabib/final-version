@@ -27,12 +27,12 @@ export default function Agencies() {
         { icon: Zap, title: 'Your team does what they\'re best at', desc: 'Creative work, strategy, client relationships — while AI handles everything else.' },
       ]}
       useCases={[
-        { icon: Palette, title: 'Design Agencies', desc: 'Client feedback collection, revision tracking, asset delivery, and project status updates.' },
-        { icon: Code, title: 'Dev Agencies', desc: 'Sprint updates, deployment notifications, bug report triage, and client demo scheduling.' },
-        { icon: Megaphone, title: 'Marketing Agencies', desc: 'Campaign reporting, lead handoff, content approval workflows, and performance updates.' },
-        { icon: PenTool, title: 'Content Agencies', desc: 'Brief collection, editorial calendar management, review cycles, and publishing notifications.' },
-        { icon: Target, title: 'SEO & PPC', desc: 'Ranking reports, ad performance summaries, budget alerts, and client strategy calls.' },
-        { icon: TrendingUp, title: 'Consulting', desc: 'Proposal generation, meeting prep, research briefs, and engagement tracking.' },
+        { icon: Palette, title: 'Design Agencies', desc: 'Client feedback collection, revision tracking, asset delivery, and project status updates.', color: '#E84393', metric: '60%', metricLabel: 'Less admin', features: ['Feedback', 'Revisions', 'Delivery'] },
+        { icon: Code, title: 'Dev Agencies', desc: 'Sprint updates, deployment notifications, bug report triage, and client demo scheduling.', color: '#7B61FF', metric: '3×', metricLabel: 'Client capacity', features: ['Sprints', 'Deploys', 'Demos'] },
+        { icon: Megaphone, title: 'Marketing Agencies', desc: 'Campaign reporting, lead handoff, content approval workflows, and performance updates.', color: '#2F8FFF', metric: '12hrs', metricLabel: 'Saved weekly', features: ['Campaigns', 'Leads', 'Approvals'] },
+        { icon: PenTool, title: 'Content Agencies', desc: 'Brief collection, editorial calendar management, review cycles, and publishing notifications.', color: '#27C087', metric: '89%', metricLabel: 'On-time', features: ['Briefs', 'Calendar', 'Publishing'] },
+        { icon: Target, title: 'SEO & PPC', desc: 'Ranking reports, ad performance summaries, budget alerts, and client strategy calls.', color: '#F59E0B', metric: '100%', metricLabel: 'Reports sent', features: ['Rankings', 'Ads', 'Budgets'] },
+        { icon: TrendingUp, title: 'Consulting', desc: 'Proposal generation, meeting prep, research briefs, and engagement tracking.', color: '#0984E3', metric: '24/7', metricLabel: 'Availability', features: ['Proposals', 'Research', 'Tracking'] },
       ]}
       ctaHeadline="More clients. Less overhead."
       ctaSubtitle="AI agents that handle the admin so your team can focus on creative work."

@@ -111,12 +111,12 @@ export default function ProductWhatsApp() {
         { icon: Zap, title: 'Customers get instant replies', desc: 'Every WhatsApp message answered automatically. Orders processed, bookings confirmed, questions resolved.' },
       ]}
       useCases={[
-        { icon: Pill, title: 'Pharmacy', desc: 'Prescription orders via WhatsApp, medication reminders, refill requests, delivery tracking — all automated.' },
-        { icon: Scissors, title: 'Salons & Beauty', desc: 'Appointment booking, rescheduling, service enquiries, and promotional offers — direct to customers\' phones.' },
-        { icon: Stethoscope, title: 'Healthcare', desc: 'Appointment confirmations, test result notifications, prescription reminders — HIPAA-aware responses.' },
-        { icon: Utensils, title: 'Food & Delivery', desc: 'Order taking, delivery updates, menu sharing, and customer feedback — the full ordering experience on WhatsApp.' },
-        { icon: Building2, title: 'Real Estate', desc: 'Property enquiries, viewing bookings, document sharing, and follow-up sequences — all via chat.' },
-        { icon: GraduationCap, title: 'Education', desc: 'Enrollment enquiries, class schedules, assignment reminders, and parent communication — automated.' },
+        { icon: Pill, title: 'Pharmacy', desc: 'Prescription orders via WhatsApp, medication reminders, refill requests, delivery tracking — all automated.', color: '#E84393', metric: '89%', metricLabel: 'Auto-resolved', features: ['Prescriptions', 'Reminders', 'Delivery'] },
+        { icon: Scissors, title: 'Salons & Beauty', desc: 'Appointment booking, rescheduling, service enquiries, and promotional offers — direct to customers\' phones.', color: '#7B61FF', metric: '3×', metricLabel: 'Bookings', features: ['Booking', 'Promos', 'Rescheduling'] },
+        { icon: Stethoscope, title: 'Healthcare', desc: 'Appointment confirmations, test result notifications, prescription reminders — HIPAA-aware responses.', color: '#2F8FFF', metric: '95%', metricLabel: 'Delivered', features: ['Confirmations', 'Results', 'Reminders'] },
+        { icon: Utensils, title: 'Food & Delivery', desc: 'Order taking, delivery updates, menu sharing, and customer feedback — the full ordering experience on WhatsApp.', color: '#27C087', metric: '40%', metricLabel: 'More orders', features: ['Orders', 'Tracking', 'Feedback'] },
+        { icon: Building2, title: 'Real Estate', desc: 'Property enquiries, viewing bookings, document sharing, and follow-up sequences — all via chat.', color: '#F59E0B', metric: '24/7', metricLabel: 'Availability', features: ['Viewings', 'Documents', 'Follow-ups'] },
+        { icon: GraduationCap, title: 'Education', desc: 'Enrollment enquiries, class schedules, assignment reminders, and parent communication — automated.', color: '#0984E3', metric: '60%', metricLabel: 'Less admin', features: ['Enrollment', 'Schedules', 'Parents'] },
       ]}
       ctaHeadline="Meet your customers where they are."
       ctaSubtitle="2 billion people use WhatsApp. Your AI agent is ready to talk to all of them."

@@ -90,12 +90,12 @@ export default function Healthcare() {
         { icon: Zap, title: 'Your practice runs smoother', desc: 'Staff focus on care, not admin. Patients get instant responses. No-shows plummet. Everyone wins.' },
       ]}
       useCases={[
-        { icon: Stethoscope, title: 'General Practice', desc: 'Appointment booking, repeat prescriptions, test results notifications, and health check reminders — all automated.' },
-        { icon: HeartPulse, title: 'Dental Clinics', desc: 'Cleaning reminders, check-up scheduling, treatment plan follow-ups, and insurance pre-authorisation queries.' },
-        { icon: Activity, title: 'Physiotherapy', desc: 'Session bookings, exercise plan reminders, progress check-ins, and referral management.' },
-        { icon: Pill, title: 'Pharmacy', desc: 'Prescription refills, medication reminders, delivery scheduling, and drug interaction queries.' },
-        { icon: Users, title: 'Mental Health', desc: 'Session scheduling, mood check-ins, resource sharing, and crisis protocol escalation.' },
-        { icon: ClipboardList, title: 'Specialist Clinics', desc: 'Referral processing, pre-appointment preparation, post-procedure follow-ups, and results communication.' },
+        { icon: Stethoscope, title: 'General Practice', desc: 'Appointment booking, repeat prescriptions, test results notifications, and health check reminders — all automated.', color: '#E84393', metric: '87%', metricLabel: 'AI-handled', features: ['Appointments', 'Prescriptions', 'Results'] },
+        { icon: HeartPulse, title: 'Dental Clinics', desc: 'Cleaning reminders, check-up scheduling, treatment plan follow-ups, and insurance pre-authorisation queries.', color: '#7B61FF', metric: '40% fewer', metricLabel: 'No-shows', features: ['Reminders', 'Scheduling', 'Insurance'] },
+        { icon: Activity, title: 'Physiotherapy', desc: 'Session bookings, exercise plan reminders, progress check-ins, and referral management.', color: '#2F8FFF', metric: '3×', metricLabel: 'Efficiency', features: ['Bookings', 'Exercises', 'Referrals'] },
+        { icon: Pill, title: 'Pharmacy', desc: 'Prescription refills, medication reminders, delivery scheduling, and drug interaction queries.', color: '#27C087', metric: '92%', metricLabel: 'Auto-resolved', features: ['Refills', 'Reminders', 'Delivery'] },
+        { icon: Users, title: 'Mental Health', desc: 'Session scheduling, mood check-ins, resource sharing, and crisis protocol escalation.', color: '#F59E0B', metric: '24/7', metricLabel: 'Support', features: ['Scheduling', 'Check-ins', 'Crisis'] },
+        { icon: ClipboardList, title: 'Specialist Clinics', desc: 'Referral processing, pre-appointment preparation, post-procedure follow-ups, and results communication.', color: '#0984E3', metric: '8hrs', metricLabel: 'Saved weekly', features: ['Referrals', 'Prep', 'Follow-ups'] },
       ]}
       ctaHeadline="Better care. Less admin."
       ctaSubtitle="AI agents that handle the paperwork so your team can focus on patients."

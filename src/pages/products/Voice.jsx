@@ -110,12 +110,12 @@ export default function ProductVoice() {
         { icon: Zap, title: 'Every call answered', desc: 'Your AI handles inbound calls 24/7. Books appointments, takes orders, and sends you summaries after every call.' },
       ]}
       useCases={[
-        { icon: Pill, title: 'Pharmacy', desc: 'Prescription refill requests, medication questions, delivery scheduling — all handled automatically over the phone.' },
-        { icon: Wrench, title: 'Trades & Plumbing', desc: 'Job qualification, emergency call handling, appointment booking — your AI picks up while you\'re on site.' },
-        { icon: Stethoscope, title: 'Medical & Clinics', desc: 'Appointment booking, triage questions, repeat prescription requests — without overloading reception.' },
-        { icon: Briefcase, title: 'Professional Services', desc: 'Client screening, consultation scheduling, availability checks — first impressions handled perfectly.' },
-        { icon: Utensils, title: 'Restaurants', desc: 'Reservations, menu enquiries, catering requests, event bookings — the phone never goes unanswered.' },
-        { icon: Building2, title: 'Property & Real Estate', desc: 'Viewing requests, availability queries, tenant enquiries — your AI qualifies and books automatically.' },
+        { icon: Pill, title: 'Pharmacy', desc: 'Prescription refill requests, medication questions, delivery scheduling — all handled automatically over the phone.', color: '#E84393', metric: '92%', metricLabel: 'Auto-resolved', features: ['Refills', 'Delivery', 'Queries'] },
+        { icon: Wrench, title: 'Trades & Plumbing', desc: 'Job qualification, emergency call handling, appointment booking — your AI picks up while you\'re on site.', color: '#7B61FF', metric: '100%', metricLabel: 'Calls answered', features: ['Triage', 'Booking', 'Emergency'] },
+        { icon: Stethoscope, title: 'Medical & Clinics', desc: 'Appointment booking, triage questions, repeat prescription requests — without overloading reception.', color: '#2F8FFF', metric: '40% fewer', metricLabel: 'Missed calls', features: ['Appointments', 'Triage', 'Prescriptions'] },
+        { icon: Briefcase, title: 'Professional Services', desc: 'Client screening, consultation scheduling, availability checks — first impressions handled perfectly.', color: '#27C087', metric: '3×', metricLabel: 'Bookings', features: ['Screening', 'Scheduling', 'Follow-up'] },
+        { icon: Utensils, title: 'Restaurants', desc: 'Reservations, menu enquiries, catering requests, event bookings — the phone never goes unanswered.', color: '#F59E0B', metric: '24/7', metricLabel: 'Availability', features: ['Reservations', 'Menu', 'Catering'] },
+        { icon: Building2, title: 'Property & Real Estate', desc: 'Viewing requests, availability queries, tenant enquiries — your AI qualifies and books automatically.', color: '#0984E3', metric: '68%', metricLabel: 'Qualified leads', features: ['Viewings', 'Qualification', 'Enquiries'] },
       ]}
       ctaHeadline="Never miss a call again."
       ctaSubtitle="AI phone agent that answers, books, and reports — 24/7. No hardware needed."

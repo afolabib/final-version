@@ -346,24 +346,88 @@ export default function ProductPageLayout({
                   style={{ background: `${accentColor}10`, color: accentColor, border: `1px solid ${accentColor}18` }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Use Cases
                 </div></ScrollReveal>
-                <ScrollReveal delay={0.1}><h2 className="mt-6 text-4xl md:text-5xl font-extrabold tracking-tight text-surface leading-[1.1]">Built for real businesses.</h2></ScrollReveal>
+                <ScrollReveal delay={0.1}><h2 className="mt-6 text-4xl md:text-5xl font-extrabold tracking-tight text-surface leading-[1.15]">Built for real businesses.</h2></ScrollReveal>
                 <ScrollReveal delay={0.15}><p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto">See how different industries use this to grow.</p></ScrollReveal>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {useCases.map((uc, i) => (
-                  <ScrollReveal key={uc.title} delay={0.1 + i * 0.06}>
-                    <div className="rounded-2xl p-6 h-full"
-                      style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(24px) saturate(180%)', border: '1px solid rgba(0,0,0,0.06)', transition: 'transform 300ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 300ms ease-out, border-color 300ms ease' }}
-                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 20px 50px ${accentColor}12, 0 4px 12px rgba(0,0,0,0.03)`; e.currentTarget.style.borderColor = `${accentColor}25`; }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; }}>
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: `${accentColor}10` }}>
-                        <uc.icon className="w-5 h-5" style={{ color: accentColor }} />
-                      </div>
-                      <h4 className="text-base font-bold text-surface">{uc.title}</h4>
-                      <p className="mt-2 text-sm text-gray-500 leading-relaxed">{uc.desc}</p>
-                    </div>
-                  </ScrollReveal>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {useCases.map((uc, i) => {
+                  const color = uc.color || accentColor;
+                  // Generate mini mockup data rows from title hash
+                  const widths = [75, 55, 85, 45, 65];
+                  return (
+                    <ScrollReveal key={uc.title} delay={0.1 + i * 0.06}>
+                      <motion.div className="rounded-2xl overflow-hidden h-full group"
+                        style={{ background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(24px) saturate(180%)', border: '1px solid rgba(0,0,0,0.06)' }}
+                        whileHover={{ y: -6, borderColor: `${color}30` }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+
+                        {/* mini mockup area */}
+                        <div className="relative h-36 overflow-hidden" style={{ background: `linear-gradient(135deg, ${color}08, ${color}04)` }}>
+                          {/* mini dashboard preview */}
+                          <div className="absolute inset-3 flex gap-2">
+                            {/* mini sidebar */}
+                            <div className="w-10 rounded-lg flex flex-col gap-1.5 p-1.5" style={{ background: `${color}08` }}>
+                              <div className="w-full h-1.5 rounded-full" style={{ background: `${color}25` }} />
+                              <div className="w-3/4 h-1.5 rounded-full" style={{ background: `${color}15` }} />
+                              <div className="w-full h-1.5 rounded-full" style={{ background: `${color}20` }} />
+                              <div className="w-2/3 h-1.5 rounded-full" style={{ background: `${color}12` }} />
+                            </div>
+                            {/* mini content */}
+                            <div className="flex-1 flex flex-col gap-2">
+                              {/* mini stat cards */}
+                              <div className="flex gap-1.5">
+                                {[uc.metric || '89%', uc.metricLabel || 'Auto'].map((s, j) => (
+                                  <div key={j} className="flex-1 rounded-md p-1.5" style={{ background: 'rgba(255,255,255,0.7)', border: `1px solid ${color}10` }}>
+                                    <p className="text-[8px] font-extrabold" style={{ color }}>{s}</p>
+                                    <div className="w-2/3 h-1 rounded-full mt-0.5" style={{ background: `${color}15` }} />
+                                  </div>
+                                ))}
+                              </div>
+                              {/* mini data rows */}
+                              <div className="flex-1 rounded-md p-1.5 space-y-1.5" style={{ background: 'rgba(255,255,255,0.6)', border: `1px solid ${color}08` }}>
+                                {widths.slice(0, 3).map((w, j) => (
+                                  <div key={j} className="flex items-center gap-1.5">
+                                    <div className="w-2 h-2 rounded-full" style={{ background: `${color}${30 + j * 10}` }} />
+                                    <div className="h-1.5 rounded-full" style={{ width: `${w}%`, background: `${color}${15 + j * 5}` }} />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          {/* metric badge */}
+                          {uc.metric && (
+                            <div className="absolute top-2.5 right-2.5 px-2 py-1 rounded-lg text-[9px] font-bold text-white" style={{ background: color, boxShadow: `0 4px 12px ${color}40` }}>
+                              {uc.metric}
+                            </div>
+                          )}
+                          {/* icon badge */}
+                          <div className="absolute bottom-2.5 left-2.5 w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.9)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                            <uc.icon className="w-3.5 h-3.5" style={{ color }} />
+                          </div>
+                        </div>
+
+                        {/* content */}
+                        <div className="p-5">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-base font-bold text-surface">{uc.title}</h4>
+                            <ArrowRight className="w-3.5 h-3.5 text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-1 transition-all duration-300" />
+                          </div>
+                          <p className="text-sm text-gray-500 leading-relaxed">{uc.desc}</p>
+                          {/* feature bullets */}
+                          {uc.features && (
+                            <div className="mt-3 flex flex-wrap gap-1.5">
+                              {uc.features.map(f => (
+                                <span key={f} className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${color}08`, color }}>
+                                  {f}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    </ScrollReveal>
+                  );
+                })}
               </div>
             </div>
           </section>

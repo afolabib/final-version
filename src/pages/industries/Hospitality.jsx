@@ -66,12 +66,12 @@ export default function Hospitality() {
         { icon: Zap, title: 'Focus on your guests', desc: 'AI manages bookings. Your team delivers unforgettable experiences.' },
       ]}
       useCases={[
-        { icon: Utensils, title: 'Fine Dining', desc: 'Reservation management, wine pairing suggestions, special occasions, VIP recognition.' },
-        { icon: Coffee, title: 'Cafés', desc: 'Table bookings, daily specials, loyalty programmes, takeaway orders.' },
-        { icon: Wine, title: 'Bars & Nightlife', desc: 'Table reservations, event promotion, guest lists, bottle service.' },
-        { icon: Bed, title: 'Hotels & B&Bs', desc: 'Room availability, concierge services, check-in instructions, local tips.' },
-        { icon: MapPin, title: 'Tourist Attractions', desc: 'Ticket enquiries, group bookings, accessibility info, multi-language support.' },
-        { icon: CreditCard, title: 'Catering', desc: 'Quote requests, menu selection, capacity planning, event coordination.' },
+        { icon: Utensils, title: 'Fine Dining', desc: 'Reservation management, wine pairing suggestions, special occasions, VIP recognition.', color: '#E84393', metric: '3×', metricLabel: 'Bookings', features: ['Reservations', 'Wine Pairing', 'VIP'] },
+        { icon: Coffee, title: 'Cafés', desc: 'Table bookings, daily specials, loyalty programmes, takeaway orders.', color: '#7B61FF', metric: '45%', metricLabel: 'Fewer calls', features: ['Specials', 'Loyalty', 'Takeaway'] },
+        { icon: Wine, title: 'Bars & Nightlife', desc: 'Table reservations, event promotion, guest lists, bottle service.', color: '#2F8FFF', metric: '24/7', metricLabel: 'Booking', features: ['Guest Lists', 'Events', 'Bottle Service'] },
+        { icon: Bed, title: 'Hotels & B&Bs', desc: 'Room availability, concierge services, check-in instructions, local tips.', color: '#27C087', metric: '89%', metricLabel: 'Auto-resolved', features: ['Rooms', 'Concierge', 'Check-in'] },
+        { icon: MapPin, title: 'Tourist Attractions', desc: 'Ticket enquiries, group bookings, accessibility info, multi-language support.', color: '#F59E0B', metric: '4s', metricLabel: 'Response', features: ['Tickets', 'Groups', 'Multi-lang'] },
+        { icon: CreditCard, title: 'Catering', desc: 'Quote requests, menu selection, capacity planning, event coordination.', color: '#0984E3', metric: '60%', metricLabel: 'Less admin', features: ['Quotes', 'Menus', 'Events'] },
       ]}
       ctaHeadline="Fill every table. Answer every call."
       ctaSubtitle="AI agents for hospitality — reservations, events, and guest service on autopilot."

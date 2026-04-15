@@ -155,12 +155,12 @@ export default function ProductBookings() {
         { icon: Globe, title: 'Customers book anywhere', desc: 'From your website, WhatsApp, or phone call — AI handles the entire booking flow and sends confirmations.' },
       ]}
       useCases={[
-        { icon: Scissors, title: 'Salons & Spas', desc: 'Service selection, stylist preference, duration-based availability — customers book their perfect appointment in seconds.' },
-        { icon: Stethoscope, title: 'Medical & Dental', desc: 'Patient intake, appointment type selection, doctor availability, insurance verification — all before they walk in.' },
-        { icon: Dumbbell, title: 'Fitness & PT', desc: 'Class bookings, personal training sessions, membership trials — your schedule fills itself.' },
-        { icon: GraduationCap, title: 'Tutoring & Coaching', desc: 'Session booking, subject matching, recurring appointments — students and parents book without calling.' },
-        { icon: Wrench, title: 'Trades & Services', desc: 'Job type selection, availability by area, estimated duration — qualified bookings before you leave the van.' },
-        { icon: Building2, title: 'Consulting', desc: 'Discovery call booking, meeting type selection, timezone handling — your pipeline fills automatically.' },
+        { icon: Scissors, title: 'Salons & Spas', desc: 'Service selection, stylist preference, duration-based availability — customers book their perfect appointment in seconds.', color: '#E84393', metric: '3×', metricLabel: 'Bookings', features: ['Services', 'Stylists', 'Availability'] },
+        { icon: Stethoscope, title: 'Medical & Dental', desc: 'Patient intake, appointment type selection, doctor availability, insurance verification — all before they walk in.', color: '#7B61FF', metric: '40% fewer', metricLabel: 'No-shows', features: ['Intake', 'Scheduling', 'Insurance'] },
+        { icon: Dumbbell, title: 'Fitness & PT', desc: 'Class bookings, personal training sessions, membership trials — your schedule fills itself.', color: '#2F8FFF', metric: '94%', metricLabel: 'Show rate', features: ['Classes', 'PT Sessions', 'Trials'] },
+        { icon: GraduationCap, title: 'Tutoring & Coaching', desc: 'Session booking, subject matching, recurring appointments — students and parents book without calling.', color: '#27C087', metric: '24/7', metricLabel: 'Booking', features: ['Sessions', 'Matching', 'Recurring'] },
+        { icon: Wrench, title: 'Trades & Services', desc: 'Job type selection, availability by area, estimated duration — qualified bookings before you leave the van.', color: '#F59E0B', metric: '68%', metricLabel: 'Qualified', features: ['Job Types', 'Areas', 'Estimates'] },
+        { icon: Building2, title: 'Consulting', desc: 'Discovery call booking, meeting type selection, timezone handling — your pipeline fills automatically.', color: '#0984E3', metric: '100%', metricLabel: 'Synced', features: ['Discovery', 'Timezones', 'Pipeline'] },
       ]}
       price={{ amount: '€49.99', period: 'month', setup: 'Included with Starter plan. AI bookings across all channels.', features: ['AI-powered booking across all channels', 'Real-time calendar sync', 'Automated confirmations & reminders', 'Self-service reschedule & cancel', 'Multi-service & multi-staff support', 'No-show reduction (WhatsApp reminders)', 'Booking analytics dashboard', 'Custom availability rules'] }}
       ctaHeadline="Your calendar, on autopilot."

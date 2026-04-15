@@ -118,12 +118,12 @@ export default function ProductStudio() {
         { icon: Zap, title: 'Your site goes live with AI', desc: 'Professional website with AI concierge running. Customers get answered. Leads get captured. You watch from the dashboard.' },
       ]}
       useCases={[
-        { icon: Scissors, title: 'Hair & Beauty', desc: 'Online bookings, service menus, AI answering questions about availability and pricing 24/7.' },
-        { icon: Building2, title: 'Professional Services', desc: 'Lead qualification, consultation booking, and client intake — all handled by AI before you even pick up the phone.' },
-        { icon: Stethoscope, title: 'Clinics & Healthcare', desc: 'Appointment scheduling, FAQ handling, prescription refill requests — without hiring reception staff.' },
-        { icon: Utensils, title: 'Restaurants & Hospitality', desc: 'Reservation management, menu enquiries, event bookings — your AI handles it while you focus on service.' },
-        { icon: Dumbbell, title: 'Fitness & Wellness', desc: 'Class bookings, membership enquiries, trainer availability — all automated through your website.' },
-        { icon: ShoppingBag, title: 'Retail & E-Commerce', desc: 'Product questions, order tracking, returns handling — AI customer service that never sleeps.' },
+        { icon: Scissors, title: 'Hair & Beauty', desc: 'Online bookings, service menus, AI answering questions about availability and pricing 24/7.', color: '#E84393', metric: '3× bookings', metricLabel: '24/7 AI', features: ['Online booking', 'Service menu', 'Availability checker'] },
+        { icon: Building2, title: 'Professional Services', desc: 'Lead qualification, consultation booking, and client intake — all handled by AI.', color: '#7B61FF', metric: '47% more leads', metricLabel: 'Auto-qualify', features: ['Lead capture', 'Intake forms', 'Consultation booking'] },
+        { icon: Stethoscope, title: 'Clinics & Healthcare', desc: 'Appointment scheduling, FAQ handling, prescription refills — without hiring reception staff.', color: '#2F8FFF', metric: '40% fewer no-shows', metricLabel: 'AI reminders', features: ['Appointments', 'Reminders', 'Patient FAQs'] },
+        { icon: Utensils, title: 'Restaurants & Hospitality', desc: 'Reservation management, menu enquiries, event bookings — AI handles it while you serve.', color: '#F59E0B', metric: '100% answered', metricLabel: 'Reservations', features: ['Table booking', 'Menu queries', 'Events'] },
+        { icon: Dumbbell, title: 'Fitness & Wellness', desc: 'Class bookings, membership enquiries, trainer availability — all automated through your site.', color: '#27C087', metric: '2× sign-ups', metricLabel: 'Class booking', features: ['Class schedule', 'Membership', 'Trainer booking'] },
+        { icon: ShoppingBag, title: 'Retail & E-Commerce', desc: 'Product questions, order tracking, returns handling — AI customer service that never sleeps.', color: '#0984E3', metric: '80% auto-resolved', metricLabel: 'Support', features: ['Product Q&A', 'Order tracking', 'Returns'] },
       ]}
       price={{ amount: '€1,500', period: 'one-off build', setup: '+ €49.99/month for AI agents, hosting & management', features: ['Professional custom website', 'AI concierge embedded & configured', 'Bookings, leads & enquiry handling', 'Full analytics dashboard', 'Ongoing hosting & management', 'Connected to your tools (Gmail, Calendar, etc.)', 'Unlimited content updates', 'Mobile responsive design'] }}
       ctaHeadline="Get a website that works for you."

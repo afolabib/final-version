@@ -27,12 +27,12 @@ export default function ECommerce() {
         { icon: Zap, title: 'Scale without hiring', desc: 'Handle 10x the customer volume with the same team. AI does the heavy lifting.' },
       ]}
       useCases={[
-        { icon: Tag, title: 'Fashion & Apparel', desc: 'Sizing help, style recommendations, return/exchange handling, and new collection announcements.' },
-        { icon: Heart, title: 'Beauty & Wellness', desc: 'Ingredient queries, routine recommendations, subscription management, and reorder reminders.' },
-        { icon: Gift, title: 'Gifts & Specialty', desc: 'Gift finder, personalisation options, delivery timing, and corporate order handling.' },
-        { icon: CreditCard, title: 'Subscriptions', desc: 'Subscription management, billing queries, pause/cancel handling, and renewal reminders.' },
-        { icon: Percent, title: 'Marketplace', desc: 'Vendor queries, order routing, dispute resolution, and multi-seller coordination.' },
-        { icon: Truck, title: 'D2C Brands', desc: 'Pre-sale questions, shipping updates, loyalty rewards, and post-purchase engagement.' },
+        { icon: Tag, title: 'Fashion & Apparel', desc: 'Sizing help, style recommendations, return/exchange handling, and new collection announcements.', color: '#E84393', metric: '35%', metricLabel: 'Cart recovery', features: ['Sizing', 'Returns', 'Collections'] },
+        { icon: Heart, title: 'Beauty & Wellness', desc: 'Ingredient queries, routine recommendations, subscription management, and reorder reminders.', color: '#7B61FF', metric: '89%', metricLabel: 'Auto-resolved', features: ['Ingredients', 'Routines', 'Subscriptions'] },
+        { icon: Gift, title: 'Gifts & Specialty', desc: 'Gift finder, personalisation options, delivery timing, and corporate order handling.', color: '#2F8FFF', metric: '3×', metricLabel: 'Conversions', features: ['Gift Finder', 'Corporate', 'Delivery'] },
+        { icon: CreditCard, title: 'Subscriptions', desc: 'Subscription management, billing queries, pause/cancel handling, and renewal reminders.', color: '#27C087', metric: '34%', metricLabel: 'Less churn', features: ['Billing', 'Pause/Cancel', 'Renewals'] },
+        { icon: Percent, title: 'Marketplace', desc: 'Vendor queries, order routing, dispute resolution, and multi-seller coordination.', color: '#F59E0B', metric: '80%', metricLabel: 'Auto-handled', features: ['Vendors', 'Disputes', 'Routing'] },
+        { icon: Truck, title: 'D2C Brands', desc: 'Pre-sale questions, shipping updates, loyalty rewards, and post-purchase engagement.', color: '#0984E3', metric: '4s', metricLabel: 'Response', features: ['Shipping', 'Loyalty', 'Engagement'] },
       ]}
       ctaHeadline="Sell more. Support less."
       ctaSubtitle="AI agents that handle your customer service so you can focus on growing your brand."
