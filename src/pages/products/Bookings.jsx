@@ -230,48 +230,59 @@ export default function ProductBookings() {
         </div>
       </section>
 
-      {/* ═══ PRICING ═══ */}
+            {/* ═══ PRICING ═══ */}
       <section className="py-20 px-6">
-        <ScrollReveal>
-          <div className="max-w-lg mx-auto">
-            <div className="rounded-3xl p-10 text-center" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: `0 16px 48px ${AC}08` }}>
-              <h3 className="text-2xl font-extrabold text-surface mb-10">Simple pricing</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
-                {/* Basic */}
-                <div className="rounded-2xl p-7 relative" style={{ background: 'rgba(255,255,255,0.95)', border: '2px solid #F59E0B30', boxShadow: '0 8px 32px #F59E0B12' }}>
-                  <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: '#F59E0B' }}>Most Popular</div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Basic</p>
-                  <div className="flex items-baseline gap-1 mt-2"><span className="text-4xl font-extrabold" style={{ color: '#F59E0B' }}>€49.99</span><span className="text-gray-400 text-sm">/month</span></div>
-                  <p className="text-xs text-gray-400 mt-2 mb-5">Everything you need to get started.</p>
-                  <div className="space-y-2.5">
-                    {['AI booking system', 'Calendar sync', 'Automated reminders', 'Self-service reschedule', 'Multi-service support', 'Booking analytics'].map(f => (
-                      <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: '#F59E0B15' }}><Check className="w-2.5 h-2.5" style={{ color: '#F59E0B' }} /></div><span className="text-xs text-gray-600">{f}</span></div>
-                    ))}
-                  </div>
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
-                    <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-3.5 rounded-full text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, #F59E0B, #F59E0BCC)`, boxShadow: `0 6px 20px #F59E0B40` }}>Get started →</button>
-                  </motion.div>
-                </div>
-                {/* Custom */}
-                <div className="rounded-2xl p-7" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
-                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Custom</p>
-                  <div className="flex items-baseline gap-1 mt-2"><span className="text-4xl font-extrabold text-surface">Custom</span></div>
-                  <p className="text-xs text-gray-400 mt-2 mb-5">For larger projects and enterprise needs.</p>
-                  <div className="space-y-2.5">
-                    {['Everything in Basic', 'Multi-location', 'Custom booking flows', 'Payment collection', 'Priority support', 'Dedicated account manager'].map(f => (
-                      <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0,0,0,0.04)' }}><Check className="w-2.5 h-2.5 text-gray-400" /></div><span className="text-xs text-gray-600">{f}</span></div>
-                    ))}
-                  </div>
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
-                    <a href="mailto:hello@freemi.ai" className="block w-full py-3.5 rounded-full text-center font-bold text-sm" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#374151' }}>Talk to us →</a>
-                  </motion.div>
-                </div>
-              </div></div>
+        <div className="text-center mb-12"><ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Simple <span style={{ color: '#F59E0B' }}>pricing.</span></h2></ScrollReveal></div>
+        <ScrollReveal delay={0.1}>
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Starter */}
+            <div className="rounded-2xl p-7 text-left" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Starter</p>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">€29.99</span><span className="text-gray-400 text-sm">/month</span></div>
+              <p className="text-xs text-gray-400 mt-2 mb-5">For small businesses getting started.</p>
+              <div className="space-y-2.5">
+                {['AI booking system', 'Calendar sync', 'Automated reminders', 'Self-service reschedule', '1 service type'].map(f => (
+                  <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0,0,0,0.04)' }}><Check className="w-2.5 h-2.5 text-gray-400" /></div><span className="text-xs text-gray-600">{f}</span></div>
+                ))}
+              </div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-3.5 rounded-full font-bold text-sm" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#374151' }}>Get started →</button>
+              </motion.div>
+            </div>
+            {/* Growth */}
+            <div className="rounded-2xl p-7 text-left relative" style={{ background: 'rgba(255,255,255,0.95)', border: `2px solid #F59E0B30`, boxShadow: `0 16px 48px #F59E0B12`, transform: 'scale(1.02)' }}>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: '#F59E0B' }}>Most Popular</div>
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Growth</p>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold" style={{ color: '#F59E0B' }}>€49.99</span><span className="text-gray-400 text-sm">/month</span></div>
+              <p className="text-xs text-gray-400 mt-2 mb-5">For growing businesses that need more.</p>
+              <div className="space-y-2.5">
+                {['Everything in Starter', 'Multi-service support', 'Multi-staff', 'WhatsApp reminders', 'Booking analytics', 'Priority support'].map(f => (
+                  <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: '#F59E0B15' }}><Check className="w-2.5 h-2.5" style={{ color: '#F59E0B' }} /></div><span className="text-xs text-gray-600">{f}</span></div>
+                ))}
+              </div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-3.5 rounded-full text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, #F59E0B, #F59E0BCC)`, boxShadow: `0 6px 20px #F59E0B40` }}>Get started →</button>
+              </motion.div>
+            </div>
+            {/* Scale */}
+            <div className="rounded-2xl p-7 text-left" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Scale</p>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">Custom</span></div>
+              <p className="text-xs text-gray-400 mt-2 mb-5">For enterprise and custom needs.</p>
+              <div className="space-y-2.5">
+                {['Everything in Growth', 'Multi-location', 'Custom booking flows', 'Payment collection', 'Dedicated manager', 'SLA guarantee'].map(f => (
+                  <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0,0,0,0.04)' }}><Check className="w-2.5 h-2.5 text-gray-400" /></div><span className="text-xs text-gray-600">{f}</span></div>
+                ))}
+              </div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                <a href="mailto:hello@freemi.ai" className="block w-full py-3.5 rounded-full text-center font-bold text-sm" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#374151' }}>Talk to us →</a>
+              </motion.div>
+            </div>
           </div>
         </ScrollReveal>
       </section>
 
-      {/* ═══ TESTIMONIALS ═══ */}
+{/* ═══ TESTIMONIALS ═══ */}
       <section className="py-20 px-6 relative overflow-hidden"><FloatingBg seed={183} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="text-center mb-12"><ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Calendar on <span style={{ color: AC }}>autopilot.</span></h2></ScrollReveal></div>

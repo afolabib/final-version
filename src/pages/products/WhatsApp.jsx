@@ -262,7 +262,59 @@ export default function ProductWhatsApp() {
         </div>
       </section>
 
-      {/* ═══ TESTIMONIALS ═══ */}
+            {/* ═══ PRICING ═══ */}
+      <section className="py-20 px-6">
+        <div className="text-center mb-12"><ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Simple <span style={{ color: '#25D366' }}>pricing.</span></h2></ScrollReveal></div>
+        <ScrollReveal delay={0.1}>
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Starter */}
+            <div className="rounded-2xl p-7 text-left" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Starter</p>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">€49.99</span><span className="text-gray-400 text-sm">/month</span></div>
+              <p className="text-xs text-gray-400 mt-2 mb-5">For small businesses getting started.</p>
+              <div className="space-y-2.5">
+                {['AI WhatsApp agent', 'Auto-replies 24/7', 'Basic order handling', 'Analytics dashboard', '1 number'].map(f => (
+                  <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0,0,0,0.04)' }}><Check className="w-2.5 h-2.5 text-gray-400" /></div><span className="text-xs text-gray-600">{f}</span></div>
+                ))}
+              </div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-3.5 rounded-full font-bold text-sm" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#374151' }}>Get started →</button>
+              </motion.div>
+            </div>
+            {/* Growth */}
+            <div className="rounded-2xl p-7 text-left relative" style={{ background: 'rgba(255,255,255,0.95)', border: `2px solid #25D36630`, boxShadow: `0 16px 48px #25D36612`, transform: 'scale(1.02)' }}>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: '#25D366' }}>Most Popular</div>
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Growth</p>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold" style={{ color: '#25D366' }}>€99.99</span><span className="text-gray-400 text-sm">/month</span></div>
+              <p className="text-xs text-gray-400 mt-2 mb-5">For growing businesses that need more.</p>
+              <div className="space-y-2.5">
+                {['Everything in Starter', 'Advanced order flows', 'Booking integration', 'Broadcast campaigns', 'Payment integration', 'Priority support'].map(f => (
+                  <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: '#25D36615' }}><Check className="w-2.5 h-2.5" style={{ color: '#25D366' }} /></div><span className="text-xs text-gray-600">{f}</span></div>
+                ))}
+              </div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-3.5 rounded-full text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, #25D366, #25D366CC)`, boxShadow: `0 6px 20px #25D36640` }}>Get started →</button>
+              </motion.div>
+            </div>
+            {/* Scale */}
+            <div className="rounded-2xl p-7 text-left" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Scale</p>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">Custom</span></div>
+              <p className="text-xs text-gray-400 mt-2 mb-5">For enterprise and custom needs.</p>
+              <div className="space-y-2.5">
+                {['Everything in Growth', 'Multiple numbers', 'Custom AI training', 'Advanced integrations', 'Dedicated manager', 'SLA guarantee'].map(f => (
+                  <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0,0,0,0.04)' }}><Check className="w-2.5 h-2.5 text-gray-400" /></div><span className="text-xs text-gray-600">{f}</span></div>
+                ))}
+              </div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                <a href="mailto:hello@freemi.ai" className="block w-full py-3.5 rounded-full text-center font-bold text-sm" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#374151' }}>Talk to us →</a>
+              </motion.div>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
+
+{/* ═══ TESTIMONIALS ═══ */}
       <section className="py-20 px-6 relative overflow-hidden"><FloatingBg seed={161} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="text-center mb-12"><ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Loved by <span style={{ color: AC }}>businesses.</span></h2></ScrollReveal></div>
