@@ -67,11 +67,11 @@ export default function Pharmacy() {
               <motion.div variants={itemV}>
                 <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/70 backdrop-blur-xl border border-pink-200/30 shadow-sm mb-8">
                   <Pill className="w-3.5 h-3.5" style={{ color: AC }} />
-                  <span className="text-xs font-semibold text-surface/80 tracking-wide">Freemi | Flu & Vaccine Bookings</span>
+                  <span className="text-xs font-semibold text-surface/80 tracking-wide">Freemi | Pharmacy</span>
                 </div>
               </motion.div>
               <motion.h1 variants={itemV} className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
-                Your Flu & Vaccine Bookings<br />
+                Your Pharmacy.<br />
                 <span style={{ color: AC }}>Powered by AI.</span>
               </motion.h1>
               <motion.p variants={itemV} className="text-base md:text-lg text-gray-500 mb-8 leading-relaxed max-w-lg">
@@ -113,7 +113,7 @@ export default function Pharmacy() {
                 {/* dashboard content */}
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2"><Pill className="w-4 h-4 text-purple-500" /><span className="text-[11px] font-bold text-gray-800">Flu & Vaccine Bookings Dashboard</span></div>
+                    <div className="flex items-center gap-2"><Pill className="w-4 h-4 text-purple-500" /><span className="text-[11px] font-bold text-gray-800">Pharmacy Dashboard</span></div>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-bold">AI Active</span>
                   </div>
                   {/* stats row */}
@@ -258,15 +258,15 @@ export default function Pharmacy() {
         <FloatingBg seed={186} />
         <div className="relative z-10 max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Freemi vs <span style={{ color: AC }}>Traditional Flu & Vaccine Bookings.</span></h2></ScrollReveal>
+            <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Freemi vs <span style={{ color: AC }}>Traditional Pharmacy.</span></h2></ScrollReveal>
             <ScrollReveal delay={0.1}><p className="mt-3 text-gray-500">Manual scheduling, phone-only bookings, paper records. Sound familiar?</p></ScrollReveal>
           </div>
           <ScrollReveal delay={0.15}>
             <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: `0 16px 48px rgba(123,97,255,0.06)` }}>
               <div className="grid grid-cols-3 text-xs font-bold uppercase tracking-wider px-6 py-4" style={{ background: `linear-gradient(135deg, rgba(123,97,255,0.05), rgba(123,97,255,0.03))` }}>
                 <span className="text-gray-400">Capability</span>
-                <span className="text-center text-gray-400">Traditional Flu & Vaccine Bookings</span>
-                <span className="text-center" style={{ color: AC }}>Freemi Flu & Vaccine Bookings</span>
+                <span className="text-center text-gray-400">Traditional Pharmacy</span>
+                <span className="text-center" style={{ color: AC }}>Freemi Pharmacy</span>
               </div>
               {differentiators.map((row, i) => (
                 <motion.div key={row.label} className="grid grid-cols-3 px-6 py-3.5 items-center text-sm border-t" style={{ borderColor: 'rgba(0,0,0,0.04)' }}
@@ -297,7 +297,7 @@ export default function Pharmacy() {
               { icon: Pill, title: 'Prescription Refills', desc: 'Appointment booking, repeat prescriptions, test results notifications, and health check reminders.', color: '#E84393', metric: '60%', metricLabel: 'fewer phone calls' },
               { icon: Pill, title: 'OTC & Wellness', desc: 'Cleaning reminders, check-up scheduling, treatment plan follow-ups, and insurance queries.', color: '#7B61FF', metric: '89% fewer', metricLabel: 'No-shows' },
               { icon: BarChart3, title: 'Delivery & Collection', desc: 'Route planning, delivery ETAs, collection notifications, and proof of delivery — automated.', color: '#2F8FFF', metric: '3x', metricLabel: 'Efficiency' },
-              { icon: Pill, title: 'Flu & Vaccine Bookings', desc: 'Appointment scheduling, consent forms, batch management, and follow-up reminders.', color: '#27C087', metric: '92%', metricLabel: 'Auto-resolved' },
+              { icon: Pill, title: 'Pharmacy', desc: 'Appointment scheduling, consent forms, batch management, and follow-up reminders.', color: '#27C087', metric: '92%', metricLabel: 'Auto-resolved' },
               { icon: Users, title: 'Patient Communication', desc: 'Refill reminders, medication alerts, health tips, and promotional messages via WhatsApp.', color: '#F59E0B', metric: '24/7', metricLabel: 'Support' },
               { icon: ClipboardList, title: 'Multi-Branch', desc: 'Referral processing, pre-appointment preparation, post-procedure follow-ups, and results.', color: '#0984E3', metric: '24/7', metricLabel: 'Saved weekly' },
             ].map((uc, i) => (
@@ -333,9 +333,9 @@ export default function Pharmacy() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
-              { quote: 'Phone orders that used to take 5 minutes now take 0. The AI captures everything and queues it perfectly. My team dispenses 30% more scripts per day.', name: 'Ciaran O\'Dowd', role: 'Owner, O\'Dowd Flu & Vaccine Bookings', gradient: `linear-gradient(135deg, ${AC}, #7B61FF)` },
+              { quote: 'Phone orders that used to take 5 minutes now take 0. The AI captures everything and queues it perfectly. My team dispenses 30% more scripts per day.', name: 'Ciaran O\'Dowd', role: 'Owner, O\'Dowd Pharmacy', gradient: `linear-gradient(135deg, ${AC}, #7B61FF)` },
               { quote: 'WhatsApp ordering changed everything. Patients love sending a photo of their prescription and getting a ready for collection text 20 minutes later.', name: 'Niamh Brennan', role: 'Superintendent, HealthFirst', gradient: 'linear-gradient(135deg, #2F8FFF, #27C087)' },
-              { quote: 'The delivery management alone saved us a full staff member. Routes planned, patients notified, confirmations sent — all automatically.', name: 'Dr. Aoife Kelly', role: 'Flu & Vaccine Bookings Manager, MediCare+', gradient: 'linear-gradient(135deg, #27C087, #2F8FFF)' },
+              { quote: 'The delivery management alone saved us a full staff member. Routes planned, patients notified, confirmations sent — all automatically.', name: 'Dr. Aoife Kelly', role: 'Pharmacy Manager, MediCare+', gradient: 'linear-gradient(135deg, #27C087, #2F8FFF)' },
             ].map((t, i) => (
               <ScrollReveal key={t.name} delay={0.1 + i * 0.08}>
                 <div className="relative rounded-2xl p-6 h-full group"
