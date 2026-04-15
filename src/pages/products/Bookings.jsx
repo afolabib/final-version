@@ -235,20 +235,38 @@ export default function ProductBookings() {
         <ScrollReveal>
           <div className="max-w-lg mx-auto">
             <div className="rounded-3xl p-10 text-center" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: `0 16px 48px ${AC}08` }}>
-              <h3 className="text-2xl font-extrabold text-surface">Simple pricing</h3>
-              <div className="mt-6 flex items-baseline justify-center gap-1.5"><span className="text-5xl font-extrabold" style={{ color: AC }}>€49.99</span><span className="text-gray-400 text-base font-medium">/month</span></div>
-              <p className="mt-2 text-sm text-gray-400">Included with Starter plan. AI bookings across all channels.</p>
-              <div className="mt-6 space-y-3 text-left">
-                {['AI booking across all channels', 'Real-time calendar sync', 'Automated reminders', 'Self-service reschedule/cancel', 'Multi-service & staff', 'No-show reduction', 'Booking analytics', 'Custom availability rules'].map(f => (
-                  <div key={f} className="flex items-center gap-3"><div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: `${AC}15` }}><Check className="w-3 h-3" style={{ color: AC }} /></div><span className="text-sm text-gray-600">{f}</span></div>
-                ))}
-              </div>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-8">
-                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-4 rounded-full text-white font-bold text-base relative overflow-hidden group" style={{ background: `linear-gradient(135deg, ${AC}, #D97706)`, boxShadow: `0 8px 24px ${AC}40` }}>
-                  <span className="relative z-10">Start free trial →</span><span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
-                </button>
-              </motion.div>
-            </div>
+              <h3 className="text-2xl font-extrabold text-surface mb-10">Simple pricing</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
+                {/* Basic */}
+                <div className="rounded-2xl p-7 relative" style={{ background: 'rgba(255,255,255,0.95)', border: '2px solid #F59E0B30', boxShadow: '0 8px 32px #F59E0B12' }}>
+                  <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: '#F59E0B' }}>Most Popular</div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Basic</p>
+                  <div className="flex items-baseline gap-1 mt-2"><span className="text-4xl font-extrabold" style={{ color: '#F59E0B' }}>€49.99</span><span className="text-gray-400 text-sm">/month</span></div>
+                  <p className="text-xs text-gray-400 mt-2 mb-5">Everything you need to get started.</p>
+                  <div className="space-y-2.5">
+                    {['AI booking system', 'Calendar sync', 'Automated reminders', 'Self-service reschedule', 'Multi-service support', 'Booking analytics'].map(f => (
+                      <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: '#F59E0B15' }}><Check className="w-2.5 h-2.5" style={{ color: '#F59E0B' }} /></div><span className="text-xs text-gray-600">{f}</span></div>
+                    ))}
+                  </div>
+                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                    <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-3.5 rounded-full text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, #F59E0B, #F59E0BCC)`, boxShadow: `0 6px 20px #F59E0B40` }}>Get started →</button>
+                  </motion.div>
+                </div>
+                {/* Custom */}
+                <div className="rounded-2xl p-7" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
+                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Custom</p>
+                  <div className="flex items-baseline gap-1 mt-2"><span className="text-4xl font-extrabold text-surface">Custom</span></div>
+                  <p className="text-xs text-gray-400 mt-2 mb-5">For larger projects and enterprise needs.</p>
+                  <div className="space-y-2.5">
+                    {['Everything in Basic', 'Multi-location', 'Custom booking flows', 'Payment collection', 'Priority support', 'Dedicated account manager'].map(f => (
+                      <div key={f} className="flex items-center gap-2.5"><div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0,0,0,0.04)' }}><Check className="w-2.5 h-2.5 text-gray-400" /></div><span className="text-xs text-gray-600">{f}</span></div>
+                    ))}
+                  </div>
+                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-6">
+                    <a href="mailto:hello@freemi.ai" className="block w-full py-3.5 rounded-full text-center font-bold text-sm" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#374151' }}>Talk to us →</a>
+                  </motion.div>
+                </div>
+              </div></div>
           </div>
         </ScrollReveal>
       </section>
