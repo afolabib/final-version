@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
-  Code, Users, TrendingUp, Headphones, Mail, BarChart3, Zap, ArrowRight, Check,
+  Code, Users, TrendingUp, Headphones, Mail, Phone, BarChart3, Zap, ArrowRight, Check,
   Star, Bot, Sparkles, Globe, Target, Rocket, Shield, Bug, BookOpen, Cpu, X
 } from 'lucide-react';
 import TopNav from '../../components/TopNav';
