@@ -102,12 +102,12 @@ const products = [
 ];
 
 const agents = [
-  { key: 'sales', name: 'Sales Agent', role: 'Sales', color: '#4A6CF7', desc: 'Qualifies leads, follows up prospects, books meetings, updates your CRM. Never lets a lead go cold.', channels: ['WhatsApp', 'Email', 'CRM'] },
-  { key: 'support', name: 'Support Agent', role: 'Support', color: '#E84393', desc: 'Resolves tickets in seconds. Handles complaints, processes refunds, keeps customers happy.', channels: ['WhatsApp', 'Email', 'Phone'] },
-  { key: 'accounting', name: 'Accounting Agent', role: 'Accounting', color: '#00B894', desc: 'Invoicing, expense tracking, reconciliation, financial reports. Your books, on autopilot.', channels: ['Email', 'Stripe', 'Xero'] },
-  { key: 'booking', name: 'Booking Agent', role: 'Bookings', color: '#F59E0B', desc: 'Manages your calendar, confirms appointments, sends reminders, handles reschedules.', channels: ['Calendar', 'WhatsApp', 'Phone'] },
-  { key: 'admin', name: 'Admin Agent', role: 'Admin', color: '#0984E3', desc: 'Email triage, document management, data entry, scheduling. Your right hand.', channels: ['Gmail', 'Calendar', 'Slack'] },
-  { key: 'marketing', name: 'Marketing Agent', role: 'Marketing', color: '#8B5CF6', desc: 'Content creation, social posting, campaign tracking, audience insights. Growth on autopilot.', channels: ['Social', 'Email', 'Analytics'] },
+  { key: 'sales', name: 'Sales Employee', role: 'Sales', color: '#4A6CF7', desc: 'Qualifies leads, follows up prospects, books meetings, updates your CRM. Never lets a lead go cold.', channels: ['WhatsApp', 'Email', 'CRM'] },
+  { key: 'support', name: 'Support Employee', role: 'Support', color: '#E84393', desc: 'Resolves tickets in seconds. Handles complaints, processes refunds, keeps customers happy.', channels: ['WhatsApp', 'Email', 'Phone'] },
+  { key: 'accounting', name: 'Accounting Employee', role: 'Accounting', color: '#00B894', desc: 'Invoicing, expense tracking, reconciliation, financial reports. Your books, on autopilot.', channels: ['Email', 'Stripe', 'Xero'] },
+  { key: 'booking', name: 'Booking Employee', role: 'Bookings', color: '#F59E0B', desc: 'Manages your calendar, confirms appointments, sends reminders, handles reschedules.', channels: ['Calendar', 'WhatsApp', 'Phone'] },
+  { key: 'admin', name: 'Admin Employee', role: 'Admin', color: '#0984E3', desc: 'Email triage, document management, data entry, scheduling. Your right hand.', channels: ['Gmail', 'Calendar', 'Slack'] },
+  { key: 'marketing', name: 'Marketing Employee', role: 'Marketing', color: '#8B5CF6', desc: 'Content creation, social posting, campaign tracking, audience insights. Growth on autopilot.', channels: ['Social', 'Email', 'Analytics'] },
 ];
 
 const channels = [
@@ -139,9 +139,9 @@ const stats = [
 
 const whatsappConvo = [
   { from: 'user', text: 'How did we do today?' },
-  { from: 'freemi', text: '12 bookings confirmed. 4 new leads qualified. 8 support tickets resolved. Revenue: €2,340.\n\nYour sales agent is following up 3 warm leads tonight.' },
-  { from: 'user', text: 'I need an accounting agent to handle invoices' },
-  { from: 'freemi', text: 'Done. Accounting agent is live — connected to Stripe and your email. First invoices going out now. ✓' },
+  { from: 'freemi', text: '12 bookings confirmed. 4 new leads qualified. 8 support tickets resolved. Revenue: €2,340.\n\nYour sales employee is following up 3 warm leads tonight.' },
+  { from: 'user', text: 'I need an accounting employee to handle invoices' },
+  { from: 'freemi', text: 'Done. Accounting employee is live — connected to Stripe and your email. First invoices going out now. ✓' },
 ];
 
 /* ─── section components ──────────────────────────────────── */
@@ -294,14 +294,14 @@ function HeroSection() {
               <span className="flex items-center justify-center w-5 h-5 rounded-full" style={{ background: 'rgba(123,97,255,0.15)' }}>
                 <Sparkles className="w-3 h-3" style={{ color: '#7B61FF' }} />
               </span>
-              <span className="text-xs font-semibold text-surface/80 tracking-wide">AI Agents For Every Business</span>
+              <span className="text-xs font-semibold text-surface/80 tracking-wide">AI Employees For Every Business</span>
               <span className="text-xs font-bold" style={{ color: '#7B61FF' }}>New</span>
             </div>
           </motion.div>
 
           {/* headline */}
           <div>
-            {['One Agent Runs', 'Your Entire Business'].map((line, i) => (
+            {['One AI Employee', 'Your Entire Business'].map((line, i) => (
               <motion.div key={i} variants={itemVariants} className="pb-1">
                 <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.2] text-surface">{line}</h1>
               </motion.div>
@@ -315,8 +315,8 @@ function HeroSection() {
 
           {/* subtitle */}
           <motion.p variants={itemVariants} className="text-base md:text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            Freemi is an AI agent that hires other agents, connects to your tools,
-            and lets you control your whole business from WhatsApp.
+            Freemi is your AI employee — it hires other AI employees, connects to your tools,
+            and lets you run your whole business from WhatsApp.
             Calls, bookings, emails, sales, support — all on autopilot.
           </motion.p>
 
@@ -454,11 +454,11 @@ function DashboardPreviewSection() {
                   <p className="text-xs text-white/50 font-bold uppercase tracking-wider mb-3">Live Activity</p>
                   <div className="space-y-2.5">
                     {[
-                      { agent: 'Sales Agent', action: 'Qualified lead from WhatsApp', time: '2m ago', color: '#4A6CF7', dot: 'bg-blue-400' },
-                      { agent: 'Support Agent', action: 'Resolved ticket #847 — refund processed', time: '5m ago', color: '#E84393', dot: 'bg-pink-400' },
-                      { agent: 'Booking Agent', action: 'Confirmed appointment — Dr. Smith, 3pm', time: '8m ago', color: '#F59E0B', dot: 'bg-amber-400' },
-                      { agent: 'Accounting Agent', action: 'Invoice #312 sent — €1,200', time: '12m ago', color: '#00B894', dot: 'bg-emerald-400' },
-                      { agent: 'Sales Agent', action: 'Follow-up email sent to 3 prospects', time: '15m ago', color: '#4A6CF7', dot: 'bg-blue-400' },
+                      { agent: 'Sales Employee', action: 'Qualified lead from WhatsApp', time: '2m ago', color: '#4A6CF7', dot: 'bg-blue-400' },
+                      { agent: 'Support Employee', action: 'Resolved ticket #847 — refund processed', time: '5m ago', color: '#E84393', dot: 'bg-pink-400' },
+                      { agent: 'Booking Employee', action: 'Confirmed appointment — Dr. Smith, 3pm', time: '8m ago', color: '#F59E0B', dot: 'bg-amber-400' },
+                      { agent: 'Accounting Employee', action: 'Invoice #312 sent — €1,200', time: '12m ago', color: '#00B894', dot: 'bg-emerald-400' },
+                      { agent: 'Sales Employee', action: 'Follow-up email sent to 3 prospects', time: '15m ago', color: '#4A6CF7', dot: 'bg-blue-400' },
                     ].map((item, i) => (
                       <motion.div key={i} className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
                         style={{ background: 'rgba(255,255,255,0.02)' }}
@@ -705,8 +705,8 @@ function AgentShowcaseSection() {
       <div className="relative z-10 max-w-6xl mx-auto">
         <SectionHeader
           badge="Your AI workforce"
-          title={<>Need an agent?<br /><span className="text-gradient">Freemi hires one.</span></>}
-          subtitle="Sales, support, accounting, bookings, admin, marketing — tell Freemi what you need and it spins up a specialist AI agent. No hiring. No training. Just results."
+          title={<>Need help?<br /><span className="text-gradient">Freemi hires an AI employee.</span></>}
+          subtitle="Sales, support, accounting, bookings, admin, marketing — tell Freemi what you need and it hires a specialist AI employee. No recruiting. No training. Just results."
         />
 
         {/* Freemi boss card — full width */}
@@ -724,7 +724,7 @@ function AgentShowcaseSection() {
                   style={{ background: 'rgba(123,97,255,0.1)', color: '#7B61FF' }}>The Boss</span>
               </div>
               <p className="mt-2 text-sm text-gray-500 max-w-xl">
-                Tell Freemi what you need — it hires the right agent, connects your tools, and reports back. Your AI chief of staff that orchestrates everything.
+                Tell Freemi what you need — it hires the right AI employee, connects your tools, and reports back. Your AI chief of staff that orchestrates everything.
               </p>
               <div className="mt-3 flex flex-wrap gap-2 justify-center md:justify-start">
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold"
@@ -950,7 +950,7 @@ function CTAFinalSection() {
             </motion.div>
 
             <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
-              Your AI workforce is waiting.
+              Your AI employees are waiting.
             </h2>
             <p className="mt-4 text-base text-white/80 max-w-lg mx-auto">
               7-day free trial. No credit card. Custom agents built for your business — live in 48 hours.
