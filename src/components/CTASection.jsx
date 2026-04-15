@@ -70,7 +70,7 @@ export default function CTASection() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.3, duration: 0.6 }}
                   className="flex flex-col sm:flex-row gap-3 items-center justify-center mt-8">
-                  <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="px-8 py-3 rounded-full bg-white text-[#1F2937] font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                  <button onClick={() => window.location.href = '/signup'} className="px-8 py-3 rounded-full bg-white text-[#1F2937] font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105">
                     Start free trial →
                   </button>
                   <a href="/for-business"

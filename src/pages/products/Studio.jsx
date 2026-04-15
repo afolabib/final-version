@@ -84,7 +84,7 @@ export default function ProductStudio() {
               </motion.p>
               <motion.div variants={itemV} className="flex flex-col sm:flex-row gap-3 mb-8">
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
+                  <button onClick={() => window.location.href = '/signup'}
                     className="relative px-8 py-4 rounded-full text-white font-semibold text-base overflow-hidden group"
                     style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 32px rgba(123,97,255,0.35)' }}>
                     <span className="relative z-10 flex items-center gap-2">Start Your Project <ArrowRight className="w-4 h-4" /></span>
@@ -306,7 +306,7 @@ export default function ProductStudio() {
                 ))}
               </div>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-8">
-                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
+                <button onClick={() => window.location.href = '/signup'}
                   className="w-full py-4 rounded-full text-white font-bold text-base relative overflow-hidden group"
                   style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 24px rgba(123,97,255,0.3)' }}>
                   <span className="relative z-10">Start your project →</span>
@@ -367,7 +367,7 @@ export default function ProductStudio() {
               <p className="mt-4 text-base text-white/70 max-w-md mx-auto">Every project comes with AI built in from day one. Custom design. Live in 48 hours.</p>
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
+                  <button onClick={() => window.location.href = '/signup'}
                     className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: '#7B61FF', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
                     Start Your Project <ArrowRight className="inline ml-2 w-4 h-4" />
                   </button>

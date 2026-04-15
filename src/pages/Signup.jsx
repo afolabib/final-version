@@ -78,16 +78,16 @@ export default function Signup() {
       {/* Ambient blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full opacity-25"
-          style={{ background: 'radial-gradient(circle, rgba(91,95,255,0.18) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(123,97,255,0.18) 0%, transparent 70%)' }} />
         <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full opacity-15"
-          style={{ background: 'radial-gradient(circle, rgba(91,95,255,0.10) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(123,97,255,0.10) 0%, transparent 70%)' }} />
       </div>
 
       {/* Nav */}
       <nav className="relative z-10 flex items-center justify-between px-8 py-5">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #5B5FFF, #7C3AED)', boxShadow: '0 4px 14px rgba(124,58,237,0.35)' }}>
+            style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 4px 14px rgba(124,58,237,0.35)' }}>
             <div className="w-3 h-3 rounded-full bg-white opacity-95" />
           </div>
           <span className="font-black text-lg tracking-tight" style={{ color: '#0A0F1E' }}>Freemi</span>
@@ -98,7 +98,7 @@ export default function Signup() {
           onMouseEnter={e => e.currentTarget.style.color = '#0A0F1E'}
           onMouseLeave={e => e.currentTarget.style.color = '#64748B'}>
           Have an account?{' '}
-          <span className="font-bold" style={{ color: '#5B5FFF' }}>Sign in →</span>
+          <span className="font-bold" style={{ color: '#7B61FF' }}>Sign in →</span>
         </Link>
       </nav>
 
@@ -108,7 +108,7 @@ export default function Signup() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4 text-xs font-bold"
-              style={{ background: 'rgba(91,95,255,0.08)', color: '#5B5FFF', border: '1px solid rgba(91,95,255,0.18)' }}>
+              style={{ background: 'rgba(123,97,255,0.08)', color: '#7B61FF', border: '1px solid rgba(123,97,255,0.18)' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               Free to start · No card required
             </div>
@@ -122,9 +122,9 @@ export default function Signup() {
           <div className="rounded-2xl p-8"
             style={{
               background: 'rgba(255,255,255,0.90)',
-              border: '1px solid rgba(91,95,255,0.10)',
+              border: '1px solid rgba(123,97,255,0.10)',
               backdropFilter: 'blur(20px)',
-              boxShadow: '0 8px 40px rgba(91,95,255,0.10), 0 1px 0 rgba(255,255,255,0.8) inset',
+              boxShadow: '0 8px 40px rgba(123,97,255,0.10), 0 1px 0 rgba(255,255,255,0.8) inset',
             }}>
 
             {/* Google */}
@@ -134,12 +134,12 @@ export default function Signup() {
               className="w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-semibold transition-all mb-5"
               style={{
                 background: '#fff',
-                border: '1.5px solid rgba(91,95,255,0.15)',
+                border: '1.5px solid rgba(123,97,255,0.15)',
                 color: '#374151',
                 boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(91,95,255,0.35)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(91,95,255,0.10)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(91,95,255,0.15)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }}>
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(123,97,255,0.35)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(123,97,255,0.10)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(123,97,255,0.15)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }}>
               <svg width="18" height="18" viewBox="0 0 48 48">
                 <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.2 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C33.9 6.5 29.2 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/>
                 <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.3 18.9 12 24 12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C33.9 6.5 29.2 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/>
@@ -151,9 +151,9 @@ export default function Signup() {
 
             {/* Divider */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="flex-1 h-px" style={{ background: 'rgba(91,95,255,0.10)' }} />
+              <div className="flex-1 h-px" style={{ background: 'rgba(123,97,255,0.10)' }} />
               <span className="text-xs font-medium" style={{ color: '#94A3B8' }}>or</span>
-              <div className="flex-1 h-px" style={{ background: 'rgba(91,95,255,0.10)' }} />
+              <div className="flex-1 h-px" style={{ background: 'rgba(123,97,255,0.10)' }} />
             </div>
 
             {/* Form */}
@@ -172,11 +172,11 @@ export default function Signup() {
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
                   style={{
                     background: '#F8FAFF',
-                    border: '1.5px solid rgba(91,95,255,0.12)',
+                    border: '1.5px solid rgba(123,97,255,0.12)',
                     color: '#0A0F1E',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#5B5FFF'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(91,95,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = '#7B61FF'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(123,97,255,0.12)'}
                 />
               </div>
 
@@ -194,11 +194,11 @@ export default function Signup() {
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
                   style={{
                     background: '#F8FAFF',
-                    border: '1.5px solid rgba(91,95,255,0.12)',
+                    border: '1.5px solid rgba(123,97,255,0.12)',
                     color: '#0A0F1E',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#5B5FFF'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(91,95,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = '#7B61FF'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(123,97,255,0.12)'}
                 />
               </div>
 
@@ -217,16 +217,16 @@ export default function Signup() {
                     className="w-full px-4 py-3 pr-11 rounded-xl text-sm outline-none transition-all"
                     style={{
                       background: '#F8FAFF',
-                      border: '1.5px solid rgba(91,95,255,0.12)',
+                      border: '1.5px solid rgba(123,97,255,0.12)',
                       color: '#0A0F1E',
                     }}
-                    onFocus={e => e.target.style.borderColor = '#5B5FFF'}
-                    onBlur={e => e.target.style.borderColor = 'rgba(91,95,255,0.12)'}
+                    onFocus={e => e.target.style.borderColor = '#7B61FF'}
+                    onBlur={e => e.target.style.borderColor = 'rgba(123,97,255,0.12)'}
                   />
                   <button type="button" onClick={() => setShowPw(s => !s)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                     style={{ color: '#94A3B8' }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#5B5FFF'}
+                    onMouseEnter={e => e.currentTarget.style.color = '#7B61FF'}
                     onMouseLeave={e => e.currentTarget.style.color = '#94A3B8'}>
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -262,7 +262,7 @@ export default function Signup() {
                 disabled={loading}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all mt-2"
                 style={{
-                  background: loading ? 'rgba(91,95,255,0.5)' : 'linear-gradient(135deg, #5B5FFF, #7C3AED)',
+                  background: loading ? 'rgba(123,97,255,0.5)' : 'linear-gradient(135deg, #7B61FF, #6C4AE8)',
                   color: '#fff',
                   boxShadow: loading ? 'none' : '0 4px 18px rgba(124,58,237,0.35)',
                 }}

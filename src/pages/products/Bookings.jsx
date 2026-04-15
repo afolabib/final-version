@@ -66,7 +66,7 @@ export default function ProductBookings() {
               <motion.p variants={itemV} className="text-base md:text-lg text-gray-500 mb-8 leading-relaxed max-w-lg">Customers book, reschedule, and cancel from any channel — website, WhatsApp, or phone. Your calendar stays perfect. No admin required.</motion.p>
               <motion.div variants={itemV} className="flex flex-col sm:flex-row gap-3 mb-8">
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="relative px-8 py-4 rounded-full text-white font-semibold text-base overflow-hidden group" style={{ background: `linear-gradient(135deg, ${AC}, #D97706)`, boxShadow: `0 8px 32px ${AC}55` }}>
+                  <button onClick={() => window.location.href = '/signup'} className="relative px-8 py-4 rounded-full text-white font-semibold text-base overflow-hidden group" style={{ background: `linear-gradient(135deg, ${AC}, #D97706)`, boxShadow: `0 8px 32px ${AC}55` }}>
                     <span className="relative z-10 flex items-center gap-2">Start free trial <ArrowRight className="w-4 h-4" /></span>
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                   </button>
@@ -244,7 +244,7 @@ export default function ProductBookings() {
                 ))}
               </div>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-8">
-                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="w-full py-4 rounded-full text-white font-bold text-base relative overflow-hidden group" style={{ background: `linear-gradient(135deg, ${AC}, #D97706)`, boxShadow: `0 8px 24px ${AC}40` }}>
+                <button onClick={() => window.location.href = '/signup'} className="w-full py-4 rounded-full text-white font-bold text-base relative overflow-hidden group" style={{ background: `linear-gradient(135deg, ${AC}, #D97706)`, boxShadow: `0 8px 24px ${AC}40` }}>
                   <span className="relative z-10">Start free trial →</span><span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                 </button>
               </motion.div>
@@ -292,7 +292,7 @@ export default function ProductBookings() {
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">Your calendar, on autopilot.</h2>
               <p className="mt-4 text-base text-white/70 max-w-md mx-auto">AI handles bookings from every channel. No double-bookings. No no-shows. No admin.</p>
-              <div className="mt-8"><motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: AC, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>Start free trial <ArrowRight className="inline ml-2 w-4 h-4" /></button></motion.div></div>
+              <div className="mt-8"><motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><button onClick={() => window.location.href = '/signup'} className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: AC, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>Start free trial <ArrowRight className="inline ml-2 w-4 h-4" /></button></motion.div></div>
               <p className="mt-6 text-xs text-white/40">No credit card · Live in minutes · Cancel anytime</p>
             </div>
           </motion.div>

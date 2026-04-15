@@ -83,7 +83,7 @@ export default function ForBusiness() {
 
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
-            <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
+            <button onClick={() => window.location.href = '/signup'}
               className="px-10 py-4 rounded-full text-base font-bold text-white"
               style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 28px rgba(123,97,255,0.35)' }}>
               Get started →
@@ -352,7 +352,7 @@ export default function ForBusiness() {
                   Get a website with AI built in — live in 1–2 days. We handle everything.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
+                  <button onClick={() => window.location.href = '/signup'}
                     className="px-8 py-3 rounded-full bg-white font-bold text-sm hover:scale-105 transition-transform"
                     style={{ color: '#7B61FF' }}>
                     Get started →

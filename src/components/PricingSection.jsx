@@ -258,7 +258,7 @@ export default function PricingSection() {
                 )}
 
                 <button
-                  onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
+                  onClick={() => window.location.href = '/signup'}
                   className="w-full py-3 rounded-2xl text-sm font-bold mb-6 transition-all"
                   style={{
                     background: plan.highlight ? '#fff' : 'linear-gradient(135deg, #5B5FFF, #7C3AED)',
