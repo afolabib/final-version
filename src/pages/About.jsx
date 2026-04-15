@@ -35,7 +35,7 @@ export default function About() {
       <TopNav />
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-12">
+      <section className="relative flex items-center justify-center overflow-hidden pt-32 pb-20">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(123,97,255,0.18) 0%, transparent 50%)' }} />
         <FloatingBg seed={400} />
         <div className="absolute inset-0 noise pointer-events-none" />
@@ -57,7 +57,7 @@ export default function About() {
       </section>
 
       {/* ── THE STORY ── */}
-      <section className="py-24 md:py-32 px-6">
+      <section className="py-16 md:py-20 px-6">
         <div className="max-w-3xl mx-auto">
           <ScrollReveal>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wide uppercase mb-8" style={{ background: 'rgba(123,97,255,0.08)', color: '#7B61FF', border: '1px solid rgba(123,97,255,0.15)' }}>
@@ -93,7 +93,7 @@ export default function About() {
       </section>
 
       {/* ── MISSION ── */}
-      <section className="relative py-24 md:py-32 px-6 overflow-hidden" style={{ background: 'linear-gradient(180deg, rgba(123,97,255,0.03), rgba(47,143,255,0.02))' }}>
+      <section className="relative py-16 md:py-20 px-6 overflow-hidden" style={{ background: 'linear-gradient(180deg, rgba(123,97,255,0.03), rgba(47,143,255,0.02))' }}>
         <FloatingBg seed={410} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -131,7 +131,7 @@ export default function About() {
       </section>
 
       {/* ── WHAT MAKES US DIFFERENT ── */}
-      <section className="py-24 md:py-32 px-6">
+      <section className="py-16 md:py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface leading-[1.15]">Why we're <span className="text-gradient">different.</span></h2></ScrollReveal>
@@ -164,7 +164,7 @@ export default function About() {
       </section>
 
       {/* ── THE PRODUCTS ── */}
-      <section className="py-24 md:py-32 px-6">
+      <section className="py-16 md:py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface leading-[1.15]">What we <span className="text-gradient-purple">build.</span></h2></ScrollReveal>
