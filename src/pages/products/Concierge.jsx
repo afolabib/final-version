@@ -98,7 +98,7 @@ export default function ProductConcierge() {
             </motion.div>
 
             {/* right — website with widget mockup */}
-            <motion.div className="hidden lg:block relative"
+            <motion.div className="hidden lg:block relative" style={{ perspective: "1200px" }}
               initial={{ opacity: 0, x: 40, rotate: 2 }} animate={{ opacity: 1, x: 0, rotate: 0 }}
               transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
               {/* website background */}
