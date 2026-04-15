@@ -512,7 +512,7 @@ function LogoCloudSection() {
 function ProductsSection() {
   return (
     <section className="relative py-24 md:py-32 px-6 overflow-hidden">
-      <FloatingBg seed={88} density="sparse" />
+      <FloatingBg seed={88} density="dense" />
       <div className="relative z-10">
         <SectionHeader
           badge="The platform"
@@ -700,7 +700,7 @@ function FreemiAgentSection() {
 function AgentShowcaseSection() {
   return (
     <section className="relative py-24 md:py-32 px-6 overflow-hidden">
-      <FloatingBg seed={123} density="normal" />
+      <FloatingBg seed={123} density="dense" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <SectionHeader
@@ -773,7 +773,7 @@ function AgentShowcaseSection() {
 function ChannelsSection() {
   return (
     <section className="relative py-24 md:py-32 px-6 overflow-hidden">
-      <FloatingBg seed={200} density="sparse" />
+      <FloatingBg seed={200} density="dense" />
       <div className="relative z-10">
       <SectionHeader
         badge="Channels"
