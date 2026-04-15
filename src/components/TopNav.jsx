@@ -219,7 +219,7 @@ export default function TopNav() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-2.5">
           <a href="/login" className="text-sm text-gray-500 hover:text-surface font-medium transition-colors px-3 py-2">Sign in</a>
-          <button onClick={() => window.location.href = '/signup'}
+          <button onClick={() => window.location.href='/signup'}
             className="btn-press px-5 py-2.5 text-sm font-semibold text-white rounded-full transition-all"
             style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 4px 16px rgba(123,97,255,0.3)' }}>
             Start free trial →
@@ -272,7 +272,7 @@ export default function TopNav() {
 
           <div className="pt-3 pb-1 space-y-2">
             <a href="/login" className="block w-full text-center px-4 py-2.5 text-sm font-medium text-gray-500 rounded-full border border-gray-200">Sign in</a>
-            <button onClick={() => { window.location.href = '/signup'; closeAll(); }}
+            <button onClick={() => { window.location.href='/signup'; closeAll(); }}
               className="w-full px-4 py-3 text-sm font-bold text-white rounded-full"
               style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)' }}>
               Start free trial →

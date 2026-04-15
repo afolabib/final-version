@@ -69,7 +69,7 @@ export default function About() {
               </motion.p>
               <motion.div variants={itemV} className="mt-8 flex items-center gap-4">
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => window.location.href = '/signup'}
+                  <button onClick={() => window.location.href='/signup'}
                     className="px-8 py-4 rounded-full text-white font-bold text-sm"
                     style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 32px rgba(123,97,255,0.35)' }}>
                     Try Freemi free <ArrowRight className="inline w-4 h-4 ml-1" />
@@ -302,7 +302,7 @@ export default function About() {
                   </a>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => window.location.href = '/signup'}
+                  <button onClick={() => window.location.href='/signup'}
                     className="px-10 py-4 rounded-full font-semibold text-base text-white"
                     style={{ border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.08)' }}>
                     Start free trial
