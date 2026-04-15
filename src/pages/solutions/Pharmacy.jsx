@@ -49,7 +49,7 @@ export default function Pharmacy() {
       <TopNav />
 
       {/* HERO */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-20 pb-12">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-12">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(123,97,255,0.18) 0%, transparent 50%)' }} />
         <FloatingBg seed={300} />
         <div className="absolute inset-0 noise pointer-events-none" />

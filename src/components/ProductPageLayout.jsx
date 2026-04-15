@@ -115,7 +115,7 @@ export default function ProductPageLayout({
       <TopNav />
 
       {/* ── HERO ─────────────────────────────────────── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-20 pb-16">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-16">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(123,97,255,0.18) 0%, transparent 50%), radial-gradient(ellipse 60% 40% at 80% 50%, rgba(47,143,255,0.08) 0%, transparent 50%)' }} />
         <FloatingBg seed={seed} />
         <div className="absolute inset-0 noise pointer-events-none" />
