@@ -176,7 +176,7 @@ function SectionHeader({ badge, title, subtitle }) {
 
 /* ── TYPEWRITER ───────────────────────────────────────── */
 
-const typingLines = ['On Autopilot.', 'While You Sleep.', 'Without Hiring.', 'Around The Clock.'];
+const typingLines = ['Your Plate.', 'Your To-Do List.', 'Your Calendar.', 'Your Inbox.'];
 
 function TypewriterCycle() {
   const [lineIndex, setLineIndex] = useState(0);
@@ -294,14 +294,14 @@ function HeroSection() {
               <span className="flex items-center justify-center w-5 h-5 rounded-full" style={{ background: 'rgba(123,97,255,0.15)' }}>
                 <Sparkles className="w-3 h-3" style={{ color: '#7B61FF' }} />
               </span>
-              <span className="text-xs font-semibold text-surface/80 tracking-wide">AI Employees For Every Business</span>
+              <span className="text-xs font-semibold text-surface/80 tracking-wide">AI Operators For Every Business</span>
               <span className="text-xs font-bold" style={{ color: '#7B61FF' }}>New</span>
             </div>
           </motion.div>
 
           {/* headline */}
           <div>
-            {['One AI Employee', 'Your Entire Business'].map((line, i) => (
+            {['AI Operators That', 'Take Work Off'].map((line, i) => (
               <motion.div key={i} variants={itemVariants} className="pb-1">
                 <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.2] text-surface">{line}</h1>
               </motion.div>
@@ -315,9 +315,9 @@ function HeroSection() {
 
           {/* subtitle */}
           <motion.p variants={itemVariants} className="text-base md:text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            Freemi is your AI employee — it hires other AI employees, connects to your tools,
-            and lets you run your whole business from WhatsApp.
-            Calls, bookings, emails, sales, support — all on autopilot.
+            AI operators that handle your calls, WhatsApp, bookings, emails, and admin —
+            so you can focus on what actually matters.
+            Deploy in 48 hours. No code. No hiring.
           </motion.p>
 
           {/* CTAs */}
