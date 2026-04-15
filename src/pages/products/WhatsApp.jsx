@@ -66,7 +66,7 @@ export default function ProductWhatsApp() {
               <motion.p variants={itemV} className="text-base md:text-lg text-gray-500 mb-8 leading-relaxed max-w-lg">AI WhatsApp agent that auto-replies, handles orders, answers questions, and manages full conversations — like texting a real person who never sleeps.</motion.p>
               <motion.div variants={itemV} className="flex flex-col sm:flex-row gap-3 mb-8">
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <button onClick={() => window.location.href='/signup'} className="relative px-8 py-4 rounded-full text-white font-semibold text-base overflow-hidden group" style={{ background: `linear-gradient(135deg, ${AC}, #128C7E)`, boxShadow: `0 8px 32px ${AC}55` }}>
+                  <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="relative px-8 py-4 rounded-full text-white font-semibold text-base overflow-hidden group" style={{ background: `linear-gradient(135deg, ${AC}, #128C7E)`, boxShadow: `0 8px 32px ${AC}55` }}>
                     <span className="relative z-10 flex items-center gap-2">Start free trial <ArrowRight className="w-4 h-4" /></span>
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                   </button>
@@ -301,7 +301,7 @@ export default function ProductWhatsApp() {
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">Meet your customers where they are.</h2>
               <p className="mt-4 text-base text-white/70 max-w-md mx-auto">2 billion people use WhatsApp. Your AI agent is ready to talk to all of them.</p>
-              <div className="mt-8"><motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><button onClick={() => window.location.href='/signup'} className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: AC, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>Start free trial <ArrowRight className="inline ml-2 w-4 h-4" /></button></motion.div></div>
+              <div className="mt-8"><motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')} className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: AC, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>Start free trial <ArrowRight className="inline ml-2 w-4 h-4" /></button></motion.div></div>
               <p className="mt-6 text-xs text-white/40">No credit card · Live in minutes · Cancel anytime</p>
             </div>
           </motion.div>
