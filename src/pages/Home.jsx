@@ -495,12 +495,11 @@ function LogoCloudSection() {
         <p className="text-center text-xs uppercase tracking-[0.2em] text-gray-400 font-semibold mb-8">Trusted by growing businesses</p>
         <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 max-w-4xl mx-auto px-6">
           {names.map((n, i) => (
-            <motion.span key={i}
-              className="text-base md:text-lg font-bold tracking-tight cursor-default transition-colors"
-              style={{ color: 'rgba(0,0,0,0.22)' }}
-              whileHover={{ color: 'rgba(0,0,0,0.6)' }}>
+            <span key={i}
+              className="text-base md:text-lg font-bold tracking-tight"
+              style={{ color: 'rgba(0,0,0,0.22)' }}>
               {n}
-            </motion.span>
+            </span>
           ))}
         </div>
       </ScrollReveal>

@@ -106,10 +106,7 @@ export default function TopNav() {
             style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 2px 12px rgba(123,97,255,0.35)' }}>
             <div className="w-3 h-3 rounded-full bg-white/90" />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
-            <span className="text-xs font-medium text-gray-500 tracking-tight">by Bidemi</span>
-          </div>
+          <span className="font-bold text-surface text-base tracking-tight">Freemi</span>
         </button>
 
         {/* Desktop nav */}
