@@ -155,7 +155,7 @@ export default function SolutionPhoneAI() {
 
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
                 className="flex flex-col sm:flex-row gap-3 mb-6">
-                <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
                   className="px-8 py-3.5 rounded-full text-sm font-bold text-white"
                   style={{ background: 'linear-gradient(135deg, #7B61FF, #6C4AE8)', boxShadow: '0 8px 24px rgba(123,97,255,0.3)' }}>
                   Join the waitlist →
@@ -475,7 +475,7 @@ export default function SolutionPhoneAI() {
                 Freemi Voice is in early access. Join the waitlist and be among the first businesses we set live.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button onClick={() => window.open('https://studio.freemi.ai', '_blank')}
+                <button onClick={() => window.open('https://studio.freemi.ai/signup', '_blank')}
                   className="px-8 py-3 rounded-full bg-white font-bold text-sm hover:scale-105 transition-transform"
                   style={{ color: '#7B61FF' }}>
                   Join the waitlist →
