@@ -1,80 +1,393 @@
-import ProductPageLayout from '../../components/ProductPageLayout';
-import { Building2, Calendar, Utensils, Star, Clock, Zap, Bell, Phone, Globe, Check, Wine, Bed, MapPin, CreditCard, Coffee, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import {
+  Building2, Calendar, Utensils, Star, Phone, Bell, Zap, ArrowRight, Check,
+  Bot, Sparkles, Globe, Wine, Bed, MapPin, CreditCard, Coffee, Users, X
+} from 'lucide-react';
+import TopNav from '../../components/TopNav';
+import SiteFooter from '../../components/SiteFooter';
+import ScrollReveal from '../../components/ScrollReveal';
 
-const Demo = () => (
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 min-h-[360px] rounded-xl overflow-hidden" style={{ border: '1px solid rgba(0,0,0,0.06)' }}>
-    <div className="lg:col-span-2 bg-white border-r border-gray-100">
-      <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-2"><Building2 className="w-4 h-4 text-amber-500" /><span className="text-xs font-bold text-gray-800">Reservations</span></div>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 font-bold">Tonight: 42 covers</span>
-      </div>
-      <div className="p-4 space-y-2">
-        {[
-          { time: '18:00', name: 'Johnson Party', guests: 4, notes: 'Anniversary — window table' },
-          { time: '18:30', name: 'Chen Family', guests: 6, notes: 'Gluten-free' },
-          { time: '19:00', name: 'O\'Brien', guests: 2, notes: 'First visit' },
-          { time: '19:30', name: 'Rivera Ltd', guests: 12, notes: 'Corporate set menu' },
-          { time: '20:00', name: 'Murphy', guests: 3, notes: 'Regular — usual table' },
-        ].map(r => (
-          <div key={r.time} className="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-gray-50">
-            <span className="text-[10px] text-gray-400 font-mono w-10 shrink-0">{r.time}</span>
-            <div className="flex-1"><p className="text-[11px] font-semibold text-gray-800">{r.name} <span className="text-gray-400">· {r.guests}p</span></p><p className="text-[9px] text-gray-400">{r.notes}</p></div>
-            <span className="text-[8px] px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-600">Confirmed</span>
-          </div>
-        ))}
-      </div>
+const ORB_COLORS = ['rgba(245,158,11,0.22)', 'rgba(123,97,255,0.16)', 'rgba(47,143,255,0.14)', 'rgba(39,192,135,0.12)', 'rgba(232,67,147,0.18)'];
+const FLOAT_ICONS = [Sparkles, Bot, Zap, Utensils, Star, Wine, Building2, Coffee];
+function seededRandom(seed) { let s = seed; return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+function FloatingBg({ seed = 42 }) {
+  const r = seededRandom(seed); const rand = () => r();
+  const gen = (n) => Array.from({ length: n }, () => ({ left: `${5 + rand() * 90}%`, top: `${5 + rand() * 90}%`, delay: rand() * 3, duration: 4 + rand() * 6, size: 14 + rand() * 18 }));
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {gen(5).map((p, i) => <motion.div key={`o${i}`} className="absolute rounded-full" style={{ left: p.left, top: p.top, width: 300 + i * 100, height: 300 + i * 100, background: `radial-gradient(circle, ${ORB_COLORS[i % 5]}, transparent 65%)`, filter: `blur(${50 + i * 12}px)` }} animate={{ x: [0, 30 + i * 10, 0], y: [0, -(20 + i * 10), 0], scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 10 + i * 3, repeat: Infinity, ease: 'easeInOut', delay: p.delay }} />)}
+      {gen(10).map((p, i) => { const Icon = FLOAT_ICONS[i % FLOAT_ICONS.length]; return <motion.div key={`i${i}`} className="absolute text-amber-500/[0.12]" style={{ left: p.left, top: p.top }} animate={{ y: [0, -15, 0], rotate: [0, 8, -8, 0], scale: [1, 1.1, 1] }} transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}><Icon style={{ width: p.size, height: p.size }} /></motion.div>; })}
     </div>
-    <div className="bg-gray-50/50 p-4 flex flex-col gap-3">
-      <div className="rounded-xl p-3 bg-white border border-gray-100">
-        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">WhatsApp Booking</p>
-        <div className="rounded-lg p-2.5 text-[10px] text-gray-600 mb-2" style={{ background: 'rgba(37,211,102,0.05)', border: '1px solid rgba(37,211,102,0.1)' }}>"Table for 4 Saturday 7:30pm?"</div>
-        <div className="rounded-lg p-2.5 text-[10px]" style={{ background: 'rgba(123,97,255,0.04)', border: '1px solid rgba(123,97,255,0.08)' }}><span className="text-[8px] font-bold text-purple-500">AI:</span><p className="text-gray-600 mt-0.5">Reserved! Table for 4, Sat 7:30 PM. Confirmation sent. Dietary needs? ✓</p></div>
-      </div>
-      <div className="rounded-xl p-3 bg-white border border-gray-100 flex-1">
-        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Today's AI activity</p>
-        {['12 reservations booked', '8 menu enquiries answered', '4 event bookings', '3 dietary questions handled'].map(t => (
-          <div key={t} className="flex items-center gap-2 py-1"><Check className="w-3 h-3 text-emerald-500 shrink-0" /><span className="text-[9px] text-gray-600">{t}</span></div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
+  );
+}
+
+const containerV = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
+const itemV = { hidden: { opacity: 0, y: 30, filter: 'blur(10px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } } };
+
+const AC = '#F59E0B';
+
+const features = [
+  { icon: Calendar, title: 'Smart reservations', desc: 'Real-time table availability, party size management, and automated confirmations across website, WhatsApp, and phone.', color: '#F59E0B', span: 'md:col-span-2 md:row-span-2' },
+  { icon: Utensils, title: 'Menu & dietary handling', desc: 'AI answers menu questions, handles allergies, recommends dishes, and shares daily specials automatically.', color: '#E84393' },
+  { icon: Wine, title: 'Events & private dining', desc: 'Group bookings, set menus, event enquiries -- AI qualifies, sends options, confirms. No email ping-pong.', color: '#7B61FF' },
+  { icon: Star, title: 'Guest recognition', desc: 'Remember regulars, preferences, special occasions. AI personalises every interaction based on visit history.', color: '#27C087' },
+  { icon: Phone, title: 'Every call answered', desc: 'AI picks up during service, takes reservations, answers questions. Only escalates when truly needed.', color: '#2F8FFF' },
+  { icon: Bell, title: 'Reminder system', desc: 'Confirmations and reminders via WhatsApp reduce no-shows by 50%. Waitlisted guests notified instantly.', color: '#0984E3', span: 'md:col-span-2' },
+];
+
+const differentiators = [
+  { label: 'AI reservation management', us: true, others: false },
+  { label: 'WhatsApp booking', us: true, others: false },
+  { label: 'Dietary & allergen handling', us: true, others: false },
+  { label: 'Guest preference memory', us: true, others: false },
+  { label: 'Event booking automation', us: true, others: false },
+  { label: 'Phone answering during service', us: true, others: false },
+  { label: 'Online booking widget', us: true, others: true },
+  { label: 'Basic reservation list', us: true, others: true },
+];
 
 export default function Hospitality() {
+  const navigate = useNavigate();
   return (
-    <ProductPageLayout badge="Hospitality" badgeIcon={Building2} accentColor="#F59E0B"
-      headline="Your Restaurant" headlineAccent="On Autopilot."
-      subtitle="AI agents that handle reservations, menu enquiries, event bookings, and guest communication — so your team focuses on delivering exceptional experiences."
-      seed={190} demoVisual={<Demo />}
-      stats={[{ value: '3×', label: 'More bookings' }, { value: '45%', label: 'Fewer phone calls' }, { value: '4.8★', label: 'Guest satisfaction' }, { value: '24/7', label: 'Booking availability' }]}
-      testimonials={[
-        { quote: 'We missed 30% of calls during service. Now every reservation request is handled instantly by AI.', name: 'Carlo Bianchi', role: 'Owner, Bella Vista', gradient: 'linear-gradient(135deg, #F59E0B, #E84393)' },
-        { quote: 'Event bookings tripled since we added WhatsApp. Customers love booking a table at midnight.', name: 'Sophie Laurent', role: 'Manager, Le Petit Bistro', gradient: 'linear-gradient(135deg, #7B61FF, #2F8FFF)' },
-        { quote: 'The AI knows our menu better than half the staff. Dietary questions, recommendations, bookings — all handled.', name: 'David Kim', role: 'GM, Seoul Kitchen', gradient: 'linear-gradient(135deg, #27C087, #F59E0B)' },
-      ]}
-      features={[
-        { icon: Calendar, title: 'Smart reservations', desc: 'Real-time table availability, party size management, and automated confirmations across website, WhatsApp, and phone.', color: '#F59E0B' },
-        { icon: Utensils, title: 'Menu & dietary handling', desc: 'AI answers menu questions, handles allergies, recommends dishes, and shares daily specials automatically.', color: '#E84393' },
-        { icon: Wine, title: 'Events & private dining', desc: 'Group bookings, set menus, event enquiries — AI qualifies, sends options, confirms. No email ping-pong.', color: '#7B61FF' },
-        { icon: Star, title: 'Guest recognition', desc: 'Remember regulars, preferences, special occasions. AI personalises every interaction based on visit history.', color: '#27C087' },
-        { icon: Phone, title: 'Every call answered', desc: 'AI picks up during service, takes reservations, answers questions. Only escalates when truly needed.', color: '#2F8FFF' },
-        { icon: Bell, title: 'Reminder system', desc: 'Confirmations and reminders via WhatsApp reduce no-shows by 50%. Waitlisted guests notified instantly.', color: '#0984E3' },
-      ]}
-      steps={[
-        { icon: Building2, title: 'Tell us about your venue', desc: 'Share your table layout, hours, menu, and booking preferences.' },
-        { icon: Globe, title: 'AI goes live everywhere', desc: 'Website, WhatsApp, phone — AI handles reservations and guest enquiries on all channels.' },
-        { icon: Zap, title: 'Focus on your guests', desc: 'AI manages bookings. Your team delivers unforgettable experiences.' },
-      ]}
-      useCases={[
-        { icon: Utensils, title: 'Fine Dining', desc: 'Reservation management, wine pairing suggestions, special occasions, VIP recognition.', color: '#E84393', metric: '3×', metricLabel: 'Bookings', features: ['Reservations', 'Wine Pairing', 'VIP'] },
-        { icon: Coffee, title: 'Cafés', desc: 'Table bookings, daily specials, loyalty programmes, takeaway orders.', color: '#7B61FF', metric: '45%', metricLabel: 'Fewer calls', features: ['Specials', 'Loyalty', 'Takeaway'] },
-        { icon: Wine, title: 'Bars & Nightlife', desc: 'Table reservations, event promotion, guest lists, bottle service.', color: '#2F8FFF', metric: '24/7', metricLabel: 'Booking', features: ['Guest Lists', 'Events', 'Bottle Service'] },
-        { icon: Bed, title: 'Hotels & B&Bs', desc: 'Room availability, concierge services, check-in instructions, local tips.', color: '#27C087', metric: '89%', metricLabel: 'Auto-resolved', features: ['Rooms', 'Concierge', 'Check-in'] },
-        { icon: MapPin, title: 'Tourist Attractions', desc: 'Ticket enquiries, group bookings, accessibility info, multi-language support.', color: '#F59E0B', metric: '4s', metricLabel: 'Response', features: ['Tickets', 'Groups', 'Multi-lang'] },
-        { icon: CreditCard, title: 'Catering', desc: 'Quote requests, menu selection, capacity planning, event coordination.', color: '#0984E3', metric: '60%', metricLabel: 'Less admin', features: ['Quotes', 'Menus', 'Events'] },
-      ]}
-      ctaHeadline="Fill every table. Answer every call."
-      ctaSubtitle="AI agents for hospitality — reservations, events, and guest service on autopilot."
-    />
+    <div className="relative w-full text-surface" style={{ background: 'linear-gradient(180deg, #FFFBEB 0%, #F8F9FE 30%, #FFFDF5 60%, #F8F9FE 100%)', minHeight: '100vh', overflowX: 'clip' }}>
+      <TopNav />
+
+      {/* ═══ HERO ═══ */}
+      <section className="relative overflow-hidden pt-28 md:pt-36 pb-16">
+        <FloatingBg seed={190} />
+        <div className="absolute inset-0 noise pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(245,158,11,0.06) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* left -- copy */}
+            <motion.div variants={containerV} initial="hidden" animate="visible">
+              <motion.div variants={itemV}>
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/70 backdrop-blur-xl border border-amber-200/30 shadow-sm mb-8">
+                  <Building2 className="w-3.5 h-3.5" style={{ color: AC }} />
+                  <span className="text-xs font-semibold text-surface/80 tracking-wide">Freemi | Hospitality</span>
+                </div>
+              </motion.div>
+              <motion.h1 variants={itemV} className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
+                Your Restaurant<br />
+                <span style={{ color: AC }}>On Autopilot.</span>
+              </motion.h1>
+              <motion.p variants={itemV} className="text-base md:text-lg text-gray-500 mb-8 leading-relaxed max-w-lg">
+                AI agents that handle reservations, menu enquiries, event bookings, and guest communication — so your team focuses on delivering exceptional experiences.
+              </motion.p>
+              <motion.div variants={itemV} className="flex flex-col sm:flex-row gap-3 mb-8">
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <button onClick={() => navigate('/contact')}
+                    className="relative px-8 py-4 rounded-full text-white font-semibold text-base overflow-hidden group"
+                    style={{ background: `linear-gradient(135deg, ${AC}, #D97706)`, boxShadow: `0 8px 32px rgba(245,158,11,0.35)` }}>
+                    <span className="relative z-10 flex items-center gap-2">Get Started <ArrowRight className="w-4 h-4" /></span>
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                  </button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <a href="mailto:hello@freemi.ai" className="px-8 py-4 rounded-full font-semibold text-sm bg-white/60 backdrop-blur-sm inline-flex items-center" style={{ border: '1px solid rgba(0,0,0,0.08)', color: '#374151' }}>Talk to us</a>
+                </motion.div>
+              </motion.div>
+              <motion.div variants={itemV} className="flex flex-wrap gap-x-5 gap-y-2">
+                {['Smart reservations', 'Menu & dietary AI', 'Event bookings', '24/7 booking'].map(t => (
+                  <span key={t} className="flex items-center gap-1.5 text-sm text-gray-500">
+                    <div className="w-4 h-4 rounded-full bg-emerald-500/15 flex items-center justify-center"><Check className="w-2.5 h-2.5 text-emerald-600" /></div>
+                    {t}
+                  </span>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* right -- browser mockup */}
+            <motion.div className="hidden lg:block relative" style={{ perspective: '1200px' }}
+              initial={{ opacity: 0, x: 40, rotate: 2 }} animate={{ opacity: 1, x: 0, rotate: 0 }}
+              transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: `0 50px 100px rgba(245,158,11,0.2), 0 0 80px rgba(245,158,11,0.08)`, transform: 'rotateY(-3deg) rotateX(2deg)' }}>
+                {/* chrome */}
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+                  <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full bg-red-400" /><div className="w-3 h-3 rounded-full bg-amber-400" /><div className="w-3 h-3 rounded-full bg-emerald-400" /></div>
+                  <div className="flex-1 mx-8"><div className="bg-white border border-gray-200 rounded-lg px-3 py-1 text-xs text-gray-400">reservations.freemi.ai</div></div>
+                </div>
+                {/* dashboard content */}
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2"><Building2 className="w-4 h-4 text-amber-500" /><span className="text-[11px] font-bold text-gray-800">Reservations</span></div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 font-bold">Tonight: 42 covers</span>
+                  </div>
+                  {/* stats row */}
+                  <div className="grid grid-cols-4 gap-2 mb-4">
+                    {[{ label: 'Reservations', val: '18', color: '#F59E0B' }, { label: 'Covers', val: '42', color: '#27C087' }, { label: 'AI Enquiries', val: '34', color: '#7B61FF' }, { label: 'Rating', val: '4.8\u2605', color: '#E84393' }].map(s => (
+                      <div key={s.label} className="rounded-lg p-2.5 text-center" style={{ background: `${s.color}08`, border: `1px solid ${s.color}15` }}>
+                        <p className="text-sm font-extrabold" style={{ color: s.color }}>{s.val}</p>
+                        <p className="text-[7px] text-gray-400 mt-0.5">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {/* bookings list */}
+                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Tonight's Bookings</p>
+                  <div className="space-y-1.5">
+                    {[
+                      { time: '18:00', name: 'Johnson Party', guests: 4, notes: 'Anniversary -- window table', sc: 'bg-emerald-50 text-emerald-600' },
+                      { time: '18:30', name: 'Chen Family', guests: 6, notes: 'Gluten-free', sc: 'bg-emerald-50 text-emerald-600' },
+                      { time: '19:00', name: "O'Brien", guests: 2, notes: 'First visit', sc: 'bg-blue-50 text-blue-600' },
+                      { time: '19:30', name: 'Rivera Ltd', guests: 12, notes: 'Corporate set menu', sc: 'bg-amber-50 text-amber-600' },
+                      { time: '20:00', name: 'Murphy', guests: 3, notes: 'Regular -- usual table', sc: 'bg-emerald-50 text-emerald-600' },
+                    ].map(r => (
+                      <div key={r.time} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg border border-gray-50">
+                        <span className="text-[10px] text-gray-400 font-mono w-9 shrink-0">{r.time}</span>
+                        <div className="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center shrink-0"><span className="text-[8px] font-bold text-amber-600">{r.name.split(' ').map(n => n[0]).join('')}</span></div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] font-semibold text-gray-800 truncate">{r.name} <span className="text-gray-400">&middot; {r.guests}p</span></p>
+                          <p className="text-[8px] text-gray-400">{r.notes}</p>
+                        </div>
+                        <span className={`text-[7px] px-1.5 py-0.5 rounded-full font-bold ${r.sc}`}>Confirmed</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {/* floating badges */}
+              <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -top-4 -right-4 flex items-center gap-2 px-3 py-2 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-gray-100">
+                <div className="w-6 h-6 rounded-full bg-amber-500/15 flex items-center justify-center"><Utensils className="w-3 h-3 text-amber-600" /></div>
+                <span className="text-xs font-semibold text-surface">3x more bookings</span>
+              </motion.div>
+              <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+                className="absolute -bottom-3 -left-4 flex items-center gap-2 px-3 py-2 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-gray-100">
+                <div className="w-6 h-6 rounded-full bg-purple-500/15 flex items-center justify-center"><Bot className="w-3 h-3 text-purple-600" /></div>
+                <span className="text-xs font-semibold text-surface">AI handles 45% of calls</span>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ STATS ═══ */}
+      <section className="py-12 px-6">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[{ v: '3x', l: 'More bookings' }, { v: '45%', l: 'Fewer phone calls' }, { v: '4.8\u2605', l: 'Guest satisfaction' }, { v: '24/7', l: 'Booking availability' }].map((s, i) => (
+            <ScrollReveal key={s.l} delay={i * 0.08}>
+              <div className="text-center"><p className="text-3xl md:text-4xl font-extrabold" style={{ color: AC }}>{s.v}</p><p className="mt-1 text-sm text-gray-500 font-medium">{s.l}</p></div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ FEATURES — BENTO GRID ═══ */}
+      <section className="py-20 px-6 relative overflow-hidden">
+        <FloatingBg seed={192} />
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Everything your venue needs, <span style={{ color: AC }}>automated.</span></h2></ScrollReveal>
+            <ScrollReveal delay={0.1}><p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto">AI agents that handle reservations, guests, and events so your team can focus on hospitality.</p></ScrollReveal>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {features.map((f, i) => (
+              <ScrollReveal key={f.title} delay={0.05 + i * 0.06}>
+                <motion.div className={`relative h-full rounded-2xl p-7 overflow-hidden group ${f.span || ''}`}
+                  style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(24px) saturate(180%)', border: '1px solid rgba(0,0,0,0.06)' }}
+                  whileHover={{ y: -6, borderColor: `${f.color}30` }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{ background: `linear-gradient(135deg, ${f.color}06, transparent)` }} />
+                  <div className="relative z-10">
+                    <motion.div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+                      style={{ background: `${f.color}10` }}
+                      whileHover={{ scale: 1.1, rotate: -5 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+                      <f.icon className="w-6 h-6" style={{ color: f.color }} />
+                    </motion.div>
+                    <h3 className="text-base font-bold text-surface mb-2">{f.title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                  </div>
+                  <ArrowRight className="absolute top-7 right-7 w-4 h-4 text-gray-200 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
+                </motion.div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 3-STEP PROCESS ═══ */}
+      <section className="py-20 px-6 relative overflow-hidden" style={{ background: `linear-gradient(180deg, rgba(245,158,11,0.03), rgba(123,97,255,0.02))` }}>
+        <FloatingBg seed={194} />
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <div className="text-center mb-20">
+            <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">How it <span style={{ color: AC }}>works.</span></h2></ScrollReveal>
+            <ScrollReveal delay={0.1}><p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto">From first call to fully automated -- three simple steps.</p></ScrollReveal>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+            <motion.div className="hidden md:block absolute h-[2px] overflow-hidden" style={{ top: 64, left: '16%', right: '16%' }}
+              initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
+              transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
+              <div className="h-full rounded-full" style={{ background: `linear-gradient(90deg, ${AC}, #7B61FF, #2F8FFF)` }} />
+            </motion.div>
+            {[
+              { step: '01', icon: Building2, title: 'Tell us about your venue', desc: 'Share your table layout, hours, menu, and booking preferences. We configure everything.', color: AC, ring: 'rgba(245,158,11,0.1)', lightBg: 'rgba(245,158,11,0.06)' },
+              { step: '02', icon: Globe, title: 'AI goes live everywhere', desc: 'Website, WhatsApp, phone -- AI handles reservations and guest enquiries on all channels.', color: '#7B61FF', ring: 'rgba(123,97,255,0.1)', lightBg: 'rgba(123,97,255,0.06)' },
+              { step: '03', icon: Zap, title: 'Focus on your guests', desc: 'AI manages bookings. Your team delivers unforgettable experiences.', color: '#2F8FFF', ring: 'rgba(47,143,255,0.1)', lightBg: 'rgba(47,143,255,0.06)' },
+            ].map((p, i) => (
+              <ScrollReveal key={p.step} delay={0.2 + i * 0.15}>
+                <div className="text-center relative">
+                  <motion.div className="relative inline-flex mb-6"
+                    whileHover={{ scale: 1.08, y: -4, rotate: -3 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+                    <div className="w-24 h-24 rounded-3xl flex items-center justify-center shadow-sm"
+                      style={{ background: p.lightBg, border: '4px solid white', boxShadow: `0 0 0 1px ${p.ring}` }}>
+                      <p.icon className="w-9 h-9" style={{ color: p.color }} />
+                    </div>
+                    <motion.div className="absolute -top-2 -right-2 w-8 h-8 rounded-full text-white text-xs font-bold flex items-center justify-center shadow-lg ring-4 ring-white"
+                      style={{ background: p.color }}
+                      initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 15, delay: 0.5 + i * 0.15 }}>
+                      {p.step}
+                    </motion.div>
+                  </motion.div>
+                  <h3 className="text-lg font-bold text-surface mb-2">{p.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed max-w-[220px] mx-auto">{p.desc}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ US VS OTHERS ═══ */}
+      <section className="py-20 px-6 relative overflow-hidden">
+        <FloatingBg seed={196} />
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Freemi vs <span style={{ color: AC }}>Manual Booking.</span></h2></ScrollReveal>
+            <ScrollReveal delay={0.1}><p className="mt-3 text-gray-500">No phone tree, no missed calls, no scribbled notes.</p></ScrollReveal>
+          </div>
+          <ScrollReveal delay={0.15}>
+            <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: `0 16px 48px rgba(245,158,11,0.06)` }}>
+              <div className="grid grid-cols-3 text-xs font-bold uppercase tracking-wider px-6 py-4" style={{ background: `linear-gradient(135deg, rgba(245,158,11,0.05), rgba(123,97,255,0.03))` }}>
+                <span className="text-gray-400">Capability</span>
+                <span className="text-center text-gray-400">Manual Booking</span>
+                <span className="text-center" style={{ color: AC }}>Freemi Hospitality</span>
+              </div>
+              {differentiators.map((row, i) => (
+                <motion.div key={row.label} className="grid grid-cols-3 px-6 py-3.5 items-center text-sm border-t" style={{ borderColor: 'rgba(0,0,0,0.04)' }}
+                  initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
+                  <span className="font-medium text-gray-700 text-xs">{row.label}</span>
+                  <div className="flex justify-center">
+                    {row.others ? <Check className="w-4 h-4 text-gray-300" /> : <span className="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center text-red-400 text-[10px] font-bold">&times;</span>}
+                  </div>
+                  <div className="flex justify-center">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: `${AC}15` }}><Check className="w-3 h-3" style={{ color: AC }} /></div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ═══ USE CASES ═══ */}
+      <section className="py-20 px-6 relative overflow-hidden" style={{ background: `linear-gradient(180deg, rgba(245,158,11,0.04), rgba(123,97,255,0.02))` }}>
+        <FloatingBg seed={198} />
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Built for <span style={{ color: AC }}>every venue.</span></h2></ScrollReveal>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { icon: Utensils, title: 'Fine Dining', desc: 'Reservation management, wine pairing suggestions, special occasions, VIP recognition.', color: '#E84393', metric: '3x', metricLabel: 'Bookings' },
+              { icon: Coffee, title: 'Cafes', desc: 'Table bookings, daily specials, loyalty programmes, takeaway orders.', color: '#7B61FF', metric: '45%', metricLabel: 'Fewer calls' },
+              { icon: Wine, title: 'Bars & Nightlife', desc: 'Table reservations, event promotion, guest lists, bottle service.', color: '#2F8FFF', metric: '24/7', metricLabel: 'Booking' },
+              { icon: Bed, title: 'Hotels & B&Bs', desc: 'Room availability, concierge services, check-in instructions, local tips.', color: '#27C087', metric: '89%', metricLabel: 'Auto-resolved' },
+              { icon: MapPin, title: 'Tourist Attractions', desc: 'Ticket enquiries, group bookings, accessibility info, multi-language support.', color: '#F59E0B', metric: '4s', metricLabel: 'Response' },
+              { icon: CreditCard, title: 'Catering', desc: 'Quote requests, menu selection, capacity planning, event coordination.', color: '#0984E3', metric: '60%', metricLabel: 'Less admin' },
+            ].map((uc, i) => (
+              <ScrollReveal key={uc.title} delay={0.1 + i * 0.06}>
+                <motion.div className="rounded-2xl p-6 h-full group relative overflow-hidden"
+                  style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,0,0,0.06)' }}
+                  whileHover={{ y: -6, borderColor: `${uc.color}25` }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${uc.color}10` }}>
+                      <uc.icon className="w-5 h-5" style={{ color: uc.color }} />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-lg text-white" style={{ background: uc.color }}>{uc.metric}</span>
+                      <p className="text-[8px] text-gray-400 mt-0.5">{uc.metricLabel}</p>
+                    </div>
+                  </div>
+                  <h4 className="text-base font-bold text-surface">{uc.title}</h4>
+                  <p className="mt-1.5 text-sm text-gray-500 leading-relaxed">{uc.desc}</p>
+                </motion.div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ TESTIMONIALS ═══ */}
+      <section className="py-20 px-6 relative overflow-hidden">
+        <FloatingBg seed={200} />
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <ScrollReveal><h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Loved by <span style={{ color: AC }}>hospitality pros.</span></h2></ScrollReveal>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              { quote: 'We missed 30% of calls during service. Now every reservation request is handled instantly by AI.', name: 'Carlo Bianchi', role: 'Owner, Bella Vista', gradient: `linear-gradient(135deg, ${AC}, #E84393)` },
+              { quote: 'Event bookings tripled since we added WhatsApp. Customers love booking a table at midnight.', name: 'Sophie Laurent', role: 'Manager, Le Petit Bistro', gradient: 'linear-gradient(135deg, #7B61FF, #2F8FFF)' },
+              { quote: 'The AI knows our menu better than half the staff. Dietary questions, recommendations, bookings -- all handled.', name: 'David Kim', role: 'GM, Seoul Kitchen', gradient: 'linear-gradient(135deg, #27C087, #F59E0B)' },
+            ].map((t, i) => (
+              <ScrollReveal key={t.name} delay={0.1 + i * 0.08}>
+                <div className="relative rounded-2xl p-6 h-full group"
+                  style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,0,0,0.06)', transition: 'transform 300ms ease, border-color 300ms ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.borderColor = `${AC}30`; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; }}>
+                  <div className="absolute top-4 right-4 text-6xl text-gray-200/50 font-serif leading-none">&ldquo;</div>
+                  <div className="flex gap-0.5 mb-4">{[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}</div>
+                  <blockquote className="text-sm text-gray-600 leading-relaxed relative z-10">&ldquo;{t.quote}&rdquo;</blockquote>
+                  <div className="mt-5 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: t.gradient }}>{t.name.split(' ').map(n => n[0]).join('')}</div>
+                    <div><p className="text-sm font-bold text-surface">{t.name}</p><p className="text-xs text-gray-400">{t.role}</p></div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ GRADIENT CTA ═══ */}
+      <section className="py-16 px-6">
+        <ScrollReveal direction="none">
+          <motion.div className="max-w-4xl mx-auto rounded-3xl relative overflow-hidden py-16 px-8 text-center"
+            style={{ background: `linear-gradient(135deg, ${AC}, #D97706, #E84393)`, boxShadow: `0 32px 80px rgba(245,158,11,0.3)` }}>
+            {[Sparkles, Utensils, Wine, Building2, Zap, Bot, Star].map((Icon, i) => (
+              <motion.div key={i} className="absolute text-white/[0.08] pointer-events-none" style={{ left: `${10 + i * 13}%`, top: `${15 + (i % 3) * 25}%` }}
+                animate={{ y: [0, -10, 0], rotate: [0, 5, -5, 0] }} transition={{ duration: 5 + i, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}>
+                <Icon style={{ width: 28 + i * 6, height: 28 + i * 6 }} />
+              </motion.div>
+            ))}
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.15), transparent 60%)' }} />
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">Fill Every Table.<br />Answer Every Call.</h2>
+              <p className="mt-4 text-base text-white/70 max-w-md mx-auto">AI agents for hospitality -- reservations, events, and guest service on autopilot.</p>
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                  <button onClick={() => navigate('/contact')}
+                    className="px-10 py-4 rounded-full font-bold text-base" style={{ background: 'white', color: AC, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
+                    Get Started <ArrowRight className="inline ml-2 w-4 h-4" />
+                  </button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                  <a href="mailto:hello@freemi.ai" className="px-10 py-4 rounded-full font-semibold text-base text-white inline-block" style={{ border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.08)' }}>Talk to us</a>
+                </motion.div>
+              </div>
+              <p className="mt-6 text-xs text-white/40">No setup fees · Live in days · Cancel anytime</p>
+            </div>
+          </motion.div>
+        </ScrollReveal>
+      </section>
+
+      <SiteFooter />
+    </div>
   );
 }
