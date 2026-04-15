@@ -270,7 +270,7 @@ export default function ProductWhatsApp() {
             {/* Starter */}
             <div className="rounded-2xl p-7 text-left" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Starter</p>
-              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">€49.99</span><span className="text-gray-400 text-sm">/month</span></div>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">€39.99</span><span className="text-gray-400 text-sm">/month</span></div>
               <p className="text-xs text-gray-400 mt-2 mb-5">For small businesses getting started.</p>
               <div className="space-y-2.5">
                 {['AI WhatsApp agent', 'Auto-replies 24/7', 'Basic order handling', 'Analytics dashboard', '1 number'].map(f => (
@@ -285,7 +285,7 @@ export default function ProductWhatsApp() {
             <div className="rounded-2xl p-7 text-left relative" style={{ background: 'rgba(255,255,255,0.95)', border: `2px solid #25D36630`, boxShadow: `0 16px 48px #25D36612`, transform: 'scale(1.02)' }}>
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: '#25D366' }}>Most Popular</div>
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Growth</p>
-              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold" style={{ color: '#25D366' }}>€99.99</span><span className="text-gray-400 text-sm">/month</span></div>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold" style={{ color: '#25D366' }}>€69.99</span><span className="text-gray-400 text-sm">/month</span></div>
               <p className="text-xs text-gray-400 mt-2 mb-5">For growing businesses that need more.</p>
               <div className="space-y-2.5">
                 {['Everything in Starter', 'Advanced order flows', 'Booking integration', 'Broadcast campaigns', 'Payment integration', 'Priority support'].map(f => (
@@ -299,7 +299,7 @@ export default function ProductWhatsApp() {
             {/* Scale */}
             <div className="rounded-2xl p-7 text-left" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(0,0,0,0.06)' }}>
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Scale</p>
-              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">€199.99</span><span className="text-gray-400 text-sm">/month</span></div>
+              <div className="flex items-baseline gap-1 mt-2"><span className="text-3xl font-extrabold text-surface">€99.99</span><span className="text-gray-400 text-sm">/month</span></div>
               <p className="text-xs text-gray-400 mt-2 mb-5">For teams that need the full platform.</p>
               <div className="space-y-2.5">
                 {['Everything in Growth', 'Multiple numbers', 'Custom AI training', 'Advanced integrations', 'Dedicated manager', 'SLA guarantee'].map(f => (
