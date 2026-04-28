@@ -92,7 +92,8 @@ export default function ProductBookings() {
                   <div className="flex items-center gap-1"><div className="w-5 h-5 rounded bg-gray-50 flex items-center justify-center"><ChevronLeft className="w-3 h-3 text-gray-400" /></div><span className="text-[10px] font-semibold text-gray-700 px-2">14 – 20 Apr</span><div className="w-5 h-5 rounded bg-gray-50 flex items-center justify-center"><ChevronRight className="w-3 h-3 text-gray-400" /></div></div>
                 </div>
                 {/* day headers */}
-                <div className="grid grid-cols-5 border-b border-gray-50">
+                <div className="grid border-b border-gray-50" style={{ gridTemplateColumns: '32px repeat(5, 1fr)' }}>
+                  <div className="border-r border-gray-50" />
                   {['Mon 14', 'Tue 15', 'Wed 16', 'Thu 17', 'Fri 18'].map((d, i) => (
                     <div key={d} className="text-center py-1.5 border-r border-gray-50 last:border-r-0">
                       <p className={`text-[9px] font-bold ${i === 1 ? 'text-amber-600' : 'text-gray-500'}`}>{d}</p>
@@ -108,10 +109,12 @@ export default function ProductBookings() {
                     { time: '14:30', slots: [null, { n: 'Tom M.', s: 'Review', c: '#2F8FFF' }, null, null, null] },
                     { time: '16:00', slots: [{ n: 'Aoife R.', s: 'Styling', c: '#E84393' }, null, { n: 'Niamh F.', s: 'Colour', c: '#7B61FF' }, null, { n: 'Mark S.', s: 'Trim', c: AC }] },
                   ].map(row => (
-                    <div key={row.time} className="grid grid-cols-5 border-b border-gray-50 last:border-0">
+                    <div key={row.time} className="grid border-b border-gray-50 last:border-0" style={{ gridTemplateColumns: '32px repeat(5, 1fr)' }}>
+                      <div className="h-12 border-r border-gray-50 flex items-start justify-end pr-1 pt-1">
+                        <span className="text-[8px] text-gray-400 font-mono">{row.time}</span>
+                      </div>
                       {row.slots.map((slot, j) => (
-                        <div key={j} className="h-12 border-r border-gray-50 last:border-r-0 relative p-0.5">
-                          {j === 0 && <span className="absolute left-0.5 top-0.5 text-[7px] text-gray-300 font-mono">{row.time}</span>}
+                        <div key={j} className="h-12 border-r border-gray-50 last:border-r-0 p-0.5">
                           {slot && <div className="h-full rounded-md px-1 py-0.5 overflow-hidden" style={{ background: `${slot.c}08`, borderLeft: `2px solid ${slot.c}` }}><p className="text-[7px] font-bold text-gray-700 truncate">{slot.n}</p><p className="text-[6px] text-gray-400">{slot.s}</p></div>}
                         </div>
                       ))}
