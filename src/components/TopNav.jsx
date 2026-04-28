@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, useMotionValueEvent, useScroll, AnimatePresence } from 'framer-motion';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, Globe, MessageSquare, Phone, Send, Calendar, Bot, Zap, ArrowRight, Pill, Building2, HeartPulse, Briefcase, Package, ShoppingCart, Headphones, TrendingUp, CalendarCheck, Settings } from 'lucide-react';
+import { ChevronDown, Globe, MessageSquare, Phone, Send, Calendar, Bot, Zap, ArrowRight, Pill, Building2, HeartPulse, Briefcase, Package, ShoppingCart, Headphones, TrendingUp, Mail, Settings } from 'lucide-react';
 
 const productItems = [
   { label: 'Studio', desc: 'AI-powered websites built for you', href: '/products/studio', Icon: Globe, accent: '#7B61FF' },
@@ -21,10 +21,10 @@ const industryItems = [
 ];
 
 const useCaseItems = [
-  { label: 'Customer Support', href: '/solutions/ai-operators', Icon: Headphones },
-  { label: 'Sales & Leads', href: '/solutions/ai-operators', Icon: TrendingUp },
-  { label: 'Bookings & Calendar', href: '/products/bookings', Icon: CalendarCheck },
-  { label: 'Operations', href: '/solutions/ai-operators', Icon: Settings },
+  { label: 'Customer Support', href: '/solutions/ai-operators#customer-enquiries', Icon: Headphones },
+  { label: 'Sales & Leads', href: '/solutions/ai-operators#lead-follow-up', Icon: TrendingUp },
+  { label: 'Email & Inbox', href: '/solutions/ai-operators#email-inbox', Icon: Mail },
+  { label: 'Operations', href: '/solutions/ai-operators#operations-tasks', Icon: Settings },
 ];
 
 export default function TopNav() {

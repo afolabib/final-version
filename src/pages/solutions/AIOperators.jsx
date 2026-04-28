@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TopNav from '../../components/TopNav';
 import SiteFooter from '../../components/SiteFooter';
@@ -8,6 +9,7 @@ import FloatingChatWidget from '../../components/FloatingChatWidget';
 
 const operators = [
   {
+    slug: 'customer-enquiries',
     emoji: '💬',
     name: 'Customer Enquiries',
     tagline: 'Every message answered. Instantly.',
@@ -25,6 +27,7 @@ const operators = [
     connects: ['Website Widget', 'Gmail', 'Phone Agent'],
   },
   {
+    slug: 'bookings-calendar',
     emoji: '📅',
     name: 'Bookings & Calendar',
     tagline: 'Bookings handled. Reminders sent. No calls needed.',
@@ -42,6 +45,7 @@ const operators = [
     connects: ['Google Calendar', 'Gmail', 'Website Widget'],
   },
   {
+    slug: 'lead-follow-up',
     emoji: '🎯',
     name: 'Lead Follow-up',
     tagline: 'No lead goes cold. Ever.',
@@ -59,6 +63,7 @@ const operators = [
     connects: ['Gmail', 'HubSpot', 'Website Widget'],
   },
   {
+    slug: 'email-inbox',
     emoji: '📧',
     name: 'Email & Inbox',
     tagline: 'Your inbox managed. Without you in it.',
@@ -76,6 +81,7 @@ const operators = [
     connects: ['Gmail', 'Slack', 'Google Calendar'],
   },
   {
+    slug: 'operations-tasks',
     emoji: '⚙️',
     name: 'Operations & Tasks',
     tagline: 'The admin that eats your day. Done automatically.',
@@ -121,6 +127,14 @@ const faqs = [
 
 export default function SolutionAIOperators() {
   const navigate = useNavigate();
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const el = document.getElementById(hash.slice(1));
+    if (!el) return;
+    requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }, [hash]);
 
   return (
     <div className="relative w-full" style={{ background: 'linear-gradient(135deg, #F5F3FF 0%, #F8F9FE 50%, #F0F1FF 100%)', minHeight: '100vh' }}>
@@ -198,7 +212,7 @@ export default function SolutionAIOperators() {
           <div className="space-y-5">
             {operators.map((op, i) => (
               <ScrollReveal key={op.name} delay={i * 0.05}>
-                <div className="rounded-2xl overflow-hidden"
+                <div id={op.slug} className="rounded-2xl overflow-hidden scroll-mt-24"
                   style={{ border: '1px solid rgba(123,97,255,0.08)', background: '#FAFBFF', boxShadow: '0 2px 16px rgba(0,0,0,0.03)' }}>
                   <div className="grid md:grid-cols-2 gap-0">
                     {/* Left */}
