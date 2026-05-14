@@ -85,6 +85,7 @@ import ProductConcierge from './pages/products/Concierge';
 import ProductVoice from './pages/products/Voice';
 import ProductWhatsApp from './pages/products/WhatsApp';
 import ProductBookings from './pages/products/Bookings';
+import Portuguese from './pages/Portuguese';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -195,6 +196,7 @@ const AuthenticatedApp = () => {
       <Route path="/solutions/ai-operators" element={<SolutionAIOperators />} />
       <Route path="/solutions/widget" element={<SolutionWidget />} />
       <Route path="/solutions/phone" element={<SolutionPhoneAI />} />
+      <Route path="/portuguese" element={<Portuguese />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/about" element={<About />} />
       <Route path="/blog/:slug" element={<BlogArticle />} />
